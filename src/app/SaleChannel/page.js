@@ -62,8 +62,8 @@ const TableWithCheckboxes = () => {
   const options2 = ["Net 30", "Prepaid"];
 
   useEffect(() => {
-    const data1=getAllSalesChannels();
-console.log("data1", data1);
+    const data1 = getAllSalesChannels();
+    console.log("data1", data1);
     const handleClickOutside = (event) => {
       if (
         sortButtonRef.current &&

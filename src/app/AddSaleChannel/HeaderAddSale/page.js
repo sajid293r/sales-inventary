@@ -48,6 +48,7 @@ const TableWithCheckboxes = () => {
     email: '',
     phone: '',
     abn: '',
+    salesChannelType: '',
     emailPlatforminvoice: false,
     offSellingPricecheckbox: false,
     plusShipping: false,
@@ -228,7 +229,7 @@ const TableWithCheckboxes = () => {
                 <label className="text-sm font-medium whitespace-nowrap w-32">Sales Channel Type</label>
                 <select className="flex-1 border border-gray-300 rounded p-1 text-sm h-8 w-full"
                   name="salesChannelType"
-                  value={billingInfo.salesChannelType || ''}
+                  value={billingInfo.salesChannelType}
                   onChange={(e) => {
                     const { name, value } = e.target;
                     setBillingInfo((prev) => ({
@@ -411,7 +412,7 @@ const TableWithCheckboxes = () => {
                         type="checkbox"
                         id="startOnCampaign"
                         name="startOnCampaign"
-                        checked={billingInfo.startOnCampaign}
+                        checked={billingInfo.startOnCampaign || false}
                         onChange={e =>
                           setBillingInfo(prev => ({
                             ...prev,
