@@ -1,26 +1,25 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f0f4f5;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.slidebar-container {
+  position: fixed;
+  text-align: left; /* Reset text alignment */
+  margin-left: 0; /* Reset margin-left */
+  /* Add any other specific styles for the Slidebar */
+}
+.slidebar-container {
+  position: fixed;
+
+  left: 0;
+  width: 200px; /* Adjust as needed */
+  text-align: left;
+  margin-left: 0;
+}
+.slidebar-container {
+  margin-top: 2px;
 }
