@@ -1508,7 +1508,7 @@ const TableWithCheckboxes = () => {
                           <input type="checkbox" className="flex-none" />
                         </div>
                         <div className="text-xs text-gray-500">
-                          NZ Dropshipping price must use "SupplyPrice"
+                          NZ Dropshipping price must use &quot;SupplyPrice&quot;
                         </div>
                       </div>
 
