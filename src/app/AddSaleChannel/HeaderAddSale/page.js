@@ -1,12 +1,13 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import { submitAction } from '@/actions/salesChannel';
+import React, { useState, useRef, useEffect, version } from "react";
+import { submitAction } from '@/actions/salesChannel'
 import { toast } from 'react-hot-toast';
 
 const TableWithCheckboxes = () => {
-  const ref = useRef();
+  let ref = useRef();
   const [selectedRows, setSelectedRows] = useState([]);
   const [activeVersion, setActiveVersion] = useState('Version 4 & 5');
+  const [isLoading, setIsLoading] = useState(true);
   const [filters, setFilters] = useState({
     status: [],
     type: [],
@@ -14,91 +15,230 @@ const TableWithCheckboxes = () => {
     region: "Billing Information",
   });
   const [dropdown, setDropdown] = useState({
+    status: false,
+    type: false,
+    paymentTerm: false,
     filterPanel: false,
+    sortTooltip: false,
   });
-  const [showBillingForm, setShowBillingForm] = useState(true);
+  const [sortOptions, setSortOptions] = useState({
+    salesChannel: false,
+    country: false,
+  });
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen1, setIsOpen1] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
+  const [showButtons, setShowButtons] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [showBillingForm, setShowBillingForm] = useState(false);
+  const [billingInfo, setBillingInfo] = useState({
+    nzDropshipping: false,
+    nzDropshippingAutoCalculate: false,
+    nzDropshippingDropdown: '',
+    Emailplatformatrackingfile: false,
+    ImportFromRTS: '',
+    company: '',
+    website: '',
+    address1: '',
+    address2: '',
+    firstName: '',
+    lastName: '',
+    suburbState: '',
+    postcode: '',
+    email: '',
+    phone: '',
+    abn: '',
+    salesChannelType: '',
+    emailPlatforminvoice: false,
+    offSellingPricecheckbox: false,
+    plusShipping: false,
+    paymentrequired: false,
+    calculateNZPricecheckbox: false,
+    calculateRetailPricecheckbox: false,
+    calculateGSTcheckbox: false,
+    roundingLowcheckbox: false,
+    roundingHighcheckbox: false,
+    Version5: false,
 
+  });
+  const [pricingData, setPricingData] = useState({
+    currency: '',
+    pricingRules: '',
+    version: 'Version 4 & 5',
+    sellingPrice: '',
+    nzPrice: '',
+    retailPrice: '',
+    gst: '',
+    roundingLow: '',
+    roundingHigh: '',
+    excludeGST: false
+  });
+
+  const handleButtonClick = (buttonType) => {
+    console.log(`${buttonType} clicked:`, pricingData);
+  };
+  const buttonsRef = useRef(null);
+  const filterButtonRef = useRef(null);
+  const filterPanelRef = useRef(null);
+  const sortButtonRef = useRef(null);
+  const sortTooltipRef = useRef(null);
+  const searchInputRef = useRef(null);
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        sortButtonRef.current &&
+        !sortButtonRef.current.contains(event.target) &&
+        sortTooltipRef.current &&
+        !sortTooltipRef.current.contains(event.target)
+      ) {
+        setDropdown((prev) => ({ ...prev, sortTooltip: false }));
+      }
+      if (
+        filterButtonRef.current &&
+        !filterButtonRef.current.contains(event.target) &&
+        filterPanelRef.current &&
+        !filterPanelRef.current.contains(event.target)
+      ) {
+        setDropdown((prev) => ({ ...prev, filterPanel: false }));
+        setIsOpen(false);
+        setIsOpen1(false);
+        setIsOpen2(false);
+      }
+      if (
+        showButtons &&
+        buttonsRef.current &&
+        !buttonsRef.current.contains(event.target)
+      ) {
+        setShowButtons(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showButtons]);
+  useEffect(() => {
+    if (filters.region === "Billing Information") {
+      setShowBillingForm(true);
+    }
+  }, [filters.region]);
+
+  useEffect(() => {
+    const adjustDropdownPosition = (dropdownClass, isOpen) => {
+      if (isOpen) {
+        const dropdownElement = document.querySelector(dropdownClass);
+        if (dropdownElement) {
+          const rect = dropdownElement.getBoundingClientRect();
+          const viewportHeight = window.innerHeight;
+          const viewportWidth = window.innerWidth;
+          if (rect.bottom > viewportHeight) {
+            dropdownElement.style.top = "auto";
+            dropdownElement.style.bottom = "100%";
+          } else {
+            dropdownElement.style.top = "100%";
+            dropdownElement.style.bottom = "auto";
+          }
+          if (rect.right > viewportWidth) {
+            dropdownElement.style.left = "auto";
+            dropdownElement.style.right = "0";
+          } else if (rect.left < 0) {
+            dropdownElement.style.left = "0";
+            dropdownElement.style.right = "auto";
+          }
+        }
+      }
+    };
+    adjustDropdownPosition(".continent-dropdown", isOpen);
+    adjustDropdownPosition(".type-dropdown", isOpen1);
+    adjustDropdownPosition(".payment-dropdown", isOpen2);
+  }, [isOpen, isOpen1, isOpen2]);
+ useEffect(() => {
+    const fetchSalesChannels = async () => {
+      try {
+        const res = await fetch("/api/sales-channels");
+        const data = await res.json();
+        // setSalesChannels(data);
+        console.log("📦 Channels:", data);
+      } catch (error) {
+        console.error("❌ Error fetching channels:", error);
+      }
+    };
+
+    fetchSalesChannels();
+  }, []);
+  const data = Array.from({ length: 80 }, (_, i) => ({
+    id: i + 1,
+    salesChannel: `Channel ${i + 1}`,
+    type: i % 2 === 0 ? "Online" : "Retail",
+    paymentTerm: i % 3 === 0 ? "Net 30" : "Prepaid",
+    country: ["USA", "UK", "Germany", "India"][i % 4],
+    authorizedDate: `2025-05-${String(i + 1).padStart(2, "0")}`,
+    status: i % 2 === 0 ? "Active" : "Inactive",
+    region: ["Asia", "North America", "Europe", "Africa"][i % 4],
+  }));
+
+  const toggleSelectAll = (e) => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentPageData = filteredData.slice(startIndex, endIndex);
+    setSelectedRows(e.target.checked ? currentPageData.map((d) => d.id) : []);
+  };
   const handleRegionFilter = (region) => {
-    setFilters(prev => ({ ...prev, region }));
+    setFilters((prev) => ({ ...prev, region }));
     setShowBillingForm(region === "Billing Information");
   };
-  const [billingInfo, setBillingInfo] = useState({
-    salesChannelID: '',
-    salesChannelName: '',
-    salesChannelType: '',
-    invoiceTemplate: '',
-    invoiceOrPO: '',
-    invoiceFolder: '',
-    payementterm: '',
-    bankReferenceName: '',
-    Currency: '',
-    pricingRules: '',
-    // Other fields as needed
-  });
+
 
   const handleBillingChange = (e) => {
     const { name, value } = e.target;
     setBillingInfo(prev => ({ ...prev, [name]: value }));
   };
+  const handleSave = () => {
+    console.log("Billing Info Submitted:", billingInfo);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const requiredFields = [
-      'salesChannelID',
-      'salesChannelName',
-      'salesChannelType',
-      'invoiceTemplate',
-      'invoiceOrPO',
-      'invoiceFolder',
-      'payementterm',
-      'bankReferenceName',
-      'Currency',
-      'pricingRules'
-    ];
-
-    const emptyFields = requiredFields.filter(
-      key => typeof billingInfo[key] === 'string' && billingInfo[key].trim() === ''
-    );
-
-    if (emptyFields.length > 0) {
-      toast.error(`Please fill required fields: ${emptyFields.join(', ')}`);
-      return;
-    }
-
+    
     try {
+      setIsLoading(true);
       const result = await submitAction(billingInfo);
+      
       if (!result.success) {
-        toast.error(result.error || "Failed to save sales channel");
+        if (result.type === "validation_error") {
+          toast.error(result.error);
+        } else {
+          toast.error("Failed to save sales channel");
+        }
+        setIsLoading(false);
+
         return;
       }
 
       toast.success("Sales Channel saved successfully");
       ref.current?.reset();
+      // Reset form data
       setBillingInfo({
-        salesChannelID: '',
-        salesChannelName: '',
-        salesChannelType: '',
-        invoiceTemplate: '',
-        invoiceOrPO: '',
-        invoiceFolder: '',
-        payementterm: '',
-        bankReferenceName: '',
-        Currency: '',
-        pricingRules: '',
-        // Reset other fields as needed
+        nzDropshipping: false,
+        nzDropshippingAutoCalculate: false,
+        nzDropshippingDropdown: '',
+        // ... rest of the initial state
       });
     } catch (error) {
       toast.error("An error occurred while saving");
       console.error("Submit error:", error);
     }
   };
-  
-  
+
   return (
     <div >
- <form ref={ref} onSubmit={handleSubmit}>
-          <div className="flex mt-3 ">
+
+{isLoading ? (
+      <form ref={ref} onSubmit={handleSubmit}>
+        <div className="flex mt-3 ">
 
           <div className="bg-white rounded-lg p-2 mt-17 shadow-md flex flex-wrap gap-1 mb-2 h-[30%] w-[450px]">
             <div className="flex flex-col items-start gap-1 w-full">
@@ -177,16 +317,12 @@ const TableWithCheckboxes = () => {
 
               </h1>
               <div>
-              <button
-  type="submit"
-  // disabled={!billingInfo.salesChannelName || !billingInfo.salesChannelType}
-  className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition disabled:opacity-50"
->
-  Save
-</button>
-
-
-
+                <button
+                  // onClick={handleSave}
+                  className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition"
+                >
+                  Save
+                </button>
 
               </div>
             </div>
@@ -794,8 +930,31 @@ const TableWithCheckboxes = () => {
                         <label className="text-sm font-medium">Payment required</label>
                       </div>
                     </div>
-
                     <div className="flex items-center">
+                    <label className="w-1/4 text-sm font-medium">Payement Terms</label>
+                    <select
+                        type="text"
+                        name="payementterm"
+                        value={billingInfo.payementterm || ''}
+                        onChange={(e) => {
+                          const { name, value } = e.target;
+                          setBillingInfo((prev) => ({
+                            ...prev,
+                            [name]: value,
+                          }));
+                          console.log(`${name} changed:`, value);
+                        }}
+                        className="flex border border-gray-300 rounded p-2 text-sm w-3/4"
+                      >
+                        <option value="">--- Please Select ----</option>
+                        <option value="7 Day">7 Day</option>
+                        <option value="14 Days">14 Days</option>
+                        <option value="15 Days">15 Days</option>
+                        <option value="Net 30">Net 30</option>
+                        <option value="Prepaid">Prepaid</option>
+                      </select>
+                    </div>
+                    {/* <div className="flex items-center">
                       <label className="w-1/4 text-sm font-medium">Payement Terms</label>
                       <input
                         type="text"
@@ -812,7 +971,7 @@ const TableWithCheckboxes = () => {
                         className="w-40 border border-gray-300 rounded p-2 text-sm"
                       />
                       <span className="ml-2">Days</span>
-                    </div>
+                    </div> */}
 
                     {/* Invoice Folder Input */}
                     <div className="flex items-center">
@@ -1206,7 +1365,7 @@ const TableWithCheckboxes = () => {
                             onChange={e =>
                               setBillingInfo(prev => ({
                                 ...prev,
-                                Version5: e.target.checked
+                                roundingHighcheckbox: e.target.checked
                               }))
                             }
                           />
@@ -1397,7 +1556,130 @@ const TableWithCheckboxes = () => {
         </div>
        
       </form>
-
+ ) : (
+  <>
+    <div className="hidden sm:block overflow-x-hidden">
+      <table className="w-full border-collapse text-sm">
+        <thead>
+          <tr className="text-xs">
+            <th className="p-2 border-b w-12 text-center">
+              <input
+                type="checkbox"
+                checked={
+                  paginatedData.length > 0 &&
+                  selectedRows.length === paginatedData.length
+                }
+                onChange={toggleSelectAll}
+              />
+            </th>
+            <th className="p-2 border-b text-center">Sales Channel</th>
+            <th className="p-2 border-b text-center">Type</th>
+            <th className="p-2 border-b text-center">Payment Term</th>
+            <th className="p-2 border-b text-center">Location</th>
+            <th className="p-2 border-b text-center">Created Date</th>
+            <th className="p-2 border-b text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {paginatedData.map((row) => (
+            <tr
+              key={row._id}
+              className="hover:bg-gray-50 cursor-pointer"
+            >
+              <td className="p-2 border-b text-center w-12">
+                <input
+                  type="checkbox"
+                  checked={selectedRows.includes(row._id)}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    toggleRow(row._id);
+                  }}
+                />
+              </td>
+              <td className="p-2 border-b text-center"
+                onClick={() => handleRowClick(row)}
+              >
+                {row.salesChannelName}
+              </td>
+              <td className="p-2 border-b text-center"
+                onClick={() => handleRowClick(row)}
+              >{row.salesChannelType}</td>
+              <td className="p-2 border-b text-center" onClick={() => handleRowClick(row)}
+              >
+                {row.payementterm}
+              </td>
+              <td className="p-2 border-b text-center" onClick={() => handleRowClick(row)}
+              >{row.suburbState}</td>
+              <td className="p-2 border-b text-center" onClick={() => handleRowClick(row)}
+              >
+                {new Date(row.createdAt).toLocaleDateString()}
+              </td>
+              <td className="p-2 border-b text-center" onClick={() => handleRowClick(row)}
+              >
+                <span
+                  className={`py-1 px-4 rounded-md text-xs ${row.emailPlatforminvoice
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                    }`}
+                >
+                  {row.emailPlatforminvoice ? "Active" : "Inactive"}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    {/* mobile view content  */}
+    <div className="block sm:hidden divide-y divide-gray-200 px-4">
+      {paginatedData.map((row) => (
+        <div
+          key={row._id}
+          className="p-3 bg-gray-50 mb-3 rounded-lg shadow-sm cursor-pointer"
+          onClick={() => handleRowClick(row)}
+        >
+          <table className="w-full text-sm">
+            <tbody>
+              <tr>
+                <td className="font-semibold py-1">Sales Channel</td>
+                <td>{row.salesChannelName}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold py-1">Type</td>
+                <td>{row.salesChannelType}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold py-1">Payment Term</td>
+                <td>{row.payementterm}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold py-1">Location</td>
+                <td>{row.suburbState}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold py-1">Created Date</td>
+                <td>{new Date(row.createdAt).toLocaleDateString()}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold py-1">Status</td>
+                <td>
+                  <span
+                    className={`inline-block px-2 py-0.5 rounded text-xs ${row.emailPlatforminvoice
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                      }`}
+                  >
+                    {row.emailPlatforminvoice ? "Active" : "Inactive"}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ))}
+    </div>
+  </>
+)}
     </div>
   );
 };
