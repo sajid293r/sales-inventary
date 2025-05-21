@@ -1,8 +1,8 @@
-
-
 "use client";
 import React, { useState, useRef, useEffect, version } from "react";
 import { submitAction } from '@/actions/salesChannel'
+import { toast } from 'react-hot-toast';
+
 const TableWithCheckboxes = () => {
   let ref = useRef();
   const [selectedRows, setSelectedRows] = useState([]);
@@ -199,9 +199,39 @@ const TableWithCheckboxes = () => {
     console.log("Billing Info Submitted:", billingInfo);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const result = await submitAction(billingInfo);
+      
+      if (!result.success) {
+        if (result.type === "validation_error") {
+          toast.error(result.error);
+        } else {
+          toast.error("Failed to save sales channel");
+        }
+        return;
+      }
+
+      toast.success("Sales Channel saved successfully");
+      ref.current?.reset();
+      // Reset form data
+      setBillingInfo({
+        nzDropshipping: false,
+        nzDropshippingAutoCalculate: false,
+        nzDropshippingDropdown: '',
+        // ... rest of the initial state
+      });
+    } catch (error) {
+      toast.error("An error occurred while saving");
+      console.error("Submit error:", error);
+    }
+  };
+
   return (
     <div >
-      <form ref={ref} action={(e) => { submitAction(billingInfo); ref.current.reset() }}>
+      <form ref={ref} onSubmit={handleSubmit}>
         <div className="flex mt-3 ">
 
           <div className="bg-white rounded-lg p-2 mt-17 shadow-md flex flex-wrap gap-1 mb-2 h-[30%] w-[450px]">
@@ -250,7 +280,8 @@ const TableWithCheckboxes = () => {
               <div className="flex items-center gap-2 w-full">
                 <span className="text-red-600 mt-1">*</span>
                 <label className="text-sm font-medium whitespace-nowrap w-32">Sales Channel Name</label>
-                <input type="text"
+                <input 
+                  type="text"
                   name="salesChannelName"
                   value={billingInfo.salesChannelName || ''}
                   onChange={(e) => {
@@ -259,11 +290,10 @@ const TableWithCheckboxes = () => {
                       ...prev,
                       [name]: value,
                     }));
-                    console.log(`${name} changed:`, value);
                   }}
-
-
-                  className="flex-1 border border-gray-300 rounded p-1 text-sm h-8 w-full" />
+                  className="flex-1 border border-gray-300 rounded p-1 text-sm h-8 w-full"
+                  required
+                />
               </div>
             </div>
           </div>
@@ -1495,6 +1525,7 @@ const TableWithCheckboxes = () => {
 
           </div>
         </div>
+       
       </form>
 
     </div>

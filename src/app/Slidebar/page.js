@@ -37,7 +37,7 @@ const Sidebar = () => {
         onClick={toggleSidebar}>
         {/* Top Section */}
         <div className="flex flex-col gap-2 mt-8">
-        <Link href="/SaleChannel"> <IconWrapper icon={<Home size={24} />} label="Home" expanded={expanded} /></Link>
+        <Link href="/SaleChannel"> <IconWrapper icon={<Home size={24} />} label="Sales Channel" expanded={expanded} /></Link>
         <Link href="/BulkEditor">  <IconWrapper icon={<Globe size={24} />} label="Internet" expanded={expanded} /></Link>
           <Link href="/AddSaleChannel/HeaderAddSale"> <IconWrapper icon={<FaShoppingCart size={24} />} label="Cart" expanded={expanded} /></Link>
           <IconWrapper icon={<FaBars size={24} />} label="Menu" expanded={expanded} />

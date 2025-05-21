@@ -1,13 +1,11 @@
 // src/actions/getAllSalesChannels.js
 'use server'
 
-import connectDB from "@/lib/db";
-import SalesChannel from "@/models/salesChannel";
+import { connectDB, SalesChannel } from "@/lib/mongoose";
 
 export const getAllSalesChannels = async () => {
   try {
     await connectDB();
-
     const channels = await SalesChannel.find({});
     return JSON.parse(JSON.stringify(channels)); 
   } catch (error) {
