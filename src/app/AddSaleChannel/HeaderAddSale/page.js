@@ -1,10 +1,10 @@
 "use client";
-import React, { useState, useRef, useEffect, version } from "react";
-import { submitAction } from '@/actions/salesChannel'
+import React, { useState, useRef, useEffect } from "react";
+import { submitAction } from '@/actions/salesChannel';
 import { toast } from 'react-hot-toast';
 
 const TableWithCheckboxes = () => {
-  let ref = useRef();
+  const ref = useRef();
   const [selectedRows, setSelectedRows] = useState([]);
   const [activeVersion, setActiveVersion] = useState('Version 4 & 5');
   const [filters, setFilters] = useState({
@@ -14,225 +14,91 @@ const TableWithCheckboxes = () => {
     region: "Billing Information",
   });
   const [dropdown, setDropdown] = useState({
-    status: false,
-    type: false,
-    paymentTerm: false,
     filterPanel: false,
-    sortTooltip: false,
   });
-  const [sortOptions, setSortOptions] = useState({
-    salesChannel: false,
-    country: false,
-  });
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOpen1, setIsOpen1] = useState(false);
-  const [isOpen2, setIsOpen2] = useState(false);
-  const [showButtons, setShowButtons] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [showBillingForm, setShowBillingForm] = useState(false);
-  const [billingInfo, setBillingInfo] = useState({
-    nzDropshipping: false,
-    nzDropshippingAutoCalculate: false,
-    nzDropshippingDropdown: '',
-    Emailplatformatrackingfile: false,
-    ImportFromRTS: '',
-    company: '',
-    website: '',
-    address1: '',
-    address2: '',
-    firstName: '',
-    lastName: '',
-    suburbState: '',
-    postcode: '',
-    email: '',
-    phone: '',
-    abn: '',
-    salesChannelType: '',
-    emailPlatforminvoice: false,
-    offSellingPricecheckbox: false,
-    plusShipping: false,
-    paymentrequired: false,
-    calculateNZPricecheckbox: false,
-    calculateRetailPricecheckbox: false,
-    calculateGSTcheckbox: false,
-    roundingLowcheckbox: false,
-    roundingHighcheckbox: false,
-    Version5: false,
+  const [showBillingForm, setShowBillingForm] = useState(true);
 
-  });
-  const [pricingData, setPricingData] = useState({
-    currency: '',
-    pricingRules: '',
-    version: 'Version 4 & 5',
-    sellingPrice: '',
-    nzPrice: '',
-    retailPrice: '',
-    gst: '',
-    roundingLow: '',
-    roundingHigh: '',
-    excludeGST: false
-  });
-
-  const handleButtonClick = (buttonType) => {
-    console.log(`${buttonType} clicked:`, pricingData);
-  };
-  const buttonsRef = useRef(null);
-  const filterButtonRef = useRef(null);
-  const filterPanelRef = useRef(null);
-  const sortButtonRef = useRef(null);
-  const sortTooltipRef = useRef(null);
-  const searchInputRef = useRef(null);
-
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        sortButtonRef.current &&
-        !sortButtonRef.current.contains(event.target) &&
-        sortTooltipRef.current &&
-        !sortTooltipRef.current.contains(event.target)
-      ) {
-        setDropdown((prev) => ({ ...prev, sortTooltip: false }));
-      }
-      if (
-        filterButtonRef.current &&
-        !filterButtonRef.current.contains(event.target) &&
-        filterPanelRef.current &&
-        !filterPanelRef.current.contains(event.target)
-      ) {
-        setDropdown((prev) => ({ ...prev, filterPanel: false }));
-        setIsOpen(false);
-        setIsOpen1(false);
-        setIsOpen2(false);
-      }
-      if (
-        showButtons &&
-        buttonsRef.current &&
-        !buttonsRef.current.contains(event.target)
-      ) {
-        setShowButtons(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showButtons]);
-  useEffect(() => {
-    if (filters.region === "Billing Information") {
-      setShowBillingForm(true);
-    }
-  }, [filters.region]);
-
-  useEffect(() => {
-    const adjustDropdownPosition = (dropdownClass, isOpen) => {
-      if (isOpen) {
-        const dropdownElement = document.querySelector(dropdownClass);
-        if (dropdownElement) {
-          const rect = dropdownElement.getBoundingClientRect();
-          const viewportHeight = window.innerHeight;
-          const viewportWidth = window.innerWidth;
-          if (rect.bottom > viewportHeight) {
-            dropdownElement.style.top = "auto";
-            dropdownElement.style.bottom = "100%";
-          } else {
-            dropdownElement.style.top = "100%";
-            dropdownElement.style.bottom = "auto";
-          }
-          if (rect.right > viewportWidth) {
-            dropdownElement.style.left = "auto";
-            dropdownElement.style.right = "0";
-          } else if (rect.left < 0) {
-            dropdownElement.style.left = "0";
-            dropdownElement.style.right = "auto";
-          }
-        }
-      }
-    };
-    adjustDropdownPosition(".continent-dropdown", isOpen);
-    adjustDropdownPosition(".type-dropdown", isOpen1);
-    adjustDropdownPosition(".payment-dropdown", isOpen2);
-  }, [isOpen, isOpen1, isOpen2]);
- useEffect(() => {
-    const fetchSalesChannels = async () => {
-      try {
-        const res = await fetch("/api/sales-channels");
-        const data = await res.json();
-        // setSalesChannels(data);
-        console.log("📦 Channels:", data);
-      } catch (error) {
-        console.error("❌ Error fetching channels:", error);
-      }
-    };
-
-    fetchSalesChannels();
-  }, []);
-  const data = Array.from({ length: 80 }, (_, i) => ({
-    id: i + 1,
-    salesChannel: `Channel ${i + 1}`,
-    type: i % 2 === 0 ? "Online" : "Retail",
-    paymentTerm: i % 3 === 0 ? "Net 30" : "Prepaid",
-    country: ["USA", "UK", "Germany", "India"][i % 4],
-    authorizedDate: `2025-05-${String(i + 1).padStart(2, "0")}`,
-    status: i % 2 === 0 ? "Active" : "Inactive",
-    region: ["Asia", "North America", "Europe", "Africa"][i % 4],
-  }));
-
-  const toggleSelectAll = (e) => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentPageData = filteredData.slice(startIndex, endIndex);
-    setSelectedRows(e.target.checked ? currentPageData.map((d) => d.id) : []);
-  };
   const handleRegionFilter = (region) => {
-    setFilters((prev) => ({ ...prev, region }));
+    setFilters(prev => ({ ...prev, region }));
     setShowBillingForm(region === "Billing Information");
   };
-
+  const [billingInfo, setBillingInfo] = useState({
+    salesChannelID: '',
+    salesChannelName: '',
+    salesChannelType: '',
+    invoiceTemplate: '',
+    invoiceOrPO: '',
+    invoiceFolder: '',
+    payementterm: '',
+    bankReferenceName: '',
+    Currency: '',
+    pricingRules: '',
+    // Other fields as needed
+  });
 
   const handleBillingChange = (e) => {
     const { name, value } = e.target;
     setBillingInfo(prev => ({ ...prev, [name]: value }));
   };
-  const handleSave = () => {
-    console.log("Billing Info Submitted:", billingInfo);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    const requiredFields = [
+      'salesChannelID',
+      'salesChannelName',
+      'salesChannelType',
+      'invoiceTemplate',
+      'invoiceOrPO',
+      'invoiceFolder',
+      'payementterm',
+      'bankReferenceName',
+      'Currency',
+      'pricingRules'
+    ];
+
+    const emptyFields = requiredFields.filter(
+      key => typeof billingInfo[key] === 'string' && billingInfo[key].trim() === ''
+    );
+
+    if (emptyFields.length > 0) {
+      toast.error(`Please fill required fields: ${emptyFields.join(', ')}`);
+      return;
+    }
+
     try {
       const result = await submitAction(billingInfo);
-      
       if (!result.success) {
-        if (result.type === "validation_error") {
-          toast.error(result.error);
-        } else {
-          toast.error("Failed to save sales channel");
-        }
+        toast.error(result.error || "Failed to save sales channel");
         return;
       }
 
       toast.success("Sales Channel saved successfully");
       ref.current?.reset();
-      // Reset form data
       setBillingInfo({
-        nzDropshipping: false,
-        nzDropshippingAutoCalculate: false,
-        nzDropshippingDropdown: '',
-        // ... rest of the initial state
+        salesChannelID: '',
+        salesChannelName: '',
+        salesChannelType: '',
+        invoiceTemplate: '',
+        invoiceOrPO: '',
+        invoiceFolder: '',
+        payementterm: '',
+        bankReferenceName: '',
+        Currency: '',
+        pricingRules: '',
+        // Reset other fields as needed
       });
     } catch (error) {
       toast.error("An error occurred while saving");
       console.error("Submit error:", error);
     }
   };
-
+  
+  
   return (
     <div >
-      <form ref={ref} onSubmit={handleSubmit}>
-        <div className="flex mt-3 ">
+ <form ref={ref} onSubmit={handleSubmit}>
+          <div className="flex mt-3 ">
 
           <div className="bg-white rounded-lg p-2 mt-17 shadow-md flex flex-wrap gap-1 mb-2 h-[30%] w-[450px]">
             <div className="flex flex-col items-start gap-1 w-full">
@@ -311,12 +177,16 @@ const TableWithCheckboxes = () => {
 
               </h1>
               <div>
-                <button
-                  // onClick={handleSave}
-                  className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition"
-                >
-                  Save
-                </button>
+              <button
+  type="submit"
+  // disabled={!billingInfo.salesChannelName || !billingInfo.salesChannelType}
+  className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition disabled:opacity-50"
+>
+  Save
+</button>
+
+
+
 
               </div>
             </div>
@@ -1336,7 +1206,7 @@ const TableWithCheckboxes = () => {
                             onChange={e =>
                               setBillingInfo(prev => ({
                                 ...prev,
-                                roundingHighcheckbox: e.target.checked
+                                Version5: e.target.checked
                               }))
                             }
                           />
