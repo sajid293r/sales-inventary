@@ -1,6 +1,5 @@
 'use server'
-import connectDB from "@/lib/db";
-import SalesChannel from "@/models/salesChannel";
+import { connectDB, SalesChannel } from "@/lib/mongoose";
 
 export const submitAction = async (formData) => {
   try {

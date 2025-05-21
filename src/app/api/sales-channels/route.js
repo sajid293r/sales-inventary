@@ -1,21 +1,15 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
-import mongoose from 'mongoose';
-
-// Define the schema
-const salesChannelSchema = new mongoose.Schema({
-  // Add your schema fields here
-  name: String,
-  // ... other fields
-}, { timestamps: true });
-
-// Create the model if it doesn't exist
-const SalesChannel = mongoose.models.SalesChannel || mongoose.model('SalesChannel', salesChannelSchema);
+import { connectDB, SalesChannel } from '@/lib/mongoose';
 
 export async function GET() {
   try {
-    await dbConnect();
-    const salesChannels = await SalesChannel.find({}).lean();
+    await connectDB();
+    
+    // Use lean() for better performance and add timeout
+    const salesChannels = await SalesChannel.find({})
+      .lean()
+      .maxTimeMS(5000); // Add timeout to the query
+    
     return NextResponse.json(salesChannels);
   } catch (error) {
     console.error('Database error:', error);
@@ -28,9 +22,13 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    await dbConnect();
+    await connectDB();
     const body = await request.json();
-    const salesChannel = await SalesChannel.create(body);
+    
+    // Add timeout to the operation
+    const salesChannel = await SalesChannel.create(body)
+      .maxTimeMS(5000);
+    
     return NextResponse.json(salesChannel);
   } catch (error) {
     console.error('Database error:', error);
