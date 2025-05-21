@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    const uri = "mongodb://localhost:27017/sales_Inventory";
+    const uri = "mongodb+srv://user123:user123@cluster0.kltgqdg.mongodb.net/sales_Inventory";
     console.log("Mongo URI:", uri);
 
     if (!uri) throw new Error("MONGODB_URI is not defined");

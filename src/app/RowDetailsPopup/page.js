@@ -3,70 +3,120 @@ import React, { useState } from "react";
 import { FaChevronRight } from "react-icons/fa";
 import { X } from "lucide-react";
 
+const DROPSHIP_OPTIONS = [
+  { value: "", label: "--- Please Select ----" },
+  { value: "AlphaCateringEqipment", label: "AlphaCateringEqipment" },
+  { value: "Amazon", label: "Amazon" },
+  { value: "AUDropship", label: "AUDropship" },
+  { value: "AUDropship20223", label: "AUDropship20223" },
+  { value: "BarbequestGalore", label: "BarbequestGalore" }
+];
+
 const RowDetailsPopup = ({ rowData, onClose }) => {
   const [activeField, setActiveField] = useState("General");
   const [number, setNumber] = useState(0);
 
+  // Add console logging to debug the data
+  console.log("Row Data in Popup:", rowData);
+  console.log("NZ Dropship Value:", rowData?.nzDropshippingDropdown);
+
   const [formData, setFormData] = useState({
-    customerType: "",
-    companyName: "",
-    website: "",
-    firstName: "",
-    lastName: "",
-    address1: "",
-    address2: "",
-    state: "",
-    country: "",
-    postCode: "",
-    postCodeAlt: "",
-    email: "",
-    phone: "",
-    ebn: "",
-    commission: "10.00",
-    invoiceOrPO: "",
-    paymentTerm: "7 days",
-    bankReference: "",
-    prepaidCustomer: "",
-    quickBooksOrderId: "1",
-    deliveryNotes: "",
-    accountingManager: 0,
-    invoicePO: 0,
-    tracking: 0,
-    cancelOrder: 0,
-    paymentOrder: "",
-    currency: "USD",
-    offSalePrice: "0.00",
-    plusCalculate: "0.00",
-    nzCalculate: "0.00",
-    gstCalculate: "0.00",
-    roundingLow: "0.00",
-    roundingHigh: "0.00",
-    dropshipPricing: "",
-    rtsImport: "",
-    dropship: "",
-    orderTemplate1: "",
-    orderTemplate2: "",
-    orderTemplate3: "",
-    trackingTemplate: "",
-    invoiceTemplate: "",
-    invoiceFolder: "",
-    campaignStart: false,
-    campaignDateFrom: "",
-    campaignDateTo: "",
-    campaignDiscount: "",
-    campaignNotes: "",
+    // General Information
+    salesChannelName: rowData?.salesChannelName || "",
+    salesChannelType: rowData?.salesChannelType || "",
+    salesChannelCode: rowData?.salesChannelCode || "",
+    orderNumberPrefix: rowData?.orderNumberPrefix || "",
+    descriptionChannel: rowData?.descriptionChannel || false,
+    sellingChannel: rowData?.sellingChannel || false,
+    commissionPercentage: rowData?.commissionPercentage || "10.00",
+    
+    // Company Information
+    company: rowData?.company || "",
+    website: rowData?.website || "",
+    address1: rowData?.address1 || "",
+    address2: rowData?.address2 || "",
+    firstName: rowData?.firstName || "",
+    lastName: rowData?.lastName || "",
+    suburbState: rowData?.suburbState || "",
+    postcode: rowData?.postcode || "",
+    email: rowData?.email || "",
+    phone: rowData?.phone || "",
+    abn: rowData?.abn || "",
+    
+    // Email and Tracking
+    emailPlatforminvoice: rowData?.emailPlatforminvoice || false,
+    Emailplatformatrackingfile: rowData?.Emailplatformatrackingfile || false,
+    accountmanagar: rowData?.accountmanagar || "",
+    invoice: rowData?.invoice || "",
+    tracking: rowData?.tracking || "",
+    cancleorder: rowData?.cancleorder || "",
+    
+    // Campaign Information
+    startOnCampaign: rowData?.startOnCampaign || false,
+    dateFrom: rowData?.dateFrom || "",
+    dateTo: rowData?.dateTo || "",
+    discountPercentage: rowData?.discountPercentage || "",
+    campaignNote: rowData?.campaignNote || "",
+    
+    // Templates
+    orderTemplate1: rowData?.orderTemplate1 || "",
+    orderTemplate2: rowData?.orderTemplate2 || "",
+    orderTemplate3: rowData?.orderTemplate3 || "",
+    trackingFileTemplate: rowData?.trackingFileTemplate || "",
+    invoiceTemplate: rowData?.invoiceTemplate || "",
+    invoiceOrPO: rowData?.invoiceOrPO || "",
+    invoiceFolder: rowData?.invoiceFolder || "",
+    
+    // Invoice Settings
+    "1POINV": rowData?.["1POINV"] || false,
+    CustomerinvoicelncGST: rowData?.CustomerinvoicelncGST || false,
+    missinginvoice: rowData?.missinginvoice || false,
+    Emailinvoicerequired: rowData?.Emailinvoicerequired || false,
+    paymentrequired: rowData?.paymentrequired || false,
+    
+    // Payment Information
+    payementterm: rowData?.payementterm || "7 days",
+    bankReferenceName: rowData?.bankReferenceName || "",
+    QuickBooksOrderID: rowData?.QuickBooksOrderID || "1",
+    paymentNote: rowData?.paymentNote || "",
+    Currency: rowData?.Currency || "USD",
+    
+    // Pricing Rules
+    pricingRules: rowData?.pricingRules || "",
+    offSellingPrice: rowData?.offSellingPrice || "0.00",
+    offSellingPricecheckbox: rowData?.offSellingPricecheckbox || false,
+    plusShipping: rowData?.plusShipping || false,
+    calculateNZPricecheckbox: rowData?.calculateNZPricecheckbox || false,
+    calculateNZPrice: rowData?.calculateNZPrice || "0.00",
+    calculateRetailPricecheckbox: rowData?.calculateRetailPricecheckbox || false,
+    calculateRetailPrice: rowData?.calculateRetailPrice || "0.00",
+    calculateGSTcheckbox: rowData?.calculateGSTcheckbox || false,
+    calculateGST: rowData?.calculateGST || "0.00",
+    roundingLowcheckbox: rowData?.roundingLowcheckbox || false,
+    roundingLow: rowData?.roundingLow || "0.00",
+    roundingHighcheckbox: rowData?.roundingHighcheckbox || false,
+    roundingHigh: rowData?.roundingHigh || "0.00",
+    
+    // NZ Dropshipping
+    nzDropshipping: rowData?.nzDropshipping || false,
+    nzDropshippingAutoCalculate: rowData?.nzDropshippingAutoCalculate || false,
+    nzDropshippingDropdown: rowData?.nzDropshippingDropdown || "",
+    ImportFromRTS: rowData?.ImportFromRTS || "",
+    dropshippingValue: rowData?.dropshippingValue || "",
+    imageOutputPath: rowData?.imageOutputPath || "",
+    removedtext: rowData?.removedtext || "",
   });
 
   const detailsMap = {
-    General: "Last updated on May 10, 2025, 14:30 UTC",
-    Customer: "John Doe Enterprises",
-    Orders: "ORD-2025-00123",
-    Invoice: "INV-2025-00123",
-    Payment: "Payment system",
-    Email: "contact@johndoe.com",
-    Pricing: "10% discount for bulk orders",
-    Campaign: "Spring Sale 2025",
-    Description: "Online sales channel for premium products",
+    General: `Last updated on ${new Date(rowData?.updatedAt || rowData?.createdAt).toLocaleString()}`,
+    Customer: rowData?.salesChannelName || "N/A",
+    Orders: rowData?.orderNumberPrefix || "N/A",
+    Invoice: rowData?.invoiceOrPO || "N/A",
+    Payment: rowData?.payementterm || "N/A",
+    Email: rowData?.email || "N/A",
+    Pricing: rowData?.commissionPercentage ? `${rowData.commissionPercentage}% commission` : "N/A",
+    Campaign: rowData?.campaignNote || "N/A",
+    Description: rowData?.descriptionChannel ? "Enabled" : "Disabled",
   };
 
   const increaseNumber = () => {
@@ -108,12 +158,34 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
         {/* Sales channel id */}
         <div className="flex flex-col sm:flex-row sm:gap-24 py-3">
           <p className="font-semibold">Sales Channel ID</p>
-          <p>{rowData?.salesChannel || "N/A"}</p>
+          <p>{rowData?._id || "N/A"}</p>
         </div>
         <div className="flex flex-col sm:flex-row sm:gap-12 pb-3">
           <p className="font-semibold">Sales Channel Name</p>
           <p className="bg-white w-[300px] px-2 shadow-sm">
-            {rowData?.salesChannel || "N/A"}
+            {rowData?.salesChannelName || "N/A"}
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:gap-12 pb-3">
+          <p className="font-semibold">Type</p>
+          <p className="bg-white w-[300px] px-2 shadow-sm">
+            {rowData?.salesChannelType || "N/A"}
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:gap-12 pb-3">
+          <p className="font-semibold">Location</p>
+          <p className="bg-white w-[300px] px-2 shadow-sm">
+            {rowData?.suburbState || "N/A"}
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:gap-12 pb-3">
+          <p className="font-semibold">Status</p>
+          <p className={`px-2 py-1 rounded-md text-xs ${
+            rowData?.emailPlatforminvoice
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}>
+            {rowData?.emailPlatforminvoice ? "Active" : "Inactive"}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -161,17 +233,27 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   <span className="text-black text-sm font-bold">
                     Sales Channel Code
                   </span>
-                  <span className="bg-green-400 w-full sm:w-24 py-1 px-2 shadow-sm font-bold">
-                    TheCbStore
-                  </span>
+                  <input
+                    type="text"
+                    name="salesChannelCode"
+                    value={formData.salesChannelCode}
+                    onChange={handleInputChange}
+                    className="bg-green-400 w-full sm:w-24 py-1 px-2 shadow-sm font-bold"
+                    placeholder="Enter code"
+                  />
                 </div>
                 <div className="flex flex-col sm:flex-row sm:gap-8">
                   <span className="text-black text-sm font-bold">
                     Order Number Prefix
                   </span>
-                  <span className="bg-green-400 py-1 w-full sm:w-24 px-2 shadow-sm">
-                    CB
-                  </span>
+                  <input
+                    type="text"
+                    name="orderNumberPrefix"
+                    value={formData.orderNumberPrefix}
+                    onChange={handleInputChange}
+                    className="bg-green-400 py-1 w-full sm:w-24 px-2 shadow-sm"
+                    placeholder="Enter prefix"
+                  />
                 </div>
               </div>
               {/* Appear in Section */}
@@ -186,6 +268,9 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                     </span>
                     <input
                       type="checkbox"
+                      name="descriptionChannel"
+                      checked={formData.descriptionChannel}
+                      onChange={handleInputChange}
                       className="w-4 h-4 bg-gray-100 border-gray-300 rounded"
                       aria-label="Description checkbox"
                     />
@@ -196,6 +281,9 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                     </span>
                     <input
                       type="checkbox"
+                      name="sellingChannel"
+                      checked={formData.sellingChannel}
+                      onChange={handleInputChange}
                       className="w-4 h-4 bg-gray-100 border-gray-300 rounded"
                       aria-label="Selling Channel checkbox"
                     />
@@ -216,9 +304,9 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   </label>
                   <input
                     id="commission"
-                    name="commission"
+                    name="commissionPercentage"
                     type="text"
-                    value={formData.commission}
+                    value={formData.commissionPercentage}
                     onChange={handleInputChange}
                     placeholder="10.00"
                     className="bg-white border py-0.5 border-gray-600 rounded px-2 shadow-sm text-black text-right w-full sm:w-auto"
@@ -233,6 +321,9 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 <div className="flex gap-2 py-3">
                   <input
                     type="checkbox"
+                    name="nzDropshippingAutoCalculate"
+                    checked={formData.nzDropshippingAutoCalculate}
+                    onChange={handleInputChange}
                     className="h-4 w-4 bg-white border-gray-300 rounded mt-0.5"
                     aria-label="Auto calculate dropship pricing"
                   />
@@ -243,6 +334,9 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 <div className="flex flex-col sm:flex-row gap-2 py-1">
                   <input
                     type="checkbox"
+                    name="nzDropshipping"
+                    checked={formData.nzDropshipping}
+                    onChange={handleInputChange}
                     className="h-4 w-4 bg-white border-gray-300 rounded mt-0.5"
                     aria-label="NZ dropship pricing"
                   />
@@ -257,35 +351,20 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                     <div className="flex items-center w-full sm:w-56 px-2 py-0.5 border rounded-sm bg-white">
                       <select
                         id="dropship"
-                        name="dropship"
-                        value={formData.dropship}
+                        name="nzDropshippingDropdown"
+                        value={formData.nzDropshippingDropdown || ""}
                         onChange={handleInputChange}
                         className="w-full bg-transparent outline-none"
                         aria-label="Dropship pricing options"
                       >
-                        <option value="dropship1">UI dropship1</option>
-                        <option value="dropship2">UI dropship2</option>
-                        <option value="dropship3">UI dropship3</option>
-                        <option value="dropship4">UI dropship4</option>
+                        {DROPSHIP_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:gap-14 py-3">
-                  <label
-                    htmlFor="dropship-pricing"
-                    className="text-black text-sm font-bold"
-                  >
-                    Auto calculate dropship pricing
-                  </label>
-                  <input
-                    id="dropship-pricing"
-                    name="dropshipPricing"
-                    type="text"
-                    value={formData.dropshipPricing}
-                    onChange={handleInputChange}
-                    className="border border-gray-600 rounded px-2 w-full sm:w-36 shadow-sm"
-                  />
                 </div>
               </div>
             </div>
@@ -294,7 +373,7 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
               {[
                 {
                   id: "customer-type",
-                  name: "customerType",
+                  name: "company",
                   label: "Customer Type",
                   type: "select",
                   options: [
@@ -306,7 +385,7 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 },
                 {
                   id: "company-name",
-                  name: "companyName",
+                  name: "company",
                   label: "Company Name",
                   type: "text",
                   placeholder: "THECBFStore",
@@ -344,7 +423,7 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 },
                 {
                   id: "state",
-                  name: "state",
+                  name: "suburbState",
                   label: "Sub/State",
                   type: "text",
                   placeholder: "State",
@@ -357,14 +436,14 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 },
                 {
                   id: "post-code",
-                  name: "postCode",
+                  name: "postcode",
                   label: "Post Code",
                   type: "text",
                   placeholder: "Post Code",
                   isDouble: true,
                   secondField: {
                     id: "post-code-alt",
-                    name: "postCodeAlt",
+                    name: "postcodeAlt",
                     placeholder: "Alternate Post Code",
                   },
                 },
@@ -376,7 +455,7 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   placeholder: "bV4W9@example.com",
                 },
                 { id: "phone", name: "phone", label: "Phone", type: "text" },
-                { id: "ebn", name: "ebn", label: "EBN", type: "text" },
+                { id: "abn", name: "abn", label: "ABN", type: "text" },
               ].map((field) => (
                 <div
                   key={field.id}
@@ -460,10 +539,13 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                           className="w-full bg-transparent outline-none"
                           aria-label={`Order template ${num}`}
                         >
-                          <option value="dropship1">UI dropship1</option>
-                          <option value="dropship2">UI dropship2</option>
-                          <option value="dropship3">UI dropship3</option>
-                          <option value="dropship4">UI dropship4</option>
+                          <option value="">--- Please Select ----</option>
+                          <option value="Order_555Shopper">Order_555Shopper</option>
+                          <option value="Order_Adventure">Order_Adventure</option>
+                          <option value="Order_ApplianceStar">Order_ApplianceStar</option>
+                          <option value="Order_ArtiloKitchenware">Order_ArtiloKitchenware</option>
+                          <option value="Order_AussieArtificialPlants">Order_AussieArtificialPlants</option>
+                          <option value="Order_AussieBulk">Order_AussieBulk</option>
                         </select>
                       </div>
                     </div>
@@ -477,6 +559,9 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 <div className="flex items-center gap-4 py-3">
                   <input
                     type="checkbox"
+                    name="Emailplatformatrackingfile"
+                    checked={formData.Emailplatformatrackingfile}
+                    onChange={handleInputChange}
                     className="w-4 h-4 bg-gray-100 border-gray-300 rounded"
                     aria-label="Email platform tracking file"
                   />
@@ -494,16 +579,19 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   <div className="flex items-center w-full sm:w-56 px-2 py-0.5 border rounded-sm bg-white">
                     <select
                       id="tracking-template"
-                      name="trackingTemplate"
-                      value={formData.trackingTemplate}
+                      name="trackingFileTemplate"
+                      value={formData.trackingFileTemplate}
                       onChange={handleInputChange}
                       className="w-full bg-transparent outline-none"
                       aria-label="Tracking file template"
                     >
-                      <option value="dropship1">UI dropship1</option>
-                      <option value="dropship2">UI dropship2</option>
-                      <option value="dropship3">UI dropship3</option>
-                      <option value="dropship4">UI dropship4</option>
+                      <option value="">--- Please Select ----</option>
+                      <option value="Order_555Shopper">Order_555Shopper</option>
+                      <option value="Order_Adventure">Order_Adventure</option>
+                      <option value="Order_ApplianceStar">Order_ApplianceStar</option>
+                      <option value="Order_ArtiloKitchenware">Order_ArtiloKitchenware</option>
+                      <option value="Order_AussieArtificialPlants">Order_AussieArtificialPlants</option>
+                      <option value="Order_AussieBulk">Order_AussieBulk</option>
                     </select>
                   </div>
                 </div>
@@ -521,9 +609,9 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   </label>
                   <input
                     id="rts-import"
-                    name="rtsImport"
+                    name="ImportFromRTS"
                     type="text"
-                    value={formData.rtsImport}
+                    value={formData.ImportFromRTS}
                     onChange={handleInputChange}
                     className="w-full sm:w-80 px-2 py-0.5 border border-gray-600 rounded bg-white shadow-sm"
                   />
@@ -539,6 +627,9 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 <div className="flex gap-2 py-3">
                   <input
                     type="checkbox"
+                    name="emailPlatforminvoice"
+                    checked={formData.emailPlatforminvoice}
+                    onChange={handleInputChange}
                     className="w-4 h-4"
                     aria-label="Email platform an invoice"
                   />
@@ -562,10 +653,12 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                       className="w-full bg-transparent outline-none"
                       aria-label="Invoice template"
                     >
-                      <option value="dropship1">UI dropship1</option>
-                      <option value="dropship2">UI dropship2</option>
-                      <option value="dropship3">UI dropship3</option>
-                      <option value="dropship4">UI dropship4</option>
+                      <option value="">--- Please Select ----</option>
+                      <option value="SalesInvoiceV4_robot.html">SalesInvoiceV4_robot.html</option>
+                      <option value="SalesInvoiceV4nz_robot.html">SalesInvoiceV4nz_robot.html</option>
+                      <option value="SalesInvoiceV4.coles.html">SalesInvoiceV4.coles.html</option>
+                      <option value="SalesInvoiceV3_robot.html">SalesInvoiceV3_robot.html</option>
+                      <option value="SalesInvoiceV4coles_robot.html">SalesInvoiceV4coles_robot.html</option>
                     </select>
                   </div>
                 </div>
@@ -597,33 +690,29 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   >
                     Invoice Folder
                   </label>
-                  <div className="flex items-center w-full sm:w-56 px-2 py-0.5 border rounded-sm bg-white">
-                    <select
-                      id="invoice-folder"
-                      name="invoiceFolder"
-                      value={formData.invoiceFolder}
-                      onChange={handleInputChange}
-                      className="w-full bg-transparent outline-none"
-                      aria-label="Invoice folder"
-                    >
-                      <option value="dropship1">UI dropship1</option>
-                      <option value="dropship2">UI dropship2</option>
-                      <option value="dropship3">UI dropship3</option>
-                      <option value="dropship4">UI dropship4</option>
-                    </select>
-                  </div>
+                  <input
+                    id="invoice-folder"
+                    name="invoiceFolder"
+                    type="text"
+                    value={formData.invoiceFolder}
+                    onChange={handleInputChange}
+                    className="w-full sm:w-56 px-2 py-0.5 border border-gray-600 rounded bg-white shadow-sm"
+                    readOnly
+                  />
                 </div>
                 {[
-                  "Upon invoice",
-                  "Customer invoice",
-                  "Check missing invoice",
-                  "Repayment",
-                  "Payment system",
-                  "Email required",
-                ].map((label) => (
-                  <div key={label} className="flex gap-2 py-1">
+                  { name: "1POINV", label: "Upon invoice" },
+                  { name: "CustomerinvoicelncGST", label: "Customer invoice" },
+                  { name: "missinginvoice", label: "Check missing invoice" },
+                  { name: "paymentrequired", label: "Repayment" },
+                  { name: "Emailinvoicerequired", label: "Email required" }
+                ].map(({ name, label }) => (
+                  <div key={name} className="flex gap-2 py-1">
                     <input
                       type="checkbox"
+                      name={name}
+                      checked={formData[name]}
+                      onChange={handleInputChange}
                       className="w-4 h-4"
                       aria-label={label}
                     />
@@ -649,14 +738,18 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   <div className="flex items-center w-full sm:w-56 px-2 py-0.5 border rounded-sm bg-white">
                     <select
                       id="payment-term"
-                      name="paymentTerm"
-                      value={formData.paymentTerm}
+                      name="payementterm"
+                      value={formData.payementterm}
                       onChange={handleInputChange}
                       className="w-full bg-transparent outline-none"
                       aria-label="Payment term"
                     >
+                      <option value="">--- Please Select ----</option>
+                      <option value="Net 30">Net 30</option>
+                      <option value="Prepaid">Prepaid</option>
                       <option value="7 days">7 days</option>
                       <option value="14 days">14 days</option>
+                      <option value="15 days">15 days</option>
                       <option value="30 days">30 days</option>
                       <option value="60 days">60 days</option>
                     </select>
@@ -671,9 +764,9 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   </label>
                   <input
                     id="bank-reference"
-                    name="bankReference"
+                    name="bankReferenceName"
                     type="text"
-                    value={formData.bankReference}
+                    value={formData.bankReferenceName}
                     onChange={handleInputChange}
                     className="w-full sm:w-56 px-2 py-0.5 border rounded-sm"
                   />
@@ -687,9 +780,9 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   </label>
                   <input
                     id="prepaid-customer"
-                    name="prepaidCustomer"
+                    name="paymentrequired"
                     type="text"
-                    value={formData.prepaidCustomer}
+                    value={formData.paymentrequired}
                     onChange={handleInputChange}
                     className="w-full sm:w-56 px-2 py-0.5 border rounded-sm"
                   />
@@ -711,16 +804,18 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                     <div className="flex items-center w-full sm:w-56 px-2 ml-0 sm:ml-3 py-0.5 border rounded-sm bg-white">
                       <select
                         id="quickbooks-orderid"
-                        name="quickBooksOrderId"
-                        value={formData.quickBooksOrderId}
+                        name="QuickBooksOrderID"
+                        value={formData.QuickBooksOrderID}
                         onChange={handleInputChange}
                         className="w-full bg-transparent outline-none"
                         aria-label="QuickBooks order ID"
                       >
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
+                        <option value="">--- Please Select ----</option>
+                        <option value="Order Doc Num1">Order Doc Num1</option>
+                        <option value="Order Doc Num2">Order Doc Num2</option>
+                        <option value="Invoice Doc Num">Invoice Doc Num</option>
+                        <option value="Delivery Notes">Delivery Notes</option>
+                        <option value="Delivery Notes2">Delivery Notes2</option>
                       </select>
                     </div>
                   </div>
@@ -733,9 +828,9 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                     </label>
                     <input
                       id="delivery-notes"
-                      name="deliveryNotes"
+                      name="removedtext"
                       type="text"
-                      value={formData.deliveryNotes}
+                      value={formData.removedtext}
                       onChange={handleInputChange}
                       className="w-full sm:w-56 px-2 py-0.5 border rounded-sm"
                     />
@@ -748,27 +843,27 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
               {[
                 {
                   id: "accounting-manager",
-                  name: "accountingManager",
+                  name: "accountmanagar",
                   label: "Accounting Manager",
-                  type: "number",
+                  type: "text",
                 },
                 {
                   id: "invoice-po",
-                  name: "invoicePO",
+                  name: "invoice",
                   label: "Invoice/PO",
-                  type: "number",
+                  type: "text",
                 },
                 {
                   id: "tracking",
                   name: "tracking",
                   label: "Tracking",
-                  type: "number",
+                  type: "text",
                 },
                 {
                   id: "cancel-order",
-                  name: "cancelOrder",
+                  name: "cancleorder",
                   label: "Cancel Order",
-                  type: "number",
+                  type: "text",
                 },
               ].map((field) => (
                 <div
@@ -800,8 +895,8 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 </label>
                 <textarea
                   id="payment-order"
-                  name="paymentOrder"
-                  value={formData.paymentOrder}
+                  name="paymentNote"
+                  value={formData.paymentNote}
                   onChange={handleInputChange}
                   rows="5"
                   className="w-full sm:w-80 px-2 py-0.5 border rounded-sm bg-white"
@@ -821,8 +916,8 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   <div className="flex items-center w-full sm:w-40 px-2 py-0.5 border rounded-sm bg-white">
                     <select
                       id="currency"
-                      name="currency"
-                      value={formData.currency}
+                      name="Currency"
+                      value={formData.Currency}
                       onChange={handleInputChange}
                       className="w-full bg-transparent outline-none"
                       aria-label="Currency"
@@ -837,32 +932,38 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 {[
                   {
                     id: "off-sale-price",
-                    name: "offSalePrice",
+                    name: "offSellingPrice",
+                    checkboxName: "offSellingPricecheckbox",
                     label: "Off sale price",
                   },
                   {
                     id: "plus-calculate",
-                    name: "plusCalculate",
+                    name: "plusShipping",
+                    checkboxName: "plusShipping",
                     label: "Plus calculate",
                   },
                   {
                     id: "nz-calculate",
-                    name: "nzCalculate",
+                    name: "calculateNZPrice",
+                    checkboxName: "calculateNZPricecheckbox",
                     label: "NZ Calculate price",
                   },
                   {
                     id: "gst-calculate",
-                    name: "gstCalculate",
+                    name: "calculateGST",
+                    checkboxName: "calculateGSTcheckbox",
                     label: "Calculate GST",
                   },
                   {
                     id: "rounding-low",
                     name: "roundingLow",
+                    checkboxName: "roundingLowcheckbox",
                     label: "Rounding low",
                   },
                   {
                     id: "rounding-high",
                     name: "roundingHigh",
+                    checkboxName: "roundingHighcheckbox",
                     label: "Rounding high",
                   },
                 ].map((field) => (
@@ -873,6 +974,9 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                     <div className="flex items-center gap-4">
                       <input
                         type="checkbox"
+                        name={field.checkboxName}
+                        checked={formData[field.checkboxName]}
+                        onChange={handleInputChange}
                         className="w-4 h-4"
                         aria-label={field.label}
                       />
@@ -890,7 +994,10 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                       value={formData[field.name]}
                       onChange={handleInputChange}
                       placeholder="0.00"
-                      className="w-full sm:w-20 px-2 py-0.5 border rounded-sm bg-gray-200"
+                      className={`w-full sm:w-20 px-2 py-0.5 border rounded-sm ${
+                        formData[field.checkboxName] ? "bg-white" : "bg-gray-200"
+                      }`}
+                      disabled={!formData[field.checkboxName]}
                     />
                   </div>
                 ))}
@@ -916,8 +1023,8 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
               <div className="flex items-center gap-4">
                 <input
                   type="checkbox"
-                  name="campaignStart"
-                  checked={formData.campaignStart}
+                  name="startOnCampaign"
+                  checked={formData.startOnCampaign}
                   onChange={handleInputChange}
                   className="w-4 h-4"
                 />
@@ -928,8 +1035,8 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 <label className="font-semibold text-sm w-1/4">Date From</label>
                 <input
                   type="date"
-                  name="campaignDateFrom"
-                  value={formData.campaignDateFrom}
+                  name="dateFrom"
+                  value={formData.dateFrom}
                   onChange={handleInputChange}
                   className="border rounded-sm border-gray-600 p-1 w-1/5"
                 />
@@ -939,8 +1046,8 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 <label className="font-semibold text-sm w-1/4">Date To</label>
                 <input
                   type="date"
-                  name="campaignDateTo"
-                  value={formData.campaignDateTo}
+                  name="dateTo"
+                  value={formData.dateTo}
                   onChange={handleInputChange}
                   className="border rounded-sm border-gray-600 p-1 w-1/5"
                 />
@@ -951,8 +1058,8 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 </label>
                 <input
                   type="text"
-                  name="campaignDiscount"
-                  value={formData.campaignDiscount}
+                  name="discountPercentage"
+                  value={formData.discountPercentage}
                   onChange={handleInputChange}
                   className="border rounded-sm border-gray-600 p-1 w-1/5"
                 />
@@ -960,8 +1067,8 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
               <div>
                 <h1 className="font-semibold text-sm py-2">Campaign Notes</h1>
                 <textarea
-                  name="campaignNotes"
-                  value={formData.campaignNotes}
+                  name="campaignNote"
+                  value={formData.campaignNote}
                   onChange={handleInputChange}
                   className="w-full h-32 p-3 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter your message here..."

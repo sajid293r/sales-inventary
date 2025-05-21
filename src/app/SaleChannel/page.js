@@ -9,7 +9,8 @@ import { getAllSalesChannels } from "@/actions/getAllSalesChannels";
 
 const TableWithCheckboxes = () => {
   const [selectedRows, setSelectedRows] = useState([]);
- 
+  const [salesChannels, setSalesChannels] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [filters, setFilters] = useState({
     status: [],
@@ -51,19 +52,32 @@ const TableWithCheckboxes = () => {
   const searchInputRef = useRef(null);
 
   const options = [
-    "Asia",
-    "North America",
-    "South America",
-    "Europe",
-    "Africa",
-    "Oceania",
+    "UK",
+    "USA",
+    "India",
+    "Germany",
+    "South Africa",
+    "Australia"
   ];
-  const options1 = ["Online", "Retail"];
-  const options2 = ["Net 30", "Prepaid"];
+  const options1 = ["Plateform", "Price List", "Dropshiper", "DropshiperNZ", "Others"];
+  const options2 = ["Net 30", "Prepaid", "7 days", "14 days", "15 days"];
 
   useEffect(() => {
-    const data1 = getAllSalesChannels();
-    console.log("data1", data1);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const data1 = await getAllSalesChannels();
+        console.log("Sales Channels Data:", data1);
+        setSalesChannels(data1);
+      } catch (error) {
+        console.error("Error fetching sales channels:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+
     const handleClickOutside = (event) => {
       if (
         sortButtonRef.current &&
@@ -128,22 +142,81 @@ const TableWithCheckboxes = () => {
     adjustDropdownPosition(".payment-dropdown", isOpen2);
   }, [isOpen, isOpen1, isOpen2]);
 
-  const data = Array.from({ length: 80 }, (_, i) => ({
-    id: i + 1,
-    salesChannel: `Channel ${i + 1}`,
-    type: i % 2 === 0 ? "Online" : "Retail",
-    paymentTerm: i % 3 === 0 ? "Net 30" : "Prepaid",
-    country: ["USA", "UK", "Germany", "India"][i % 4],
-    authorizedDate: `2025-05-${String(i + 1).padStart(2, "0")}`,
-    status: i % 2 === 0 ? "Active" : "Inactive",
-    region: ["Asia", "North America", "Europe", "Africa"][i % 4],
-  }));
+  const filteredData = salesChannels
+    .filter((item) => {
+      // Status filter
+      const matchStatus =
+        filters.status.length === 0 || 
+        (filters.status.includes("Active") && item.emailPlatforminvoice) ||
+        (filters.status.includes("Inactive") && !item.emailPlatforminvoice);
+
+      // Type filter
+      const matchType = 
+        selected1.length === 0 || 
+        selected1.includes(item.salesChannelType);
+
+      // Payment Term filter
+      const matchPayment =
+        selected2.length === 0 || 
+        selected2.includes(item.payementterm);
+
+      // Region filter
+      const matchRegion =
+        selected.length === 0 || 
+        selected.includes(item.suburbState);
+
+      // Region button filter
+      const matchRegionButton =
+        filters.region === "" || 
+        (filters.region === "Asia" && ["India", "China", "Japan", "Korea"].includes(item.suburbState)) ||
+        (filters.region === "North America" && ["USA", "Canada", "Mexico"].includes(item.suburbState)) ||
+        (filters.region === "South America" && ["Brazil", "Argentina", "Chile"].includes(item.suburbState)) ||
+        (filters.region === "Europe" && ["UK", "Germany", "France", "Italy"].includes(item.suburbState)) ||
+        (filters.region === "Oceania" && ["Australia", "New Zealand"].includes(item.suburbState)) ||
+        (filters.region === "Africa" && ["South Africa", "Nigeria", "Kenya"].includes(item.suburbState));
+
+      return (
+        matchStatus &&
+        matchType &&
+        matchPayment &&
+        matchRegion &&
+        matchRegionButton
+      );
+    })
+    .filter((item) =>
+      searchQuery
+        ? item.salesChannelName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.suburbState.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.salesChannelType.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.payementterm.toLowerCase().includes(searchQuery.toLowerCase())
+        : true
+    );
+
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (sortOptions.salesChannel) {
+      return sortOptions.salesChannel
+        ? a.salesChannelName.localeCompare(b.salesChannelName)
+        : b.salesChannelName.localeCompare(a.salesChannelName);
+    }
+    if (sortOptions.country) {
+      return sortOptions.country
+        ? a.suburbState.localeCompare(b.suburbState)
+        : b.suburbState.localeCompare(a.suburbState);
+    }
+    return 0;
+  });
+
+  const totalItems = filteredData.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = sortedData.slice(startIndex, endIndex);
 
   const toggleSelectAll = (e) => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentPageData = filteredData.slice(startIndex, endIndex);
-    setSelectedRows(e.target.checked ? currentPageData.map((d) => d.id) : []);
+    setSelectedRows(e.target.checked ? currentPageData.map((d) => d._id) : []);
   };
 
   const toggleRow = (id) => {
@@ -261,52 +334,6 @@ const TableWithCheckboxes = () => {
       sortTooltip: false,
     }));
   };
-
-  const filteredData = data
-    .filter((item) => {
-      const matchStatus =
-        filters.status.length === 0 || filters.status.includes(item.status);
-      const matchType = selected1.length === 0 || selected1.includes(item.type);
-      const matchPayment =
-        selected2.length === 0 || selected2.includes(item.paymentTerm);
-      const matchRegion =
-        selected.length === 0 || selected.includes(item.region);
-      const matchRegionButton =
-        filters.region === "" || item.region === filters.region;
-      return (
-        matchStatus &&
-        matchType &&
-        matchPayment &&
-        matchRegion &&
-        matchRegionButton
-      );
-    })
-    .filter((item) =>
-      searchQuery
-        ? item.salesChannel.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.country.toLowerCase().includes(searchQuery.toLowerCase())
-        : true
-    );
-
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (sortOptions.salesChannel) {
-      return sortOptions.salesChannel
-        ? a.salesChannel.localeCompare(b.salesChannel)
-        : b.salesChannel.localeCompare(a.salesChannel);
-    }
-    if (sortOptions.country) {
-      return sortOptions.country
-        ? a.country.localeCompare(b.country)
-        : b.country.localeCompare(a.country);
-    }
-    return 0;
-  });
-
-  const totalItems = filteredData.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedData = sortedData.slice(startIndex, endIndex);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -452,9 +479,27 @@ const TableWithCheckboxes = () => {
                 className="absolute z-30 bg-white border p-4 rounded-md shadow-lg top-full right-0 mt-2 w-64 sm:w-72 text-sm overflow-visible"
               >
                 <h3 className="font-semibold mb-2">Filters</h3>
+                
+                <div className="mb-3">
+                  <h4 className="font-medium mb-2">Status</h4>
+                  <div className="space-y-2">
+                    {["Active", "Inactive"].map((status) => (
+                      <label key={status} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          className="mr-2"
+                          checked={filters.status.includes(status)}
+                          onChange={() => handleFilterChange("status", status)}
+                        />
+                        {status}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="mb-3">
                   <div className="flex gap-2 items-center">
-                    <h4 className="font-medium">Continent</h4>
+                    <h4 className="font-medium">Location</h4>
                     <div className="relative w-full">
                       <button
                         onClick={handleContinentDropdown}
@@ -463,7 +508,7 @@ const TableWithCheckboxes = () => {
                         <div className="flex justify-between items-center">
                           {selected.length > 0
                             ? selected.join(", ")
-                            : "Select Continent"}
+                            : "Select Location"}
                           <FaChevronDown className="text-sm" />
                         </div>
                       </button>
@@ -488,6 +533,7 @@ const TableWithCheckboxes = () => {
                     </div>
                   </div>
                 </div>
+
                 <div className="mb-3">
                   <div className="flex gap-2 items-center">
                     <h4 className="font-medium">Type</h4>
@@ -524,9 +570,10 @@ const TableWithCheckboxes = () => {
                     </div>
                   </div>
                 </div>
+
                 <div className="mb-3">
                   <div className="flex gap-2 items-center">
-                    <h4 className="font-medium">Payment</h4>
+                    <h4 className="font-medium">Payment Term</h4>
                     <div className="relative w-full">
                       <button
                         onClick={handlePaymentDropdown}
@@ -535,7 +582,7 @@ const TableWithCheckboxes = () => {
                         <div className="flex justify-between items-center">
                           {selected2.length > 0
                             ? selected2.join(", ")
-                            : "Select Payment"}
+                            : "Select Payment Term"}
                           <FaChevronDown className="text-sm" />
                         </div>
                       </button>
@@ -583,130 +630,162 @@ const TableWithCheckboxes = () => {
           </div>
         )}
 
-        <div className="hidden sm:block overflow-x-hidden">
-          <table className="w-full border-collapse text-sm">
-            <thead>
-              <tr className="text-xs">
-                <th className="p-2 border-b w-12 text-center">
-                  <input
-                    type="checkbox"
-                    checked={
-                      paginatedData.length > 0 &&
-                      selectedRows.length === paginatedData.length
-                    }
-                    onChange={toggleSelectAll}
-                  />
-                </th>
-                <th className="p-2 border-b text-center">Sales Channel</th>
-                <th className="p-2 border-b text-center">Type</th>
-                <th className="p-2 border-b text-center">Payment Term</th>
-                <th className="p-2 border-b text-center">Country</th>
-                <th className="p-2 border-b text-center">Authorized Date</th>
-                <th className="p-2 border-b text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData.map((row) => (
-                <tr
-                  key={row.id}
-                  className="hover:bg-gray-50 cursor-pointer"
-                >
-                  <td className="p-2 border-b text-center w-12">
-                    <input
-                      type="checkbox"
-                      checked={selectedRows.includes(row.id)}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        toggleRow(row.id);
-                      }}
-                    />
-                  </td>
-                  <td className="p-2 border-b text-center"
-                    onClick={() => handleRowClick(row)}
-                  >
-                    {row.salesChannel}
-                  </td>
-                  <td className="p-2 border-b text-center"
-                    onClick={() => handleRowClick(row)}
-                  >{row.type}</td>
-                  <td className="p-2 border-b text-center" onClick={() => handleRowClick(row)}
-                  >
-                    {row.paymentTerm}
-                  </td>
-                  <td className="p-2 border-b text-center" onClick={() => handleRowClick(row)}
-                  >{row.country}</td>
-                  <td className="p-2 border-b text-center" onClick={() => handleRowClick(row)}
-                  >
-                    {row.authorizedDate}
-                  </td>
-                  <td className="p-2 border-b text-center" onClick={() => handleRowClick(row)}
-                  >
-                    <span
-                      className={`py-1 px-4 rounded-md text-xs ${row.status === "Active"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                        }`}
-                    >
-                      {row.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {/* mobile view content  */}
-        <div className="block sm:hidden divide-y divide-gray-200 px-4">
-          {paginatedData.map((row) => (
-            <div
-              key={row.id}
-              className="p-3 bg-gray-50 mb-3 rounded-lg shadow-sm cursor-pointer"
-              onClick={() => handleRowClick(row)}
-            >
-              <table className="w-full text-sm">
+        {isLoading ? (
+          <div className="flex flex-col justify-center items-center min-h-[400px] gap-4">
+            <div className="relative">
+              {/* Outer pulsing circles */}
+              <div className="absolute w-24 h-24 border-[3px] border-[#449ae6] rounded-full animate-[ping_2s_ease-in-out_infinite] opacity-60"></div>
+              <div className="absolute w-24 h-24 border-[3px] border-[#52ce66] rounded-full animate-[ping_2s_ease-in-out_infinite_0.6s] opacity-60"></div>
+              <div className="absolute w-24 h-24 border-[3px] border-[#f0ad4e] rounded-full animate-[ping_2s_ease-in-out_infinite_1.2s] opacity-60"></div>
+              
+              {/* Inner spinning circle */}
+              <div className="w-24 h-24 border-[3px] border-[#449ae6] rounded-full animate-spin border-t-transparent"></div>
+              
+              {/* Center dot */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-[#449ae6] rounded-full"></div>
+            </div>
+            <div className="text-[#449ae6] text-sm font-medium animate-pulse">Loading...</div>
+            <style jsx>{`
+              @keyframes ping {
+                0% {
+                  transform: scale(0.8);
+                  opacity: 0.6;
+                }
+                50% {
+                  transform: scale(1.1);
+                  opacity: 0.3;
+                }
+                100% {
+                  transform: scale(0.8);
+                  opacity: 0.6;
+                }
+              }
+            `}</style>
+          </div>
+        ) : (
+          <>
+            <div className="hidden sm:block overflow-x-hidden">
+              <table className="w-full border-collapse text-sm">
+                <thead>
+                  <tr className="text-xs">
+                    <th className="p-2 border-b w-12 text-center">
+                      <input
+                        type="checkbox"
+                        checked={
+                          paginatedData.length > 0 &&
+                          selectedRows.length === paginatedData.length
+                        }
+                        onChange={toggleSelectAll}
+                      />
+                    </th>
+                    <th className="p-2 border-b text-center">Sales Channel</th>
+                    <th className="p-2 border-b text-center">Type</th>
+                    <th className="p-2 border-b text-center">Payment Term</th>
+                    <th className="p-2 border-b text-center">Location</th>
+                    <th className="p-2 border-b text-center">Created Date</th>
+                    <th className="p-2 border-b text-center">Status</th>
+                  </tr>
+                </thead>
                 <tbody>
-                  <tr>
-                    <td className="font-semibold py-1">ID</td>
-                    <td>{row.id}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold py-1">Sales Channel</td>
-                    <td>{row.salesChannel}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold py-1">Type</td>
-                    <td>{row.type}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold py-1">Payment Term</td>
-                    <td>{row.paymentTerm}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold py-1">Country</td>
-                    <td>{row.country}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold py-1">Authorized Date</td>
-                    <td>{row.authorizedDate}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold py-1">Status</td>
-                    <td>
-                      <span
-                        className={`inline-block px-2 py-0.5 rounded text-xs ${row.status === "Active"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                          }`}
+                  {paginatedData.map((row) => (
+                    <tr
+                      key={row._id}
+                      className="hover:bg-gray-50 cursor-pointer"
+                    >
+                      <td className="p-2 border-b text-center w-12">
+                        <input
+                          type="checkbox"
+                          checked={selectedRows.includes(row._id)}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            toggleRow(row._id);
+                          }}
+                        />
+                      </td>
+                      <td className="p-2 border-b text-center"
+                        onClick={() => handleRowClick(row)}
                       >
-                        {row.status}
-                      </span>
-                    </td>
-                  </tr>
+                        {row.salesChannelName}
+                      </td>
+                      <td className="p-2 border-b text-center"
+                        onClick={() => handleRowClick(row)}
+                      >{row.salesChannelType}</td>
+                      <td className="p-2 border-b text-center" onClick={() => handleRowClick(row)}
+                      >
+                        {row.payementterm}
+                      </td>
+                      <td className="p-2 border-b text-center" onClick={() => handleRowClick(row)}
+                      >{row.suburbState}</td>
+                      <td className="p-2 border-b text-center" onClick={() => handleRowClick(row)}
+                      >
+                        {new Date(row.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="p-2 border-b text-center" onClick={() => handleRowClick(row)}
+                      >
+                        <span
+                          className={`py-1 px-4 rounded-md text-xs ${row.emailPlatforminvoice
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                            }`}
+                        >
+                          {row.emailPlatforminvoice ? "Active" : "Inactive"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-          ))}
-        </div>
+            {/* mobile view content  */}
+            <div className="block sm:hidden divide-y divide-gray-200 px-4">
+              {paginatedData.map((row) => (
+                <div
+                  key={row._id}
+                  className="p-3 bg-gray-50 mb-3 rounded-lg shadow-sm cursor-pointer"
+                  onClick={() => handleRowClick(row)}
+                >
+                  <table className="w-full text-sm">
+                    <tbody>
+                      <tr>
+                        <td className="font-semibold py-1">Sales Channel</td>
+                        <td>{row.salesChannelName}</td>
+                      </tr>
+                      <tr>
+                        <td className="font-semibold py-1">Type</td>
+                        <td>{row.salesChannelType}</td>
+                      </tr>
+                      <tr>
+                        <td className="font-semibold py-1">Payment Term</td>
+                        <td>{row.payementterm}</td>
+                      </tr>
+                      <tr>
+                        <td className="font-semibold py-1">Location</td>
+                        <td>{row.suburbState}</td>
+                      </tr>
+                      <tr>
+                        <td className="font-semibold py-1">Created Date</td>
+                        <td>{new Date(row.createdAt).toLocaleDateString()}</td>
+                      </tr>
+                      <tr>
+                        <td className="font-semibold py-1">Status</td>
+                        <td>
+                          <span
+                            className={`inline-block px-2 py-0.5 rounded text-xs ${row.emailPlatforminvoice
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
+                              }`}
+                          >
+                            {row.emailPlatforminvoice ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
 
         <div className="flex flex-col sm:flex-row items-center justify-between p-2 py-4 mx-2 gap-4">
           <div>
