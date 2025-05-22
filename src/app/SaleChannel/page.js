@@ -65,7 +65,7 @@ const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     "Australia"
   ];
   const options1 = ["Plateform", "Price List", "Dropshiper", "DropshiperNZ", "Others"];
-  const options2 = ["Net 30", "Prepaid", "7 Day", "14 Days", "15 Days"];
+  const options2 = ["7 Days", "14 Days","30 Days", "60 Days","90 Days", "120 Days"];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -166,55 +166,104 @@ const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     adjustDropdownPosition(".payment-dropdown", isOpen2);
   }, [isOpen, isOpen1, isOpen2]);
 
+  // const filteredData = salesChannels
+  //   .filter((item) => {
+  //     // Status filter
+  //     const matchStatus =
+  //       filters.status.length === 0 || 
+  //       (filters.status.includes("Active") && item.emailPlatforminvoice) ||
+  //       (filters.status.includes("Inactive") && !item.emailPlatforminvoice);
+
+  //     // Type filter
+  //     const matchType = 
+  //       selected1.length === 0 || 
+  //       selected1.includes(item.salesChannelType);
+
+  //     // Payment Term filter
+  //     const matchPayment =
+  //       selected2.length === 0 || 
+  //       selected2.includes(item.payementterm);
+
+  //     // Region filter
+  //     const matchRegion =
+  //       selected.length === 0 || 
+  //       selected.includes(item.suburbState);
+
+  //     // Region button filter
+  //     const matchRegionButton =
+  //       filters.region === "" || 
+  //       (filters.region === "Asia" && ["India", "China", "Japan", "Korea"].includes(item.suburbState)) ||
+  //       (filters.region === "North America" && ["USA", "Canada", "Mexico"].includes(item.suburbState)) ||
+  //       (filters.region === "South America" && ["Brazil", "Argentina", "Chile"].includes(item.suburbState)) ||
+  //       (filters.region === "Europe" && ["UK", "Germany", "France", "Italy"].includes(item.suburbState)) ||
+  //       (filters.region === "Oceania" && ["Australia", "New Zealand"].includes(item.suburbState)) ||
+  //       (filters.region === "Africa" && ["South Africa", "Nigeria", "Kenya"].includes(item.suburbState));
+
+  //     return (
+  //       matchStatus &&
+  //       matchType &&
+  //       matchPayment &&
+  //       matchRegion &&
+  //       matchRegionButton
+  //     );
+  //   })
+  //   .filter((item) =>
+  //     searchQuery
+  //       ? item.salesChannelName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         item.suburbState.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         item.salesChannelType.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         item.payementterm.toLowerCase().includes(searchQuery.toLowerCase())
+  //       : true
+  //   );
   const filteredData = salesChannels
-    .filter((item) => {
-      // Status filter
-      const matchStatus =
-        filters.status.length === 0 || 
-        (filters.status.includes("Active") && item.emailPlatforminvoice) ||
-        (filters.status.includes("Inactive") && !item.emailPlatforminvoice);
+  .filter((item) => {
+    // Status filter
+    const matchStatus =
+      filters.status.length === 0 || 
+      (filters.status.includes("Active") && item.emailPlatforminvoice) ||
+      (filters.status.includes("Inactive") && !item.emailPlatforminvoice);
 
-      // Type filter
-      const matchType = 
-        selected1.length === 0 || 
-        selected1.includes(item.salesChannelType);
+    // Type filter
+    const matchType = 
+      selected1.length === 0 || 
+      selected1.includes(item.salesChannelType);
 
-      // Payment Term filter
-      const matchPayment =
-        selected2.length === 0 || 
-        selected2.includes(item.payementterm);
+    // Payment Term filter
+    const matchPayment =
+      selected2.length === 0 || 
+      selected2.includes(item.payementterm);
 
-      // Region filter
-      const matchRegion =
-        selected.length === 0 || 
-        selected.includes(item.suburbState);
+    // Region filter
+    const matchRegion =
+      selected.length === 0 || 
+      selected.includes(item.suburbState);
 
-      // Region button filter
-      const matchRegionButton =
-        filters.region === "" || 
-        (filters.region === "Asia" && ["India", "China", "Japan", "Korea"].includes(item.suburbState)) ||
-        (filters.region === "North America" && ["USA", "Canada", "Mexico"].includes(item.suburbState)) ||
-        (filters.region === "South America" && ["Brazil", "Argentina", "Chile"].includes(item.suburbState)) ||
-        (filters.region === "Europe" && ["UK", "Germany", "France", "Italy"].includes(item.suburbState)) ||
-        (filters.region === "Oceania" && ["Australia", "New Zealand"].includes(item.suburbState)) ||
-        (filters.region === "Africa" && ["South Africa", "Nigeria", "Kenya"].includes(item.suburbState));
+    // Region button filter
+    const matchRegionButton =
+      filters.region === "" || 
+      (filters.region === "Asia" && ["India", "China", "Japan", "Korea"].includes(item.suburbState)) ||
+      (filters.region === "North America" && ["USA", "Canada", "Mexico"].includes(item.suburbState)) ||
+      (filters.region === "South America" && ["Brazil", "Argentina", "Chile"].includes(item.suburbState)) ||
+      (filters.region === "Europe" && ["UK", "Germany", "France", "Italy"].includes(item.suburbState)) ||
+      (filters.region === "Oceania" && ["Australia", "New Zealand"].includes(item.suburbState)) ||
+      (filters.region === "Africa" && ["South Africa", "Nigeria", "Kenya"].includes(item.suburbState));
 
-      return (
-        matchStatus &&
-        matchType &&
-        matchPayment &&
-        matchRegion &&
-        matchRegionButton
-      );
-    })
-    .filter((item) =>
-      searchQuery
-        ? item.salesChannelName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.suburbState.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.salesChannelType.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.payementterm.toLowerCase().includes(searchQuery.toLowerCase())
-        : true
+    return (
+      matchStatus &&
+      matchType &&
+      matchPayment &&
+      matchRegion &&
+      matchRegionButton
     );
+  })
+  .filter((item) =>
+    searchQuery
+      ? (item.salesChannelName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+         item.suburbState?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+         item.salesChannelType?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+         item.payementterm?.toLowerCase().includes(searchQuery.toLowerCase()))
+      : true
+  );
 
   // const sortedData = [...filteredData].sort((a, b) => {
   //   if (sortOptions.salesChannel) {
@@ -401,8 +450,8 @@ const onEdit = (row) => {
 // };
 
 
-const onDelete = async (id) => {
-  const confirmDelete = confirm('Are you sure you want to delete this sales channel?');
+const onDelete = async (id,name) => {
+  const confirmDelete = confirm(`Are you sure you want to delete   "${name}" sales channel?`);
   if (!confirmDelete) return;
 
   try {
@@ -740,7 +789,7 @@ const onDelete = async (id) => {
               <table className="w-full border-collapse text-sm">
                 <thead>
                   <tr className="text-xs">
-                    <th className="p-2 border-b w-12 text-center">
+                    {/* <th className="p-2 border-b w-12 text-center">
                       <input
                         type="checkbox"
                         checked={
@@ -749,7 +798,9 @@ const onDelete = async (id) => {
                         }
                         onChange={toggleSelectAll}
                       />
-                    </th>
+                    </th> */}
+                    <th className="p-2 border-b text-center">Id</th>
+
                     <th className="p-2 border-b text-center">Sales Channel</th>
                     <th className="p-2 border-b text-center">Type</th>
                     <th className="p-2 border-b text-center">Payment Term</th>
@@ -761,21 +812,14 @@ const onDelete = async (id) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedData.map((row) => (
+                  {paginatedData.map((row,index) => (
                     <tr
                       key={row._id}
                       className="hover:bg-gray-50 cursor-pointer"
                     >
-                      <td className="p-2 border-b text-center w-12">
-                        <input
-                          type="checkbox"
-                          checked={selectedRows.includes(row._id)}
-                          onChange={(e) => {
-                            e.stopPropagation();
-                            toggleRow(row._id);
-                          }}
-                        />
-                      </td>
+                     
+            <td className="p-2 border-b text-center ">{(startIndex + index + 1).toString()}</td>
+
                       <td className="p-2 border-b text-center"
                         onClick={() => handleRowClick(row)}
                       >
@@ -818,7 +862,7 @@ const onDelete = async (id) => {
           <button
        onClick={(e) => {
       e.stopPropagation();
-      onDelete(row._id);
+      onDelete(row._id,row.salesChannelName);
     }}
             className="text-red-500 hover:text-red-700 mx-1 cursor-pointer"
             title="Delete"

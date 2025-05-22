@@ -50,7 +50,7 @@ const HeaderAddSale = ({ onClose, rowData }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
       <div className="bg-gray-200 rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Edit Sales Channel</h2>
+          <h2 className="text-xl font-bold">Add Sales Channel</h2>
           <button onClick={onClose} 
             className="hover:text-red-400 cursor-pointer"
           >

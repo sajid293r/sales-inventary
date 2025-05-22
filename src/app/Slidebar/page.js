@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Home, Globe, Settings } from 'lucide-react';
 import { FaShoppingCart, FaBars } from 'react-icons/fa';
 import { GiDatabase } from 'react-icons/gi';
-
+import { BiLayer } from "react-icons/bi";
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(false);
 
@@ -37,9 +37,11 @@ const Sidebar = () => {
         onClick={toggleSidebar}>
         {/* Top Section */}
         <div className="flex flex-col gap-2 mt-8">
-        <Link href="/SaleChannel"> <IconWrapper icon={<Home size={24} />} label="Sales Channel" expanded={expanded} /></Link>
-        <Link href="/BulkEditor">  <IconWrapper icon={<Globe size={24} />} label="Internet" expanded={expanded} /></Link>
-          <Link href="/AddSaleChannel/HeaderAddSale"> <IconWrapper icon={<FaShoppingCart size={24} />} label="Cart" expanded={expanded} /></Link>
+        <Link href="/SaleChannel"> <IconWrapper icon={<BiLayer size={24} />} label="Sales Channel" expanded={expanded} /></Link>
+        <Link href="/">  <IconWrapper icon={<Globe size={24} />} label="List View" expanded={expanded} /></Link>
+          {/* <Link href="/AddSaleChannel/HeaderAddSale"> <IconWrapper icon={<FaShoppingCart size={24} />} label="Cart" expanded={expanded} /></Link> */}
+          <Link href="/"> <IconWrapper icon={<FaShoppingCart size={24} />} label="Cart" expanded={expanded} /></Link>
+
           <IconWrapper icon={<FaBars size={24} />} label="Menu" expanded={expanded} />
           <IconWrapper icon={<GiDatabase size={24} />} label="Database" expanded={expanded} />
         </div>

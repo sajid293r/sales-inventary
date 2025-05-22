@@ -156,7 +156,7 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
           </button>
         </div>
         {/* Sales channel id */}
-        <div className="flex flex-col sm:flex-row sm:gap-24 py-3">
+        {/* <div className="flex flex-col sm:flex-row sm:gap-24 py-3">
           <p className="font-semibold">Sales Channel ID</p>
           <p>{rowData?._id || "N/A"}</p>
         </div>
@@ -187,7 +187,51 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
           }`}>
             {rowData?.emailPlatforminvoice ? "Active" : "Inactive"}
           </p>
-        </div>
+        </div> */}
+
+
+
+
+        
+        <div className="flex flex-col gap-3">
+  <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-8">
+    <p className="font-semibold w-40">Sales Channel ID</p>
+    <p className="text-gray-800">{rowData?._id || "N/A"}</p>
+  </div>
+
+  <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-8">
+    <p className="font-semibold w-40">Sales Channel Name</p>
+    <p className="bg-white w-[300px] px-2 py-1 shadow-sm rounded text-gray-800">
+      {rowData?.salesChannelName || "N/A"}
+    </p>
+  </div>
+
+  <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-8">
+    <p className="font-semibold w-40">Type</p>
+    <p className="bg-white w-[300px] px-2 py-1 shadow-sm rounded text-gray-800">
+      {rowData?.salesChannelType || "N/A"}
+    </p>
+  </div>
+
+  <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-8">
+    <p className="font-semibold w-40">Location</p>
+    <p className="bg-white w-[300px] px-2 py-1 shadow-sm rounded text-gray-800">
+      {rowData?.suburbState || "N/A"}
+    </p>
+  </div>
+
+  <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-8">
+    <p className="font-semibold w-40 mb-2">Status</p>
+    <p className={`px-3 py-1 rounded text-sm font-medium shadow-sm ${
+      rowData?.emailPlatforminvoice
+        ? "bg-green-100 text-green-700"
+        : "bg-red-100 text-red-700"
+    }`}>
+      {rowData?.emailPlatforminvoice ? "Active" : "Inactive"}
+    </p>
+  </div>
+
+
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <div className="flex flex-wrap items-center gap-4 sm:gap-8 md:gap-12 lg:gap-24 ml-2 sm:ml-3">
             <h1 className="text-sm sm:text-base">Customer ID</h1>
@@ -195,7 +239,7 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
               type="number"
               value={number}
               onChange={handleNumberChange}
-              className="border px-2 w-32 sm:w-36 md:w-44 rounded-sm border-gray-400 shadow-md"
+              className="bg-white w-[300px] px-2 py-1 shadow-sm rounded text-gray-800"
             />
           </div>
           <button
@@ -204,6 +248,7 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
           >
             <FaChevronRight size={10} />
           </button>
+        </div>
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
           {Object.keys(detailsMap).map((field) => (
