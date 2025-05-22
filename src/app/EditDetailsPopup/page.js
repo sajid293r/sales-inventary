@@ -4,14 +4,14 @@ import { submitAction } from '@/actions/salesChannel';
 import { toast } from 'react-hot-toast';
 import { X } from "lucide-react";
 
-const HeaderAddSale = ({ onClose, rowData }) => {
+const EditDetailsPopup = ({ onClose, rowData }) => {
   const [filters, setFilters] = useState({
     region: "Billing Information",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [billingInfo, setBillingInfo] = useState(rowData || {});
   const [activeVersion, setActiveVersion] = useState('Version 4 & 5');
 
+  const [billingInfo, setBillingInfo] = useState(rowData || {});
   const handleBillingChange = (e) => {
     const { name, value, type, checked } = e.target;
     setBillingInfo(prev => ({
@@ -30,6 +30,7 @@ const HeaderAddSale = ({ onClose, rowData }) => {
     try {
       const result = await submitAction({
         ...billingInfo,
+        _id: rowData._id
       });
       
       if (result.success) {
@@ -53,7 +54,7 @@ const HeaderAddSale = ({ onClose, rowData }) => {
           <h2 className="text-xl font-bold">Edit Sales Channel</h2>
           <button onClick={onClose} 
             className="hover:text-red-400 cursor-pointer"
-          >
+            >
           <X size={20} className="border rounded-lg" />
           </button>
         </div>
@@ -175,7 +176,7 @@ const HeaderAddSale = ({ onClose, rowData }) => {
                 </div>
               </div>
             )}
-{filters.region === "Campaign" && (
+ {filters.region === "Campaign" && (
                 <div className="p-4 bg-gray-50 border-b border-gray-200">
                   <div className="space-y-4">
 
@@ -1302,7 +1303,7 @@ const HeaderAddSale = ({ onClose, rowData }) => {
               disabled={isLoading}
               className="px-4 py-2 text-sm text-white bg-[#449ae6] rounded-md hover:bg-[#3d8ad1] disabled:opacity-50"
             >
-              {isLoading ? 'Saving...' : 'Save'}
+              {isLoading ? 'Updating...' : 'Update'}
             </button>
           </div>
         </form>
@@ -1311,6 +1312,6 @@ const HeaderAddSale = ({ onClose, rowData }) => {
   );
 };
 
-export default HeaderAddSale;
+export default EditDetailsPopup;
 
 
