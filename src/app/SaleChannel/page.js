@@ -65,7 +65,7 @@ const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     "Australia"
   ];
   const options1 = ["Plateform", "Price List", "Dropshiper", "DropshiperNZ", "Others"];
-  const options2 = ["Net 30", "Prepaid", "7 days", "14 days", "15 days"];
+  const options2 = ["Net 30", "Prepaid", "7 Day", "14 Days", "15 Days"];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -216,20 +216,39 @@ const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
         : true
     );
 
+  // const sortedData = [...filteredData].sort((a, b) => {
+  //   if (sortOptions.salesChannel) {
+  //     return sortOptions.salesChannel
+  //       ? a.salesChannelName.localeCompare(b.salesChannelName)
+  //       : b.salesChannelName.localeCompare(a.salesChannelName);
+  //   }
+  //   if (sortOptions.country) {
+  //     return sortOptions.country
+  //       ? a.suburbState.localeCompare(b.suburbState)
+  //       : b.suburbState.localeCompare(a.suburbState);
+  //   }
+  //   return 0;
+  // });
   const sortedData = [...filteredData].sort((a, b) => {
     if (sortOptions.salesChannel) {
+      const nameA = a.salesChannelName || "";
+      const nameB = b.salesChannelName || "";
       return sortOptions.salesChannel
-        ? a.salesChannelName.localeCompare(b.salesChannelName)
-        : b.salesChannelName.localeCompare(a.salesChannelName);
+        ? nameA.localeCompare(nameB)
+        : nameB.localeCompare(nameA);
     }
+  
     if (sortOptions.country) {
+      const stateA = a.suburbState || "";
+      const stateB = b.suburbState || "";
       return sortOptions.country
-        ? a.suburbState.localeCompare(b.suburbState)
-        : b.suburbState.localeCompare(a.suburbState);
+        ? stateA.localeCompare(stateB)
+        : stateB.localeCompare(stateA);
     }
+  
     return 0;
   });
-
+  
   const totalItems = filteredData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
