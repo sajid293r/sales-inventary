@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { FaChevronRight } from "react-icons/fa";
 import { X } from "lucide-react";
+import { FaCheckCircle, FaTimesCircle , FaChevronRight} from "react-icons/fa";
 
 const DROPSHIP_OPTIONS = [
   { value: "", label: "--- Please Select ----" },
@@ -144,7 +144,7 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-300 bg-opacity-50 flex items-center justify-center z-50 overflow-auto p-4 sm:p-6">
+    <div className="fixed inset-0 bg-black  bg-opacity-50 flex items-center justify-center z-50 overflow-auto p-4 sm:p-6">
       <div className="bg-gray-200 p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-[800px] max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between">
           <h2 className="text-lg font-semibold mb-4">Sales Channel Details</h2>
@@ -229,7 +229,7 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                 <span className="absolute -top-3 left-2 text-black bg-gray-200 px-1 text-sm font-bold">
                   General Settings
                 </span>
-                <div className="flex flex-col sm:flex-row sm:gap-11 py-3">
+                {/* <div className="flex flex-col sm:flex-row sm:gap-11 py-3">
                   <span className="text-black text-sm font-bold">
                     Sales Channel Code
                   </span>
@@ -240,21 +240,47 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                     onChange={handleInputChange}
                     className="bg-green-400 w-full sm:w-24 py-1 px-2 shadow-sm font-bold"
                     placeholder="Enter code"
-                  />
-                </div>
-                <div className="flex flex-col sm:flex-row sm:gap-8">
+                  /> 
+                  <span 
+                    className="bg-green-400 w-full sm:w-24 py-1 px-2 shadow-sm font-bold" >
+                    {rowData?.salesChannelCode}
+                  </span>
+                </div> */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:gap-8 py-3">
+  <span className="text-black text-sm font-bold w-full sm:w-40">
+    Sales Channel Code
+  </span>
+  <span className="bg-green-100 text-black font-bold px-3 py-1 rounded-md shadow-sm w-full sm:w-auto text-center">
+    {rowData?.salesChannelCode || "N/A"}
+  </span>
+</div>
+<div className="flex flex-col sm:flex-row sm:items-center sm:gap-8 py-3">
+  <span className="text-black text-sm font-bold w-full sm:w-40">
+  Order Number Prefix
+  </span>
+  <span className="bg-green-100 text-black font-bold px-3 py-1 rounded-md shadow-sm w-full sm:w-auto text-center">
+    {rowData?.orderNumberPrefix || "N/A"}
+  </span>
+</div>
+
+
+                {/* <div className="flex flex-col sm:flex-row sm:gap-8">
                   <span className="text-black text-sm font-bold">
                     Order Number Prefix
                   </span>
-                  <input
+           <input
                     type="text"
                     name="orderNumberPrefix"
                     value={formData.orderNumberPrefix}
                     onChange={handleInputChange}
                     className="bg-green-400 py-1 w-full sm:w-24 px-2 shadow-sm"
                     placeholder="Enter prefix"
-                  />
-                </div>
+                  /> 
+                   <span 
+                    className="bg-green-400 w-full sm:w-24 py-1 px-2 shadow-sm font-bold" >
+                    {rowData?.orderNumberPrefix}
+                  </span>
+                </div> */}
               </div>
               {/* Appear in Section */}
               <div className="relative border border-gray-400 rounded-md p-4 sm:p-6 mt-4">
@@ -262,20 +288,41 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   Appear in
                 </span>
                 <div>
-                  <div className="flex items-center gap-4 sm:gap-8 py-1">
+                  {/* <div className="flex items-center gap-4 sm:gap-8 py-1">
                     <span className="text-black text-sm font-bold w-full sm:w-40">
                       Description
                     </span>
-                    <input
-                      type="checkbox"
-                      name="descriptionChannel"
-                      checked={formData.descriptionChannel}
-                      onChange={handleInputChange}
+                    // {/* <input
+                    //   type="checkbox"
+                    //   name="descriptionChannel"
+                    //   checked={formData.descriptionChannel}
+                    //   onChange={handleInputChange}
+                    //   className="w-4 h-4 bg-gray-100 border-gray-300 rounded"
+                    //   aria-label="Description checkbox"
+                    // /> 
+                     <span 
                       className="w-4 h-4 bg-gray-100 border-gray-300 rounded"
-                      aria-label="Description checkbox"
-                    />
-                  </div>
-                  <div className="flex items-center gap-4 sm:gap-8 py-1">
+                      >
+                      {rowData?.descriptionChannel}
+                  </span>
+                  </div> */}
+
+<div className="flex items-center gap-4 sm:gap-8 py-2">
+  <span className="text-gray-800 text-sm font-semibold w-full sm:w-40">
+    Description
+  </span>
+  <div className="flex items-center gap-2">
+    {rowData?.descriptionChannel ? (
+      <FaCheckCircle className="text-green-500 text-lg" title="Enabled" />
+    ) : (
+      <FaTimesCircle className="text-gray-400 text-lg" title="Disabled" />
+    )}
+
+  </div>
+</div>
+
+
+                  {/* <div className="flex items-center gap-4 sm:gap-8 py-1">
                     <span className="text-black text-sm font-bold w-full sm:w-40">
                       Selling Channel
                     </span>
@@ -287,7 +334,20 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                       className="w-4 h-4 bg-gray-100 border-gray-300 rounded"
                       aria-label="Selling Channel checkbox"
                     />
-                  </div>
+                  </div> */}
+                  <div className="flex items-center gap-4 sm:gap-8 py-2">
+  <span className="text-gray-800 text-sm font-semibold w-full sm:w-40">
+  Selling Channel
+  </span>
+  <div className="flex items-center gap-2">
+    {rowData?.sellingChannel ? (
+      <FaCheckCircle className="text-green-500 text-lg" title="Enabled" />
+    ) : (
+      <FaTimesCircle className="text-gray-400 text-lg" title="Disabled" />
+    )}
+
+  </div>
+</div>
                 </div>
               </div>
               {/* Commission Section */}

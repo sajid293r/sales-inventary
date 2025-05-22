@@ -14,11 +14,25 @@ export const submitAction = async (formData) => {
 
     await connectDB();
 
-    const filter = { salesChannelName: formData.salesChannelName };
-    const update = { $set: formData };
-    const options = { upsert: true, new: true }; // upsert = update or insert
+    let result;
+    if (formData._id) {
+      // Update existing record
+      result = await SalesChannel.findByIdAndUpdate(
+        formData._id,
+        { $set: formData },
+        { new: true }
+      );
+    } else {
+      // Create new record
+      const filter = { salesChannelName: formData.salesChannelName };
+      const update = { $set: formData };
+      const options = { upsert: true, new: true };
+      result = await SalesChannel.findOneAndUpdate(filter, update, options);
+    }
 
-    const result = await SalesChannel.findOneAndUpdate(filter, update, options);
+    if (!result) {
+      throw new Error('Failed to save/update sales channel');
+    }
 
     console.log("✅ Saved or Updated:", result._id);
     return { 

@@ -2,11 +2,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
-import { FaChevronDown } from "react-icons/fa";
-import SaleChannelPopup from "../Popup/page";
+import { FaChevronDown ,FaEdit, FaTrash} from "react-icons/fa";
+import EditDetailsPopup from '../EditDetailsPopup/page'
 import RowDetailsPopup from "../RowDetailsPopup/page";
 import { getAllSalesChannels } from "@/actions/getAllSalesChannels";
-
+import { deleteSalesChannel } from '@/actions/deleteSalesChannel';
+import SaleChannelPopup from "../Popup/page";
+import HeaderAddSale from  '../AddSaleChannel/HeaderAddSale/page'
+import { toast } from 'react-hot-toast';
 const TableWithCheckboxes = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [salesChannels, setSalesChannels] = useState([]);
@@ -43,6 +46,8 @@ const TableWithCheckboxes = () => {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+const [editingRow, setEditingRow] = useState(null);
+const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
 
   const buttonsRef = useRef(null);
   const filterButtonRef = useRef(null);
@@ -111,7 +116,26 @@ const TableWithCheckboxes = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showButtons]);
-
+  useEffect(() => {
+    if (!isEditPopupOpen) {
+      // Refetch data when the edit popup is closed
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          const data1 = await getAllSalesChannels();
+          console.log("Sales Channels Data:", data1);
+          setSalesChannels(data1);
+        } catch (error) {
+          console.error("Error fetching sales channels:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+  
+      fetchData();
+    }
+  }, [isEditPopupOpen]);
+  
   useEffect(() => {
     const adjustDropdownPosition = (dropdownClass, isOpen) => {
       if (isOpen) {
@@ -347,6 +371,37 @@ const TableWithCheckboxes = () => {
     setCurrentPage(1);
     setSelectedRows([]);
   };
+const onEdit = (row) => {
+  setEditingRow(row);
+  setIsEditPopupOpen(true);
+};
+
+
+// const onDelete = (id) => {
+//   console.log("delete", id);
+// };
+
+
+const onDelete = async (id) => {
+  const confirmDelete = confirm('Are you sure you want to delete this sales channel?');
+  if (!confirmDelete) return;
+
+  try {
+    const res = await deleteSalesChannel(id);
+
+    if (res.success) {
+      toast.success('Sales channel deleted');
+      // Optional: Refresh data manually after delete
+      const updated = await getAllSalesChannels();
+      setSalesChannels(updated);
+    } else {
+      toast.error(res.error || 'Failed to delete');
+    }
+  } catch (error) {
+    console.error('❌ Delete failed:', error);
+    toast.error('Unexpected error occurred');
+  }
+};
 
   return (
     <div
@@ -364,9 +419,7 @@ const TableWithCheckboxes = () => {
           >
             Add
           </button>
-          {isOpenpop && (
-            <SaleChannelPopup onClose={() => setIsOpenpop(false)} />
-          )}
+          
         </div>
       </div>
 
@@ -684,6 +737,8 @@ const TableWithCheckboxes = () => {
                     <th className="p-2 border-b text-center">Location</th>
                     <th className="p-2 border-b text-center">Created Date</th>
                     <th className="p-2 border-b text-center">Status</th>
+                    <th className="p-2 border-b text-center">Action</th>
+
                   </tr>
                 </thead>
                 <tbody>
@@ -731,6 +786,27 @@ const TableWithCheckboxes = () => {
                           {row.emailPlatforminvoice ? "Active" : "Inactive"}
                         </span>
                       </td>
+                      <td className="p-2 border-b text-center">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(row);
+            }}
+            className="text-blue-500 hover:text-blue-700 mx-1 cursor-pointer"
+            title="Edit"
+          >
+ <FaEdit />          </button>
+          <button
+       onClick={(e) => {
+      e.stopPropagation();
+      onDelete(row._id);
+    }}
+            className="text-red-500 hover:text-red-700 mx-1 cursor-pointer"
+            title="Delete"
+          >
+            <FaTrash/>
+          </button>
+        </td>
                     </tr>
                   ))}
                 </tbody>
@@ -850,6 +926,28 @@ const TableWithCheckboxes = () => {
           onClose={() => setIsRowPopupOpen(false)}
         />
       )}
+      {isOpenpop && (
+            <HeaderAddSale onClose={() => setIsOpenpop(false)} />
+          )}
+{isEditPopupOpen && editingRow && (
+  <EditDetailsPopup
+    rowData={editingRow}
+    onClose={() => {
+      setIsEditPopupOpen(false); // This will trigger the useEffect
+      setEditingRow(null);
+    }}
+  />
+)}
+
+      {/* {isEditPopupOpen && editingRow && (
+        <EditDetailsPopup
+          onClose={() => {
+            setIsEditPopupOpen(false);
+            setEditingRow(null);
+          }}
+          rowData={editingRow}
+        />
+      )} */}
     </div>
   );
 };
