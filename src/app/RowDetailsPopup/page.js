@@ -17,8 +17,10 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
   const [number, setNumber] = useState(0);
 
   // Add console logging to debug the data
-  console.log("Row Data in Popup:", rowData);
-  console.log("NZ Dropship Value:", rowData?.nzDropshippingDropdown);
+  console.log("Display ID:", rowData?.displayId);
+
+  // console.log("Row Data in Popup:", rowData);
+  // console.log("NZ Dropship Value:", rowData?.nzDropshippingDropdown);
 
   const [formData, setFormData] = useState({
     // General Information
@@ -196,7 +198,7 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
         <div className="flex flex-col gap-3">
   <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-8">
     <p className="font-semibold w-40">Sales Channel ID</p>
-    <p className="text-gray-800">{rowData?._id || "N/A"}</p>
+    <p className="text-gray-800">{rowData?.displayId || "N/A"}</p>
   </div>
 
   <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-8">
@@ -407,7 +409,10 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   >
                     Commission
                   </label>
-                  <input
+  <span className="bg-green-100 text-black font-bold px-3 py-1 rounded-md shadow-sm w-full sm:w-auto text-center">
+      {rowData?.commissionPercentage || "N/A"}
+    </span>
+                  {/* <input
                     id="commission"
                     name="commissionPercentage"
                     type="text"
@@ -415,7 +420,8 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                     onChange={handleInputChange}
                     placeholder="10.00"
                     className="bg-white border py-0.5 border-gray-600 rounded px-2 shadow-sm text-black text-right w-full sm:w-auto"
-                  />
+                  /> */}
+
                 </div>
               </div>
               {/* DropShipping Section */}
@@ -424,27 +430,43 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   DropShipping
                 </span>
                 <div className="flex gap-2 py-3">
-                  <input
+                   <div className="flex items-center gap-2">
+    {rowData?.nzDropshippingAutoCalculate ? (
+      <FaCheckCircle className="text-green-500 text-lg" title="Enabled" />
+    ) : (
+      <FaTimesCircle className="text-gray-400 text-lg" title="Disabled" />
+    )}
+
+  </div>
+                  {/* <input
                     type="checkbox"
                     name="nzDropshippingAutoCalculate"
                     checked={formData.nzDropshippingAutoCalculate}
                     onChange={handleInputChange}
                     className="h-4 w-4 bg-white border-gray-300 rounded mt-0.5"
                     aria-label="Auto calculate dropship pricing"
-                  />
+                  /> */}
                   <span className="text-black text-sm font-bold">
                     Auto calculate dropship pricing
                   </span>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 py-1">
-                  <input
+                              <div className="flex items-center gap-2">
+    {rowData?.nzDropshipping? (
+      <FaCheckCircle className="text-green-500 text-lg" title="Enabled" />
+    ) : (
+      <FaTimesCircle className="text-gray-400 text-lg" title="Disabled" />
+    )}
+
+  </div>
+                  {/* <input
                     type="checkbox"
                     name="nzDropshipping"
                     checked={formData.nzDropshipping}
                     onChange={handleInputChange}
                     className="h-4 w-4 bg-white border-gray-300 rounded mt-0.5"
                     aria-label="NZ dropship pricing"
-                  />
+                  /> */}
                   <label
                     htmlFor="dropship"
                     className="text-black text-sm font-bold"
@@ -453,7 +475,7 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                   </label>
                   <div className="flex flex-col sm:flex-row sm:gap-24">
                     <div></div>
-                    <div className="flex items-center w-full sm:w-56 px-2 py-0.5 border rounded-sm bg-white">
+                    {/* <div className="flex items-center w-full sm:w-56 px-2 py-0.5 border rounded-sm bg-white">
                       <select
                         id="dropship"
                         name="nzDropshippingDropdown"
@@ -468,7 +490,11 @@ const RowDetailsPopup = ({ rowData, onClose }) => {
                           </option>
                         ))}
                       </select>
-                    </div>
+                    </div> */}
+                     <span className="bg-green-100 text-black font-bold px-3 py-1 rounded-md shadow-sm w-full sm:w-auto text-center">
+      {rowData?.nzDropshippingDropdown  || "N/A"}
+    </span>
+
                   </div>
                 </div>
               </div>

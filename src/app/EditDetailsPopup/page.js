@@ -49,7 +49,7 @@ const EditDetailsPopup = ({ onClose, rowData }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
-      <div className="bg-gray-200 rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-gray-200 rounded-lg p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Edit Sales Channel</h2>
           <button onClick={onClose} 
@@ -60,7 +60,9 @@ const EditDetailsPopup = ({ onClose, rowData }) => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="bg-white rounded-lg p-2 shadow-md flex flex-wrap gap-1 mb-2">
+                    <div className="flex gap-4">
+
+          <div className="bg-white h-20 rounded-lg p-2 shadow-md flex flex-wrap gap-1 mb-2">
             <div className="flex flex-col items-start gap-1 w-full">
               <div className="flex items-center gap-2 w-full">
                 <span className="text-red-600 mt-1">*</span>
@@ -94,7 +96,7 @@ const EditDetailsPopup = ({ onClose, rowData }) => {
               </div>
             </div>
           </div>
-
+<div>
           <div className="rounded-xl border w-full bg-white border-gray-300 shadow-lg">
             <div className="flex flex-wrap gap-2 p-4 border-b border-gray-200">
               {[
@@ -1305,6 +1307,8 @@ const EditDetailsPopup = ({ onClose, rowData }) => {
             >
               {isLoading ? 'Updating...' : 'Update'}
             </button>
+          </div>
+          </div>
           </div>
         </form>
       </div>

@@ -6,7 +6,8 @@ import { connectDB, SalesChannel } from "@/lib/mongoose";
 export const getAllSalesChannels = async () => {
   try {
     await connectDB();
-    const channels = await SalesChannel.find({});
+const channels = await SalesChannel.find({}).sort({ createdAt: -1 });
+
     return JSON.parse(JSON.stringify(channels)); 
   } catch (error) {
     console.error("Fetch error:", error);

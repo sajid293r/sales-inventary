@@ -379,11 +379,15 @@ const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
       [option]: !prev[option],
     }));
   };
+const handleRowClick = (row, id) => {
+  setSelectedRowData({ ...row, displayId: id }); // ✅ Add `displayId` to the row object
+  setIsRowPopupOpen(true);
+};
 
-  const handleRowClick = (row) => {
-    setSelectedRowData(row);
-    setIsRowPopupOpen(true);
-  };
+  // const handleRowClick = (row,id) => {
+  //   setSelectedRowData(row,id);
+  //   setIsRowPopupOpen(true);
+  // };
 
   const handleContinentDropdown = () => {
     setIsOpen((prev) => !prev);
@@ -472,6 +476,7 @@ const onDelete = async (id,name) => {
 };
 
   return (
+ <div className=" mt-10 w-full max-w-screen-xl mx-auto grid grid-cols-1 gap-4 md:grid-cols-12"> 
     <div
       className={`p-2  mt-10 sm:p-4 mx-auto w-full min-w-[320px] md:w-[1000px] max-w-screen-lg ${dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
         }`}
@@ -816,6 +821,8 @@ const onDelete = async (id,name) => {
                     <tr
                       key={row._id}
                       className="hover:bg-gray-50 cursor-pointer"
+                          onClick={() => handleRowClick(row, (startIndex + index + 1))}
+
                     >
                      
             <td className="p-2 border-b text-center ">{(startIndex + index + 1).toString()}</td>
@@ -1011,6 +1018,7 @@ const onDelete = async (id,name) => {
           rowData={editingRow}
         />
       )} */}
+    </div>
     </div>
   );
 };
