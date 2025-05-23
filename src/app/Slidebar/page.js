@@ -29,9 +29,9 @@ const Sidebar = () => {
         // md:translate-x-0 md:${expanded ? 'w-56' : 'w-20'}
         // flex flex-col justify-between py-4 px-2`}
         className={`fixed top-0 left-0 py-20 h-screen bg-white text-black shadow-lg transform transition-transform duration-300 overflow-y-auto
-  ${expanded ? 'w-56' : 'w-20'} 
+  ${expanded ? 'w-46' : 'w-20'} 
   ${expanded ? 'translate-x-0' : '-translate-x-full'} 
-  md:translate-x-0 md:${expanded ? 'w-56' : 'w-20'}
+  md:translate-x-0 md:${expanded ? 'w-46' : 'w-20'}
   flex flex-col justify-between py-4 px-2`}
 
         onClick={toggleSidebar}>
