@@ -843,7 +843,7 @@ const HeaderAddSale = ({ onClose, rowData }) => {
                     </div>
 
                     <div className="flex gap-6 mb-4 cursor-pointer">
-                      {['Version 4 & 5', 'Version 3', 'Version 2'].map((tab) => (
+                      {['Version 4 & 5',].map((tab) => (
                         <button
                           key={tab}
                           onClick={() => setActiveVersion(tab)}
@@ -1102,7 +1102,7 @@ const HeaderAddSale = ({ onClose, rowData }) => {
                             onChange={e =>
                               setBillingInfo(prev => ({
                                 ...prev,
-                                roundingHighcheckbox: e.target.checked
+                                Version5: e.target.checked
                               }))
                             }
                           />
@@ -1115,7 +1115,7 @@ const HeaderAddSale = ({ onClose, rowData }) => {
                     )}
 
 
-
+{/* 
                     {activeVersion === 'Version 3' && (
                       <div className="space-y-4">
                         <div className="text-xs text-gray-500">
@@ -1278,7 +1278,7 @@ const HeaderAddSale = ({ onClose, rowData }) => {
                         </div>
                       </div>
 
-                    )}
+                    )} */}
 
                     <div className="flex gap-4 pt-4">
                       <button className="bg-green-600 text-white px-4 py-2 rounded">Set Pricing Rules</button>
