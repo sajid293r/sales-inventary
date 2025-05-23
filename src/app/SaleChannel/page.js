@@ -10,10 +10,13 @@ import { deleteSalesChannel } from '@/actions/deleteSalesChannel';
 import SaleChannelPopup from "../Popup/page";
 import HeaderAddSale from '../AddSaleChannel/HeaderAddSale/page'
 import { toast } from 'react-hot-toast';
+import { bulkSaveSalesChannels } from '@/actions/bulkSaveSalesChannels';
 const TableWithCheckboxes = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [salesChannels, setSalesChannels] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const fileInputRef = useRef();
+
 
   const [filters, setFilters] = useState({
     status: [],
@@ -48,13 +51,14 @@ const TableWithCheckboxes = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [editingRow, setEditingRow] = useState(null);
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
-
+const [message, setMessage] = useState('');
   const buttonsRef = useRef(null);
   const filterButtonRef = useRef(null);
   const filterPanelRef = useRef(null);
   const sortButtonRef = useRef(null);
   const sortTooltipRef = useRef(null);
   const searchInputRef = useRef(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const options = [
     "UK",
@@ -121,15 +125,13 @@ const TableWithCheckboxes = () => {
       // Refetch data when the edit popup is closed
       const fetchData = async () => {
         try {
-          setIsLoading(true);
+          // setIsLoading(true);
           const data1 = await getAllSalesChannels();
           console.log("Sales Channels Data:", data1);
           setSalesChannels(data1);
         } catch (error) {
           console.error("Error fetching sales channels:", error);
-        } finally {
-          setIsLoading(false);
-        }
+        } 
       };
 
       fetchData();
@@ -166,55 +168,6 @@ const TableWithCheckboxes = () => {
     adjustDropdownPosition(".payment-dropdown", isOpen2);
   }, [isOpen, isOpen1, isOpen2]);
 
-  // const filteredData = salesChannels
-  //   .filter((item) => {
-  //     // Status filter
-  //     const matchStatus =
-  //       filters.status.length === 0 || 
-  //       (filters.status.includes("Active") && item.emailPlatforminvoice) ||
-  //       (filters.status.includes("Inactive") && !item.emailPlatforminvoice);
-
-  //     // Type filter
-  //     const matchType = 
-  //       selected1.length === 0 || 
-  //       selected1.includes(item.salesChannelType);
-
-  //     // Payment Term filter
-  //     const matchPayment =
-  //       selected2.length === 0 || 
-  //       selected2.includes(item.payementterm);
-
-  //     // Region filter
-  //     const matchRegion =
-  //       selected.length === 0 || 
-  //       selected.includes(item.suburbState);
-
-  //     // Region button filter
-  //     const matchRegionButton =
-  //       filters.region === "" || 
-  //       (filters.region === "Asia" && ["India", "China", "Japan", "Korea"].includes(item.suburbState)) ||
-  //       (filters.region === "North America" && ["USA", "Canada", "Mexico"].includes(item.suburbState)) ||
-  //       (filters.region === "South America" && ["Brazil", "Argentina", "Chile"].includes(item.suburbState)) ||
-  //       (filters.region === "Europe" && ["UK", "Germany", "France", "Italy"].includes(item.suburbState)) ||
-  //       (filters.region === "Oceania" && ["Australia", "New Zealand"].includes(item.suburbState)) ||
-  //       (filters.region === "Africa" && ["South Africa", "Nigeria", "Kenya"].includes(item.suburbState));
-
-  //     return (
-  //       matchStatus &&
-  //       matchType &&
-  //       matchPayment &&
-  //       matchRegion &&
-  //       matchRegionButton
-  //     );
-  //   })
-  //   .filter((item) =>
-  //     searchQuery
-  //       ? item.salesChannelName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         item.suburbState.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         item.salesChannelType.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         item.payementterm.toLowerCase().includes(searchQuery.toLowerCase())
-  //       : true
-  //   );
   const filteredData = salesChannels
     .filter((item) => {
       // Status filter
@@ -265,19 +218,6 @@ const TableWithCheckboxes = () => {
         : true
     );
 
-  // const sortedData = [...filteredData].sort((a, b) => {
-  //   if (sortOptions.salesChannel) {
-  //     return sortOptions.salesChannel
-  //       ? a.salesChannelName.localeCompare(b.salesChannelName)
-  //       : b.salesChannelName.localeCompare(a.salesChannelName);
-  //   }
-  //   if (sortOptions.country) {
-  //     return sortOptions.country
-  //       ? a.suburbState.localeCompare(b.suburbState)
-  //       : b.suburbState.localeCompare(a.suburbState);
-  //   }
-  //   return 0;
-  // });
   const sortedData = [...filteredData].sort((a, b) => {
     if (sortOptions.salesChannel) {
       const nameA = a.salesChannelName || "";
@@ -384,11 +324,6 @@ const TableWithCheckboxes = () => {
     setIsRowPopupOpen(true);
   };
 
-  // const handleRowClick = (row,id) => {
-  //   setSelectedRowData(row,id);
-  //   setIsRowPopupOpen(true);
-  // };
-
   const handleContinentDropdown = () => {
     setIsOpen((prev) => !prev);
     setIsOpen1(false);
@@ -448,32 +383,240 @@ const TableWithCheckboxes = () => {
     setIsEditPopupOpen(true);
   };
 
-
-  // const onDelete = (id) => {
-  //   console.log("delete", id);
-  // };
-
-
   const onDelete = async (id, name) => {
-    const confirmDelete = confirm(`Are you sure you want to delete   "${name}" sales channel?`);
-    if (!confirmDelete) return;
+    // Show confirmation toast
+    toast((t) => (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">🗑️</span>
+          <p className="font-semibold">Confirm Delete</p>
+        </div>
+        <p className="text-sm opacity-90">Are you sure you want to delete "{name}" sales channel?</p>
+        <div className="flex gap-2 mt-2">
+          <button
+            onClick={() => {
+              toast.dismiss(t.id);
+              handleDeleteConfirm(id, name);
+            }}
+            className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600 transition"
+          >
+            Delete
+          </button>
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="bg-gray-200 text-gray-800 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), {
+      duration: 5000,
+      style: {
+        background: 'white',
+        color: 'black',
+        padding: '16px',
+        borderRadius: '10px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      },
+    });
+  };
 
+const handleDeleteConfirm = async (id, name) => {
     try {
       const res = await deleteSalesChannel(id);
 
       if (res.success) {
-        toast.success('Sales channel deleted');
-        // Optional: Refresh data manually after delete
+        toast.success(
+          <div className="flex items-center gap-2">
+            <span className="text-lg">✅</span>
+            <div>
+              <p className="font-semibold">Deleted Successfully</p>
+              <p className="text-sm opacity-90">"{name}" has been removed</p>
+            </div>
+          </div>
+        );
+        // Refresh data
         const updated = await getAllSalesChannels();
         setSalesChannels(updated);
       } else {
-        toast.error(res.error || 'Failed to delete');
+        toast.error(
+          <div className="flex items-center gap-2">
+            <span className="text-lg">❌</span>
+            <div>
+              <p className="font-semibold">Delete Failed</p>
+              <p className="text-sm opacity-90">{res.error || 'An error occurred'}</p>
+            </div>
+          </div>
+        );
       }
     } catch (error) {
       console.error('❌ Delete failed:', error);
-      toast.error('Unexpected error occurred');
+      toast.error(
+        <div className="flex items-center gap-2">
+          <span className="text-lg">⚠️</span>
+          <div>
+            <p className="font-semibold">Unexpected Error</p>
+            <p className="text-sm opacity-90">Could not delete the sales channel</p>
+          </div>
+        </div>
+      );
     }
   };
+
+const handleAddClick = () => {
+  fileInputRef.current?.click();
+};
+
+const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    
+    // Show loading toast
+    const loadingToast = toast.loading(
+      <div className="flex items-center gap-3">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+        <p className="font-semibold">Uploading file...</p>
+      </div>
+    );
+
+    const reader = new FileReader();
+
+    reader.onload = async (event) => {
+      try {
+        const content = event.target.result;
+        const parsedData = parseCSV(content);
+        const result = await bulkSaveSalesChannels(parsedData);
+        
+        // Dismiss loading toast
+        toast.dismiss(loadingToast);
+        
+        if (result.success) {
+          toast.success(
+            <div className="flex items-center gap-2">
+              <span className="text-lg">✨</span>
+              <div>
+                <p className="font-semibold">Success!</p>
+                <p className="text-sm opacity-90">
+                  Updated: {result.updatedCount} • Added: {result.insertedCount}
+                </p>
+              </div>
+            </div>
+          );
+          
+          const updated = await getAllSalesChannels();
+          setSalesChannels(updated);
+        } else {
+          toast.error(
+            <div className="flex items-center gap-2">
+              <span className="text-lg">❌</span>
+              <div>
+                <p className="font-semibold">Failed</p>
+                <p className="text-sm opacity-90">{result.error}</p>
+              </div>
+            </div>
+          );
+        }
+      } catch (error) {
+        toast.dismiss(loadingToast);
+        toast.error(
+          <div className="flex items-center gap-2">
+            <span className="text-lg">⚠️</span>
+            <div>
+              <p className="font-semibold">Error</p>
+              <p className="text-sm opacity-90">{error.message}</p>
+            </div>
+          </div>
+        );
+      } finally {
+        setIsUploading(false);
+      }
+    };
+
+    reader.onerror = () => {
+      toast.dismiss(loadingToast);
+      setIsUploading(false);
+      toast.error(
+        <div className="flex items-center gap-2">
+          <span className="text-lg">⚠️</span>
+          <div>
+            <p className="font-semibold">Error</p>
+            <p className="text-sm opacity-90">Could not read file</p>
+          </div>
+        </div>
+      );
+    };
+
+    reader.readAsText(file);
+  };
+
+const parseCSV = (csv) => {
+  try {
+    const lines = csv.split('\n').filter(Boolean);
+    if (lines.length < 2) {
+      throw new Error('File must contain headers and at least one data row');
+    }
+
+    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+    
+    // Validate required headers
+    const requiredFields = ['salesChannelName', 'salesChannelType', 'suburbState'];
+    const missingFields = requiredFields.filter(field => !headers.includes(field));
+    if (missingFields.length > 0) {
+      throw new Error(`Missing required headers: ${missingFields.join(', ')}`);
+    }
+
+    const booleanFields = [
+      "emailPlatforminvoice", "Emailplatformatrackingfile", "CustomerinvoicelncGST",
+      "Emailinvoicerequired", "1POINV", "startOnCampaign", "descriptionChannel",
+      "sellingChannel", "plusShipping", "offSellingPricecheckbox", "calculateNZPricecheckbox",
+      "calculateRetailPricecheckbox", "calculateGSTcheckbox", "roundingLowcheckbox",
+      "roundingHighcheckbox", "nzDropshippingAutoCalculate", "missinginvoice", "paymentrequired",
+      "versioncheckbox"
+    ];
+
+    const dateFields = ["dateFrom", "dateTo"];
+
+    return lines.slice(1).map((line, index) => {
+      const values = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+      if (values.length !== headers.length) {
+        throw new Error(`Row ${index + 2} has incorrect number of fields`);
+      }
+
+      const obj = {};
+
+      headers.forEach((key, i) => {
+        const val = values[i]?.trim();
+
+        if (booleanFields.includes(key)) {
+          obj[key] = val?.toLowerCase() === 'true';
+        } else if (dateFields.includes(key)) {
+          obj[key] = val ? new Date(val) : null;
+        } else {
+          obj[key] = val || '';
+        }
+      });
+
+      // Validate required fields in each row
+      const missingRequiredFields = requiredFields.filter(field => !obj[field]);
+      if (missingRequiredFields.length > 0) {
+        throw new Error(`Row ${index + 2} is missing required fields: ${missingRequiredFields.join(', ')}`);
+      }
+
+      return obj;
+    });
+  } catch (error) {
+    console.error('CSV parsing error:', error);
+    throw error;
+  }
+};
+
+
+
+
+
 
   return (
     <div className=" mt-10 w-full max-w-screen-xl mx-auto grid grid-cols-1 gap-4 md:grid-cols-12">
@@ -485,8 +628,33 @@ const TableWithCheckboxes = () => {
           <h1 className="text-base sm:text-lg text-black font-semibold">
             Sales Channel
           </h1>
-          <div>
-            <button
+          <div className="flex gap-2">
+           <button
+  onClick={handleAddClick}
+  disabled={isUploading}
+  className={`bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm transition ${
+    isUploading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-[#48b55a]'
+  }`}
+>
+  {isUploading ? (
+    <div className="flex items-center gap-2">
+      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+      <span>Importing...</span>
+    </div>
+  ) : (
+    'Import'
+  )}
+</button>
+
+<input
+  type="file"
+  accept=".csp,.csv,.txt"
+  ref={fileInputRef}
+  onChange={handleFileUpload}
+  className="hidden"
+/>
+ 
+<button
               onClick={() => setIsOpenpop(true)}
               className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition"
             >
@@ -494,6 +662,7 @@ const TableWithCheckboxes = () => {
             </button>
 
           </div>
+          {message && <p className="mt-4 text-green-600 font-semibold">{message}</p>}
         </div>
 
         <div className="rounded-xl border w-[300px] lg:w-full md:w-full bg-white border-gray-300 shadow-lg overflow-x-hidden">
@@ -518,12 +687,6 @@ const TableWithCheckboxes = () => {
                 {region}
               </button>
             ))}
-            {/* <button
-            onClick={() => setShowButtons(true)}
-            className="hover:bg-[#449ae6] p-2 rounded-md text-gray-700"
-          >
-            Archived
-          </button> */}
           </div>
 
           <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center border-b border-gray-200">
@@ -795,16 +958,6 @@ const TableWithCheckboxes = () => {
                 <table className="w-full border-collapse text-sm">
                   <thead>
                     <tr className="text-xs">
-                      {/* <th className="p-2 border-b w-12 text-center">
-                      <input
-                        type="checkbox"
-                        checked={
-                          paginatedData.length > 0 &&
-                          selectedRows.length === paginatedData.length
-                        }
-                        onChange={toggleSelectAll}
-                      />
-                    </th> */}
                       <th className="p-2 border-b text-center">Id</th>
 
                       <th className="p-2 border-b text-center">Sales Channel</th>
@@ -1009,16 +1162,6 @@ const TableWithCheckboxes = () => {
             }}
           />
         )}
-
-        {/* {isEditPopupOpen && editingRow && (
-        <EditDetailsPopup
-          onClose={() => {
-            setIsEditPopupOpen(false);
-            setEditingRow(null);
-          }}
-          rowData={editingRow}
-        />
-      )} */}
       </div>
     </div>
   );

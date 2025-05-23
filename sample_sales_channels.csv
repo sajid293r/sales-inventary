@@ -1,0 +1,6 @@
+salesChannelName,salesChannelType,suburbState,emailPlatforminvoice,payementterm,company,phone,email
+Channel 1,Platform,USA,true,30 Days,Company A,123-456-7890,email1@example.com
+Channel 2,Price List,UK,false,60 Days,Company B,987-654-3210,email2@example.com
+Channel 3,Dropshiper,India,true,90 Days,Company C,456-789-0123,email3@example.com
+Channel 4,DropshiperNZ,Australia,true,14 Days,Company D,789-012-3456,email4@example.com
+Channel 5,Others,Germany,false,7 Days,Company E,234-567-8901,email5@example.com 

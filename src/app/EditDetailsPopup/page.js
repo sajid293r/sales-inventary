@@ -27,21 +27,60 @@ const EditDetailsPopup = ({ onClose, rowData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
+    // Show loading toast
+    const loadingToast = toast.loading(
+      <div className="flex items-center gap-3">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+        <div className="flex flex-col">
+          <p className="font-semibold">Updating Sales Channel</p>
+          <p className="text-sm opacity-90">Please wait...</p>
+        </div>
+      </div>
+    );
+
     try {
       const result = await submitAction({
         ...billingInfo,
-        _id: rowData._id
+        _id: rowData._id // Include the _id for update
       });
-
+      
+      // Dismiss loading toast
+      toast.dismiss(loadingToast);
+      
       if (result.success) {
-        toast.success('Sales channel updated successfully');
+        toast.success(
+          <div className="flex items-center gap-2">
+            <span className="text-lg">✨</span>
+            <div>
+              <p className="font-semibold">Update Successful</p>
+              <p className="text-sm opacity-90">Changes have been saved</p>
+            </div>
+          </div>
+        );
         onClose();
       } else {
-        toast.error(result.error || 'Failed to update sales channel');
+        toast.error(
+          <div className="flex items-center gap-2">
+            <span className="text-lg">❌</span>
+            <div>
+              <p className="font-semibold">Update Failed</p>
+              <p className="text-sm opacity-90">{result.error}</p>
+            </div>
+          </div>
+        );
       }
     } catch (error) {
-      toast.error('An error occurred while updating');
-      console.error('Submit error:', error);
+      toast.dismiss(loadingToast);
+      toast.error(
+        <div className="flex items-center gap-2">
+          <span className="text-lg">⚠️</span>
+          <div>
+            <p className="font-semibold">Error</p>
+            <p className="text-sm opacity-90">{error.message || 'An unexpected error occurred'}</p>
+          </div>
+        </div>
+      );
     } finally {
       setIsLoading(false);
     }
@@ -685,11 +724,14 @@ const EditDetailsPopup = ({ onClose, rowData }) => {
                           className="flex border border-gray-300 rounded p-2 text-sm w-3/4"
                         >
                           <option value="">--- Please Select ----</option>
-                          <option value="7 Day">7 Day</option>
+                          <option value="7 Days">7 Days</option>
                           <option value="14 Days">14 Days</option>
-                          <option value="15 Days">15 Days</option>
-                          <option value="Net 30">Net 30</option>
-                          <option value="Prepaid">Prepaid</option>
+                          <option value="30Days">30 Days</option>
+                         
+                          <option value="60 Days">60 Days</option>
+                          <option value="90 Days">90 Days</option>
+                          <option value="120 Days">120 Days</option>
+                         
                         </select>
                       </div>
                       {/* <div className="flex items-center">
