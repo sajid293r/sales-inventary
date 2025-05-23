@@ -391,7 +391,7 @@ const [message, setMessage] = useState('');
           <span className="text-lg">🗑️</span>
           <p className="font-semibold">Confirm Delete</p>
         </div>
-        <p className="text-sm opacity-90">Are you sure you want to delete "{name}" sales channel?</p>
+        <p className="text-sm opacity-90">{`Are you sure you want to delete "${name}" sales channel?`}</p>
         <div className="flex gap-2 mt-2">
           <button
             onClick={() => {
@@ -432,7 +432,7 @@ const handleDeleteConfirm = async (id, name) => {
             <span className="text-lg">✅</span>
             <div>
               <p className="font-semibold">Deleted Successfully</p>
-              <p className="text-sm opacity-90">"{name}" has been removed</p>
+              <p className="text-sm opacity-90">{`"{name}" has been removed`}</p>
             </div>
           </div>
         );
