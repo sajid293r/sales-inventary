@@ -432,7 +432,7 @@ const handleDeleteConfirm = async (id, name) => {
             <span className="text-lg">✅</span>
             <div>
               <p className="font-semibold">Deleted Successfully</p>
-              <p className="text-sm opacity-90">{`"{name}" has been removed`}</p>
+              <p className="text-sm opacity-90">{`"${name}" has been removed`}</p>
             </div>
           </div>
         );
@@ -471,6 +471,23 @@ const handleAddClick = () => {
 const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // Check file extension
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    if (!['csv'].includes(fileExtension)) {
+      toast.error(
+        <div className="flex items-center gap-2">
+          <span className="text-lg">⚠️</span>
+          <div>
+            <p className="font-semibold">Invalid File Type</p>
+            <p className="text-sm opacity-90">Please upload only CSV files</p>
+          </div>
+        </div>
+      );
+      // Reset file input
+      e.target.value = '';
+      return;
+    }
 
     setIsUploading(true);
     
