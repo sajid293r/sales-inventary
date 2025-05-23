@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ST } from "next/dist/shared/lib/utils";
 
 const salesChannelSchema = new mongoose.Schema({
   nzDropshipping: Boolean,
@@ -69,6 +70,7 @@ const salesChannelSchema = new mongoose.Schema({
   roundingLow: String,
   roundingHighcheckbox: Boolean,
   roundingHigh: String,
+  versioncheckbox:Boolean,
 }, { timestamps: true });
 
 export default mongoose.models.SalesChannel || mongoose.model("SalesChannel", salesChannelSchema);

@@ -1094,15 +1094,15 @@ const HeaderAddSale = ({ onClose, rowData }) => {
 
                         <div className="flex items-start gap-3 pt-2">
                           <input type="checkbox"
-                            id="Version5"
-                            name="Version5"
-                            // checked={billingInfo.Version5 || false}
-                            checked={!!billingInfo.Version5}
+                            id="versioncheckbox"
+                            name="versioncheckbox"
+                            // checked={billingInfo.roundingHighcheckbox || false}
+                            checked={!!billingInfo.versioncheckbox}
 
                             onChange={e =>
                               setBillingInfo(prev => ({
                                 ...prev,
-                                Version5: e.target.checked
+                                versioncheckbox: e.target.checked
                               }))
                             }
                           />

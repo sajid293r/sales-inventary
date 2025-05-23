@@ -1095,18 +1095,19 @@ const EditDetailsPopup = ({ onClose, rowData }) => {
 
                           <div className="flex items-start gap-3 pt-2">
                             <input type="checkbox"
-                              id="Version5"
-                              name="Version5"
+                              id="version5"
+                              name="version5"
                               // checked={billingInfo.Version5 || false}
-                              checked={!!billingInfo.Version5}
+                              checked={!!billingInfo.version5}
 
                               onChange={e =>
                                 setBillingInfo(prev => ({
                                   ...prev,
-                                  Version5: e.target.checked
+                                  version5: e.target.checked
                                 }))
                               }
                             />
+                               
                             <label className=" text-sm">
                               Exclude GST Price (Version 5: GST has to be excluded after all round ups)
                             </label>
