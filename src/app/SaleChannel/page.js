@@ -432,7 +432,7 @@ const handleDeleteConfirm = async (id, name) => {
             <span className="text-lg">✅</span>
             <div>
               <p className="font-semibold">Deleted Successfully</p>
-              <p className="text-sm opacity-90">{`"{name}" has been removed`}</p>
+              <p className="text-sm opacity-90">{`"${name}" has been removed`}</p>
             </div>
           </div>
         );
