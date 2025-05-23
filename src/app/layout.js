@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./Navbar/page";
 import Slidebar from "./Slidebar/page";
+import { Toaster } from 'react-hot-toast';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,6 +26,38 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
+          gutter={8}
+          containerClassName=""
+          containerStyle={{}}
+          toastOptions={{
+            // Default options for specific types
+            success: {
+              duration: 3000,
+              style: {
+                background: '#10B981',
+                color: 'white',
+                padding: '16px',
+                borderRadius: '10px',
+                fontSize: '14px',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              },
+            },
+            error: {
+              duration: 4000,
+              style: {
+                background: '#EF4444',
+                color: 'white',
+                padding: '16px',
+                borderRadius: '10px',
+                fontSize: '14px',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              },
+            },
+          }}
+        />
         <Navbar />
         <div className="flex ">
           <div className="fixed ">
