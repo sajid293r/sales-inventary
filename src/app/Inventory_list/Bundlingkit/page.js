@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Suspense } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import Link from "next/link";
 import { useSearchParams } from 'next/navigation';
@@ -72,7 +72,7 @@ const initialFormState = {
   }
 };
 
-const Page = () => {
+const BundlingkitContent = () => {
   const searchParams = useSearchParams();
   const action = searchParams.get('action') || 'add';
   const mounted = useRef(false);
@@ -935,6 +935,14 @@ const Page = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const Page = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BundlingkitContent />
+    </Suspense>
   );
 };
 
