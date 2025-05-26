@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { useState } from 'react';
-const page = () => {
+const Page = () => {
     
   const [showSection, setShowSection] = useState(false);
 
@@ -27,4 +27,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

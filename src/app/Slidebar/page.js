@@ -425,6 +425,13 @@ const Sidebar = () => {
             expanded={expanded}
           />
         </Link>
+          <Link href="/SaleChannel">
+          <IconWrapper
+            icon={<GiDatabase size={24} />}
+            label="sale channel"
+            expanded={expanded}
+          />
+        </Link>
         <Link href="/Inventory_list/CreateMasterlist">
           <IconWrapper
             icon={<GiDatabase size={24} />}

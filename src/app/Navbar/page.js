@@ -44,7 +44,7 @@ const Page = () => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [popoverRefs.messages, popoverRefs.notifications, popoverRefs.profile]);
 
   return (
     <nav className="bg-white shadow-sm  shadow-gray-600 px-4 py-2 flex items-center justify-between relative ">

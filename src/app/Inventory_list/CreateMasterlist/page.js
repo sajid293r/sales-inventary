@@ -2,7 +2,7 @@
 import React , { useState } from 'react'
 import { FaArrowLeft } from "react-icons/fa";
 import Link from "next/link";
-const page = () => {
+const Page = () => {
    const [message, setMessage] = useState('');
    const [message1, setMessage1] = useState('');
   return (
@@ -132,4 +132,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

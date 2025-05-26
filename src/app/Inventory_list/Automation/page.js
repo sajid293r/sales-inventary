@@ -208,7 +208,7 @@ function ServiceOpener() {
         )}
 
         {input && !["service"].includes(input) && (
-          <p className="text-red-500 mt-4 text-sm">Please type 'service'</p>
+<p className="text-red-500 mt-4 text-sm">Please type &apos;service&apos;</p>
         )}
       </div>
     </div>
