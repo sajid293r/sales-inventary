@@ -242,8 +242,8 @@ const BundlingkitContent = () => {
               onClick={handleSave}
               className="bg-[#52ce66] text-white py-1 sm:py-2 px-3 sm:px-4 rounded-md text-sm hover:bg-[#48b55a] transition"
             >
-              Save
-            </button>
+            Save
+          </button>
           )}
         </div>
       </div>

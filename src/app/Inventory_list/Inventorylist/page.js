@@ -2,9 +2,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaTrash } from "react-icons/fa";
 import SaleChannelPopup from "../../Popup/page";
 import { getAllInventory } from "@/actions/getAllInventory";
+import { deleteInventory } from "@/actions/deleteInventory";
 
 const TableWithCheckboxes = () => {
   const [selectedRows, setSelectedRows] = useState([]);
@@ -317,7 +318,17 @@ const TableWithCheckboxes = () => {
     setCurrentPage(1);
     setSelectedRows([]);
   };
-
+  const handleDelete = async (id,name) => {
+    if (confirm(`Are you sure you want to delete "${name}" item?`)) {
+      const res = await deleteInventory(id);
+      if (res.success) {
+        setInventory(prev => prev.filter(item => item._id !== id));
+      } else {
+        alert("Failed to delete: " + res.error);
+      }
+    }
+  };
+ 
   return (
     <>
       <div
@@ -353,8 +364,8 @@ const TableWithCheckboxes = () => {
               <button
                 key={region}
                 className={`py-1.5 px-3 rounded-md text-sm transition ${filters.region === region
-                    ? "bg-[#449ae6] text-white"
-                    : "text-gray-700 hover:bg-[#449ae6] hover:text-white"
+                  ? "bg-[#449ae6] text-white"
+                  : "text-gray-700 hover:bg-[#449ae6] hover:text-white"
                   }`}
                 onClick={() => handleRegionFilter(region)}
               >
@@ -552,6 +563,8 @@ const TableWithCheckboxes = () => {
                 <th className="p-2 border-b text-center">Selling Price</th>
                 <th className="p-2 border-b text-center">Stock Level</th>
                 <th className="p-2 border-b text-center">Status</th>
+                <th className="p-2 border-b text-center">Action</th>
+
               </tr>
             </thead>
             <tbody>
@@ -579,15 +592,27 @@ const TableWithCheckboxes = () => {
                   <td className="p-2 border-b text-center">
                     <span
                       className={`py-1 px-4 rounded-md text-xs ${row.status === "Active"
-                          ? "bg-green-100 text-green-700"
-                          : row.status === "Inactive"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-gray-100 text-gray-700"
+                        ? "bg-green-100 text-green-700"
+                        : row.status === "Inactive"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-gray-100 text-gray-700"
                         }`}
                     >
                       {row.status || "N/A"}
                     </span>
                   </td>
+                  <td className="p-2 border-b text-center">
+                    <button
+                      className="text-red-600 hover:text-red-800 transition"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent row click
+                        handleDelete(row._id, row.productTitle);
+                      }}
+                    >
+                      <FaTrash className="cursor-pointer" />
+                    </button>
+                  </td>
+
                 </tr>
               ))}
             </tbody>
@@ -628,10 +653,10 @@ const TableWithCheckboxes = () => {
                     <td>
                       <span
                         className={`inline-block px-2 py-0.5 rounded text-xs ${row.status === "Active"
-                            ? "bg-green-100 text-green-700"
-                            : row.status === "Inactive"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-gray-100 text-gray-700"
+                          ? "bg-green-100 text-green-700"
+                          : row.status === "Inactive"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-gray-100 text-gray-700"
                           }`}
                       >
                         {row.status || "N/A"}
