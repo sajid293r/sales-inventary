@@ -25,45 +25,45 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
-      >
-        <Toaster
-          position="top-center"
-          reverseOrder={false}
-          gutter={8}
-          containerClassName=""
-          containerStyle={{}}
-          toastOptions={{
-            // Default options for specific types
-            success: {
-              duration: 3000,
-              style: {
-                background: '#10B981',
-                color: 'white',
-                padding: '16px',
-                borderRadius: '10px',
-                fontSize: '14px',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              },
-            },
-            error: {
-              duration: 4000,
-              style: {
-                background: '#EF4444',
-                color: 'white',
-                padding: '16px',
-                borderRadius: '10px',
-                fontSize: '14px',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              },
-            },
-          }}
-        />
-        <Navbar />
+>
+  <Toaster
+    position="top-center"
+    reverseOrder={false}
+    gutter={8}
+    containerClassName=""
+    containerStyle={{}}
+    toastOptions={{
+      // Default options for specific types
+      success: {
+        duration: 3000,
+        style: {
+          background: '#10B981',
+          color: 'white',
+          padding: '16px',
+          borderRadius: '10px',
+          fontSize: '14px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        },
+      },
+      error: {
+        duration: 4000,
+        style: {
+          background: '#EF4444',
+          color: 'white',
+          padding: '16px',
+          borderRadius: '10px',
+          fontSize: '14px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        },
+      },
+    }}
+  />
+  <Navbar />
         <div className="flex ">
           <div className="fixed ">
             <Slidebar />
-          </div>
-          <div className="  md:ml-45 lg:ml-45 mt-5">{children}</div>
+          </div>        
+            <div className="  md:ml-45 lg:ml-45 mt-5">{children}</div>
         </div>
       </body>
     </html>
