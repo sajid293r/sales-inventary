@@ -14,7 +14,14 @@ export const submitProductAction = async (formData) => {
         type: "validation_error"
       };
     }
-
+    const title = formData.productTitle.trim();
+    if (title === title.toLowerCase() || title === title.toUpperCase()) {
+      return {
+        success: false,
+        error: "Product title must not be all lowercase or all uppercase",
+        type: "format_error"
+      };
+    }
     await connectDB();
 
     // Prepare data with explicit imageName

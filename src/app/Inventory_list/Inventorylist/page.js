@@ -47,6 +47,7 @@ const TableWithCheckboxes = () => {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [inventory, setInventory] = useState([]);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const buttonsRef = useRef(null);
   const filterButtonRef = useRef(null);
@@ -61,14 +62,19 @@ const TableWithCheckboxes = () => {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
+        setIsLoading(true);
         const res = await getAllInventory();
         if (res.success) {
           setInventory(res.data);
         } else {
           setError(res.error);
+          toast.error("Failed to load inventory data");
         }
       } catch (err) {
         setError(err.message);
+        toast.error("Error loading inventory data");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -870,6 +876,24 @@ const TableWithCheckboxes = () => {
     }
   };
 
+  // Add Loader component
+  const Loader = () => (
+    <div className="flex flex-col items-center justify-center min-h-[400px] w-full">
+      <div className="relative w-20 h-20">
+        <div className="absolute top-0 left-0 right-0 bottom-0">
+          <div className="border-4 border-gray-200 border-t-[#52ce66] rounded-full w-20 h-20 animate-spin"></div>
+        </div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+            <div className="w-6 h-6 border-2 border-[#52ce66] rounded-full"></div>
+          </div>
+        </div>
+      </div>
+      <p className="mt-4 text-gray-600 text-sm font-medium">Loading Inventory...</p>
+      <p className="text-gray-400 text-xs mt-2">Please wait while we fetch the data</p>
+    </div>
+  );
+
   return (
     <>
       <ToastContainer
@@ -903,21 +927,27 @@ const TableWithCheckboxes = () => {
             <button 
               className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition cursor-pointer"
               onClick={handleImportClick}
+              disabled={isLoading}
             >
               Import
             </button>
             <button 
               className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition cursor-pointer"
               onClick={handleExportSelectedCSV}
+              disabled={isLoading}
             >
               Export
             </button>
-            <button className="text-md hover:bg-gray-100 transition">
+            <button 
+              className="text-md hover:bg-gray-100 transition"
+              disabled={isLoading}
+            >
               Bundling/Kitting
             </button>
             <button
               className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition cursor-pointer"
               onClick={() => setIsOpenpop(true)}
+              disabled={isLoading}
             >
               Create Inventory
             </button>
@@ -927,429 +957,435 @@ const TableWithCheckboxes = () => {
       </div>
 
       <div className="rounded-xl border w-[300px] lg:w-full md:w-full bg-white border-gray-300 shadow-lg overflow-x-hidden">
-        <div className="flex flex-wrap gap-2 p-2 border-b border-gray-200">
-          {["All", "In Stock", "Out of Stock", "Product Listed", "Archived"].map(
-            (region) => (
-              <button
-                key={region}
-                className={`py-1.5 px-3 rounded-md text-sm transition ${filters.region === region
-                    ? "bg-[#449ae6] text-white"
-                    : "text-gray-700 hover:bg-[#449ae6] hover:text-white"
-                  }`}
-                onClick={() => handleRegionFilter(region)}
-              >
-                {region}
-              </button>
-            )
-          )}
-        </div>
-
-        <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center border-b border-gray-200">
-          <div className="relative w-full sm:w-80">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder="Search..."
-              value={searchQuery ?? ""}
-              onChange={(e) => {
-                setSearchQuery(e.target.value || "");
-                setCurrentPage(1);
-              }}
-              className="pl-10 pr-3 py-1 w-full md:w-[780px] lg:[780px] border border-gray-300 rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
-            />
-          </div>
-          <div className="flex gap-2 relative w-full sm:w-auto justify-center sm:justify-end">
-            <button
-              ref={filterButtonRef}
-              className="border border-gray-300 py-1 px-4 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
-              onClick={() => toggleDropdown("filterPanel")}
-            >
-              Filter
-            </button>
-            <button
-              ref={sortButtonRef}
-              className="border py-1 px-4 border-gray-300 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
-              onClick={() => toggleDropdown("sortTooltip")}
-            >
-              Sort
-            </button>
-            {dropdown.sortTooltip && (
-              <div
-                ref={sortTooltipRef}
-                className="md:w-[170px] lg:w-[170px] w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm absolute z-30 top-full right-0 mt-2"
-              >
-                <form className="space-y-1">
-                  <label className="flex items-center space-x-3">
-                    <input
-                      type="radio"
-                      name="sort"
-                      value="name"
-                      checked={sortOptions.field === "name"}
-                      onChange={() => handleSortChange("name")}
-                      className="text-blue-600 focus:ring-blue-500 focus:ring-2"
-                    />
-                    <span className="text-gray-700 text-sm font-semibold">Name</span>
-                  </label>
-                  <label className="flex items-center space-x-2 whitespace-nowrap">
-                    <input
-                      type="radio"
-                      name="sort"
-                      value="dateCreated"
-                      checked={sortOptions.field === "dateCreated"}
-                      onChange={() => handleSortChange("dateCreated")}
-                      className="text-blue-600 focus:ring-blue-500 focus:ring-2"
-                    />
-                    <span className="text-gray-700 text-sm font-semibold">Date Created</span>
-                  </label>
-                  <label className="flex items-center space-x-3">
-                    <input
-                      type="radio"
-                      name="sort"
-                      value="dateModified"
-                      checked={sortOptions.field === "dateModified"}
-                      onChange={() => handleSortChange("dateModified")}
-                      className="text-blue-600 focus:ring-blue-500 focus:ring-2"
-                    />
-                    <span className="text-gray-700 text-sm font-semibold">Date Modified</span>
-                  </label>
-                  <div className="border-t border-gray-200 mt-2 pt-2">
-                    <label className="flex items-center space-x-3 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="direction"
-                        checked={sortOptions.direction === "asc"}
-                        onChange={() => setSortOptions(prev => ({ ...prev, direction: "asc" }))}
-                        className="text-blue-600 focus:ring-blue-500 focus:ring-2"
-                      />
-                      <div className="flex items-center space-x-2">
-                        <MdArrowUpward />
-                        <span className="text-gray-700 text-sm font-semibold">Ascending</span>
-                      </div>
-                    </label>
-                    <label className="flex items-center space-x-3 mt-1 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="direction"
-                        checked={sortOptions.direction === "desc"}
-                        onChange={() => setSortOptions(prev => ({ ...prev, direction: "desc" }))}
-                        className="text-blue-600 focus:ring-blue-500 focus:ring-2"
-                      />
-                      <div className="flex items-center space-x-2">
-                        <MdArrowDownward />
-                        <span className="text-gray-700 text-sm font-semibold">Descending</span>
-                      </div>
-                    </label>
-                  </div>
-                </form>
-              </div>
-            )}
-            {dropdown.filterPanel && (
-              <div
-                ref={filterPanelRef}
-                className="md:w-[250px] lg:w-[250px] w-full space-y-3 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm absolute z-30 top-full right-0 mt-2"
-              >
-                <form className="space-y-3">
-                  {["Can be Sold", "Can be Purchased", "Bundle", "Kitting", "Spare Parts", "Assembly Required"].map((type) => (
-                    <label key={type} className="flex items-center space-x-3">
-                      <input
-                        type="radio"
-                        name="filterType"
-                        value={type}
-                        checked={filterType === type}
-                        onChange={() => setFilterType(type)}
-                        className="text-blue-600 focus:ring-blue-500 focus:ring-2"
-                      />
-                      <span className="text-gray-700 text-sm font-semibold">{type}</span>
-                    </label>
-                  ))}
-                  <label className="flex items-center space-x-3">
-                    <input
-                      type="radio"
-                      name="filterType"
-                      value="none"
-                      checked={filterType === "none"}
-                      onChange={() => setFilterType("none")}
-                      className="text-blue-600 focus:ring-blue-500 focus:ring-2"
-                    />
-                    <span className="text-gray-700 text-sm font-semibold">Status</span>
-                  </label>
-                  
-                  <select 
-                    className="text-sm border w-full p-1 rounded-md" 
-                    value={selectedStatus}
-                    onChange={(e) => setSelectedStatus(e.target.value)}
-                  >
-                    <option value="">All Status</option>
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
-                  </select>
-
-                  <label className="flex gap-4">
-                    <input
-                      type="radio"
-                      name="filterType"
-                      value="none"
-                      checked={filterType1 === "none"}
-                      onChange={() => setFilterType1("none")}
-                      className="text-blue-600 focus:ring-blue-500 focus:ring-2"
-                    />
-                    <span className="text-gray-700 text-sm font-semibold">Brand</span>
-                  </label>
-                  
-                  <select 
-                    className="text-sm border w-full p-1 rounded-md"
-                    value={selectedBrand}
-                    onChange={(e) => setSelectedBrand(e.target.value)}
-                  >
-                    <option value="">All Brands</option>
-                    {/* Get unique brands from inventory */}
-                    {[...new Set(inventory.map(item => item.brand))].filter(Boolean).map(brand => (
-                      <option key={brand} value={brand}>{brand}</option>
-                    ))}
-                  </select>
-
-                  {/* Clear Filters Button */}
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <>
+            <div className="flex flex-wrap gap-2 p-2 border-b border-gray-200">
+              {["All", "In Stock", "Out of Stock", "Product Listed", "Archived"].map(
+                (region) => (
                   <button
-                    type="button"
-                    onClick={() => {
-                      setFilterType("");
-                      setFilterType1("");
-                      setSelectedStatus("");
-                      setSelectedBrand("");
-                    }}
-                    className="w-full mt-2 bg-gray-100 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-200 text-sm"
+                    key={region}
+                    className={`py-1.5 px-3 rounded-md text-sm transition ${filters.region === region
+                        ? "bg-[#449ae6] text-white"
+                        : "text-gray-700 hover:bg-[#449ae6] hover:text-white"
+                      }`}
+                    onClick={() => handleRegionFilter(region)}
                   >
-                    Clear Filters
+                    {region}
                   </button>
-                </form>
-              </div>
-            )}
-          </div>
-        </div>
+                )
+              )}
+            </div>
 
-        <div ref={buttonsRef} className="flex gap-4 mb-2 px-4">
-          <div className="flex gap-1">
-            <div className="border border-gray-300 p-1 px-4 rounded-md gap-2 flex items-center">
-              <div className="flex flex-col items-center">
-              {selectedRows.length}
-                {/* <input
-                  type="checkbox"
-                  checked={filteredData.length > 0 && selectedRows.length === filteredData.length}
-                  onChange={toggleSelectAll}
-                  title="Select all inventory items"
-                /> */}
-                {/* <span className="text-xs text-gray-500 mt-1">
-                  {selectedRows.length} / {filteredData.length}
-                </span> */}
+            <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center border-b border-gray-200">
+              <div className="relative w-full sm:w-80">
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery ?? ""}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value || "");
+                    setCurrentPage(1);
+                  }}
+                  className="pl-10 pr-3 py-1 w-full md:w-[780px] lg:[780px] border border-gray-300 rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
+                />
+              </div>
+              <div className="flex gap-2 relative w-full sm:w-auto justify-center sm:justify-end">
+                <button
+                  ref={filterButtonRef}
+                  className="border border-gray-300 py-1 px-4 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
+                  onClick={() => toggleDropdown("filterPanel")}
+                >
+                  Filter
+                </button>
+                <button
+                  ref={sortButtonRef}
+                  className="border py-1 px-4 border-gray-300 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
+                  onClick={() => toggleDropdown("sortTooltip")}
+                >
+                  Sort
+                </button>
+                {dropdown.sortTooltip && (
+                  <div
+                    ref={sortTooltipRef}
+                    className="md:w-[170px] lg:w-[170px] w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm absolute z-30 top-full right-0 mt-2"
+                  >
+                    <form className="space-y-1">
+                      <label className="flex items-center space-x-3">
+                        <input
+                          type="radio"
+                          name="sort"
+                          value="name"
+                          checked={sortOptions.field === "name"}
+                          onChange={() => handleSortChange("name")}
+                          className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 text-sm font-semibold">Name</span>
+                      </label>
+                      <label className="flex items-center space-x-2 whitespace-nowrap">
+                        <input
+                          type="radio"
+                          name="sort"
+                          value="dateCreated"
+                          checked={sortOptions.field === "dateCreated"}
+                          onChange={() => handleSortChange("dateCreated")}
+                          className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 text-sm font-semibold">Date Created</span>
+                      </label>
+                      <label className="flex items-center space-x-3">
+                        <input
+                          type="radio"
+                          name="sort"
+                          value="dateModified"
+                          checked={sortOptions.field === "dateModified"}
+                          onChange={() => handleSortChange("dateModified")}
+                          className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 text-sm font-semibold">Date Modified</span>
+                      </label>
+                      <div className="border-t border-gray-200 mt-2 pt-2">
+                        <label className="flex items-center space-x-3 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="direction"
+                            checked={sortOptions.direction === "asc"}
+                            onChange={() => setSortOptions(prev => ({ ...prev, direction: "asc" }))}
+                            className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                          />
+                          <div className="flex items-center space-x-2">
+                            <MdArrowUpward />
+                            <span className="text-gray-700 text-sm font-semibold">Ascending</span>
+                          </div>
+                        </label>
+                        <label className="flex items-center space-x-3 mt-1 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="direction"
+                            checked={sortOptions.direction === "desc"}
+                            onChange={() => setSortOptions(prev => ({ ...prev, direction: "desc" }))}
+                            className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                          />
+                          <div className="flex items-center space-x-2">
+                            <MdArrowDownward />
+                            <span className="text-gray-700 text-sm font-semibold">Descending</span>
+                          </div>
+                        </label>
+                      </div>
+                    </form>
+                  </div>
+                )}
+                {dropdown.filterPanel && (
+                  <div
+                    ref={filterPanelRef}
+                    className="md:w-[250px] lg:w-[250px] w-full space-y-3 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm absolute z-30 top-full right-0 mt-2"
+                  >
+                    <form className="space-y-3">
+                      {["Can be Sold", "Can be Purchased", "Bundle", "Kitting", "Spare Parts", "Assembly Required"].map((type) => (
+                        <label key={type} className="flex items-center space-x-3">
+                          <input
+                            type="radio"
+                            name="filterType"
+                            value={type}
+                            checked={filterType === type}
+                            onChange={() => setFilterType(type)}
+                            className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                          />
+                          <span className="text-gray-700 text-sm font-semibold">{type}</span>
+                        </label>
+                      ))}
+                      <label className="flex items-center space-x-3">
+                        <input
+                          type="radio"
+                          name="filterType"
+                          value="none"
+                          checked={filterType === "none"}
+                          onChange={() => setFilterType("none")}
+                          className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 text-sm font-semibold">Status</span>
+                      </label>
+                      
+                      <select 
+                        className="text-sm border w-full p-1 rounded-md" 
+                        value={selectedStatus}
+                        onChange={(e) => setSelectedStatus(e.target.value)}
+                      >
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                      </select>
+
+                      <label className="flex gap-4">
+                        <input
+                          type="radio"
+                          name="filterType"
+                          value="none"
+                          checked={filterType1 === "none"}
+                          onChange={() => setFilterType1("none")}
+                          className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                        />
+                        <span className="text-gray-700 text-sm font-semibold">Brand</span>
+                      </label>
+                      
+                      <select 
+                        className="text-sm border w-full p-1 rounded-md"
+                        value={selectedBrand}
+                        onChange={(e) => setSelectedBrand(e.target.value)}
+                      >
+                        <option value="">All Brands</option>
+                        {/* Get unique brands from inventory */}
+                        {[...new Set(inventory.map(item => item.brand))].filter(Boolean).map(brand => (
+                          <option key={brand} value={brand}>{brand}</option>
+                        ))}
+                      </select>
+
+                      {/* Clear Filters Button */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFilterType("");
+                          setFilterType1("");
+                          setSelectedStatus("");
+                          setSelectedBrand("");
+                        }}
+                        className="w-full mt-2 bg-gray-100 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-200 text-sm"
+                      >
+                        Clear Filters
+                      </button>
+                    </form>
+                  </div>
+                )}
               </div>
             </div>
-            <div className="inline-block flex gap-2">
-              {/* <button 
-                className={`border border-gray-300 p-1 px-3 rounded-md text-sm ${
-                  selectedRows.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'
-                }`}
-                onClick={handleExportSelectedCSV}
-                disabled={selectedRows.length === 0}
-                title={selectedRows.length === 0 ? "Select items to export" : "Export selected items"}
-              >
-                Export Selected
-              </button> */}
-              <button className="border border-gray-300 p-1 rounded-md">
-                <select className="text-sm border-none outline-none px-2">
-                  <option value="">More Actions</option>
-                  <option value="">Bulk Edit</option>
-                  <option value="Unarchived">Bundle Update</option>
-                  <option value="Remove">Update Stock Level</option>
-                  <option value="Remove">Move to Listings</option>
-                  <option value="Remove">Export Add Notes</option>
-                </select>
-              </button>
-            </div>
-          </div>
-        </div>
 
-        <div className="hidden sm:block overflow-x-hidden">
-          <table className="w-full border-collapse text-sm ml-4">
-            <thead>
-              <tr className="text-xs bg-[#f7f7f7]">
-                <th className="p-2 border-b w-12 text-center">
+            <div ref={buttonsRef} className="flex gap-4 mb-2 px-4">
+              <div className="flex gap-1">
+                <div className="border border-gray-300 p-1 px-4 rounded-md gap-2 flex items-center">
                   <div className="flex flex-col items-center">
-                    <input
+                  {selectedRows.length}
+                    {/* <input
                       type="checkbox"
                       checked={filteredData.length > 0 && selectedRows.length === filteredData.length}
                       onChange={toggleSelectAll}
                       title="Select all inventory items"
-                    />
+                    /> */}
                     {/* <span className="text-xs text-gray-500 mt-1">
                       {selectedRows.length} / {filteredData.length}
                     </span> */}
                   </div>
-                </th>
-                <th 
-                  className="p-2 border-b text-center cursor-pointer hover:bg-gray-100"
-                  onClick={toggleSelectAll}
-                >
-                  Name
-                </th>
-                <th className="p-2 border-b text-center">SKU</th>
-                <th className="p-2 border-b text-center">RRP</th>
-                <th className="p-2 border-b text-center">Selling Price</th>
-                <th className="p-2 border-b text-center">Stock Level</th>
-                <th className="p-2 border-b text-center">Status</th>
-                <th className="p-2 border-b text-center">Action</th>
+                </div>
+                <div className="inline-block flex gap-2">
+                  {/* <button 
+                    className={`border border-gray-300 p-1 px-3 rounded-md text-sm ${
+                      selectedRows.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'
+                    }`}
+                    onClick={handleExportSelectedCSV}
+                    disabled={selectedRows.length === 0}
+                    title={selectedRows.length === 0 ? "Select items to export" : "Export selected items"}
+                  >
+                    Export Selected
+                  </button> */}
+                  <button className="border border-gray-300 p-1 rounded-md">
+                    <select className="text-sm border-none outline-none px-2">
+                      <option value="">More Actions</option>
+                      <option value="">Bulk Edit</option>
+                      <option value="Unarchived">Bundle Update</option>
+                      <option value="Remove">Update Stock Level</option>
+                      <option value="Remove">Move to Listings</option>
+                      <option value="Remove">Export Add Notes</option>
+                    </select>
+                  </button>
+                </div>
+              </div>
+            </div>
 
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData.map((row) => (
-                <tr
-                  key={row._id}
-                  className={`hover:bg-gray-50 cursor-pointer ${
-                    selectedRows.includes(row._id) ? 'bg-blue-50' : ''
-                  }`}
-                  onClick={() => handleRowClick(row)}
-                >
-                  <td className="p-2 border-b text-center w-12" onClick={(e) => e.stopPropagation()}>
-                    <input
-                      type="checkbox"
-                      checked={selectedRows.includes(row._id)}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        toggleRow(row._id);
-                      }}
-                    />
-                  </td>
-                  <td className="p-2 border-b text-center">{row.productTitle}</td>
-                  <td className="p-2 border-b text-center">{row.sku}</td>
-                  <td className="p-2 border-b text-center">${row.rrp}</td>
-                  <td className="p-2 border-b text-center">${row.sellingPrice}</td>
-                  <td className="p-2 border-b text-center">{row.stockLevel?.stocklevel}</td>
-                  <td className="p-2 border-b text-center">
-                    <span
-                      className={`py-1 px-4 rounded-md text-xs ${row.status === "Active"
-                          ? "bg-green-100 text-green-700"
-                          : row.status === "Inactive"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-gray-100 text-gray-700"
-                        }`}
+            <div className="hidden sm:block overflow-x-hidden">
+              <table className="w-full border-collapse text-sm ml-4">
+                <thead>
+                  <tr className="text-xs bg-[#f7f7f7]">
+                    <th className="p-2 border-b w-12 text-center">
+                      <div className="flex flex-col items-center">
+                        <input
+                          type="checkbox"
+                          checked={filteredData.length > 0 && selectedRows.length === filteredData.length}
+                          onChange={toggleSelectAll}
+                          title="Select all inventory items"
+                        />
+                        {/* <span className="text-xs text-gray-500 mt-1">
+                          {selectedRows.length} / {filteredData.length}
+                        </span> */}
+                      </div>
+                    </th>
+                    <th 
+                      className="p-2 border-b text-center cursor-pointer hover:bg-gray-100"
+                      onClick={toggleSelectAll}
                     >
-                      {row.status || "N/A"}
-                    </span>
-                  </td>
-                  <td className="p-2 border-b text-center">
-                    <button
-                      onClick={(e) => handleEdit(e, row)}
-                      className="text-blue-500 hover:text-blue-700 mx-1 cursor-pointer"
-                      title="Edit"
-                    >
-                      <FaEdit />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete(row._id, row.productTitle);
-                      }}
-                      className="text-red-500 hover:text-red-700 mx-1 cursor-pointer"
-                      title="Delete"
-                    >
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                      Name
+                    </th>
+                    <th className="p-2 border-b text-center">SKU</th>
+                    <th className="p-2 border-b text-center">RRP</th>
+                    <th className="p-2 border-b text-center">Selling Price</th>
+                    <th className="p-2 border-b text-center">Stock Level</th>
+                    <th className="p-2 border-b text-center">Status</th>
+                    <th className="p-2 border-b text-center">Action</th>
 
-        <div className="block sm:hidden divide-y divide-gray-200 px-4">
-          {paginatedData.map((row) => (
-            <div
-              key={row._id}
-              className="p-3 bg-gray-50 mb-3 rounded-lg shadow-sm cursor-pointer"
-              // onClick={() => handleRowClick(row)}
-            >
-              <table className="w-full text-sm">
+                  </tr>
+                </thead>
                 <tbody>
-                  <tr>
-                    <td className="font-semibold py-1">Name</td>
-                    <td>{row.productTitle}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold py-1">SKU</td>
-                    <td>{row.sku}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold py-1">RRP</td>
-                    <td>${row.rrp}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold py-1">Selling Price</td>
-                    <td>${row.sellingPrice}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold py-1">Stock Level</td>
-                    <td>{row.stockLevel?.stocklevel}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold py-1">Status</td>
-                    <td>
-                      <span
-                        className={`inline-block px-2 py-0.5 rounded text-xs ${row.status === "Active"
-                            ? "bg-green-100 text-green-700"
-                            : row.status === "Inactive"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                      >
-                        {row.status || "N/A"}
-                      </span>
-                    </td>
-                  </tr>
+                  {paginatedData.map((row) => (
+                    <tr
+                      key={row._id}
+                      className={`hover:bg-gray-50 cursor-pointer ${
+                        selectedRows.includes(row._id) ? 'bg-blue-50' : ''
+                      }`}
+                      onClick={() => handleRowClick(row)}
+                    >
+                      <td className="p-2 border-b text-center w-12" onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          checked={selectedRows.includes(row._id)}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            toggleRow(row._id);
+                          }}
+                        />
+                      </td>
+                      <td className="p-2 border-b text-center">{row.productTitle}</td>
+                      <td className="p-2 border-b text-center">{row.sku}</td>
+                      <td className="p-2 border-b text-center">${row.rrp}</td>
+                      <td className="p-2 border-b text-center">${row.sellingPrice}</td>
+                      <td className="p-2 border-b text-center">{row.stockLevel?.stocklevel}</td>
+                      <td className="p-2 border-b text-center">
+                        <span
+                          className={`py-1 px-4 rounded-md text-xs ${row.status === "Active"
+                              ? "bg-green-100 text-green-700"
+                              : row.status === "Inactive"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-gray-100 text-gray-700"
+                            }`}
+                        >
+                          {row.status || "N/A"}
+                        </span>
+                      </td>
+                      <td className="p-2 border-b text-center">
+                        <button
+                          onClick={(e) => handleEdit(e, row)}
+                          className="text-blue-500 hover:text-blue-700 mx-1 cursor-pointer"
+                          title="Edit"
+                        >
+                          <FaEdit />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(row._id, row.productTitle);
+                          }}
+                          className="text-red-500 hover:text-red-700 mx-1 cursor-pointer"
+                          title="Delete"
+                        >
+                          <FaTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-          ))}
-        </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between p-2 py-4 mx-2 gap-4">
-          <div>
-            <h1 className="text-black text-sm font-bold">
-              Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
-              {totalItems} entries
-            </h1>
-          </div>
-          <div className="flex gap-2 flex-wrap justify-center">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={`border border-gray-400 px-2 rounded-md text-sm ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-            >
-              {"<"}
-            </button>
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={`border border-gray-400 px-2 rounded-md text-sm ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-            >
-              {">"}
-            </button>
-          </div>
-          <div className="w-14">
-            <select
-              value={itemsPerPage}
-              onChange={handleItemsPerPageChange}
-              className="px-2 py-1 text-sm border rounded-md w-full"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-            </select>
-          </div>
-        </div>
+            <div className="block sm:hidden divide-y divide-gray-200 px-4">
+              {paginatedData.map((row) => (
+                <div
+                  key={row._id}
+                  className="p-3 bg-gray-50 mb-3 rounded-lg shadow-sm cursor-pointer"
+                  // onClick={() => handleRowClick(row)}
+                >
+                  <table className="w-full text-sm">
+                    <tbody>
+                      <tr>
+                        <td className="font-semibold py-1">Name</td>
+                        <td>{row.productTitle}</td>
+                      </tr>
+                      <tr>
+                        <td className="font-semibold py-1">SKU</td>
+                        <td>{row.sku}</td>
+                      </tr>
+                      <tr>
+                        <td className="font-semibold py-1">RRP</td>
+                        <td>${row.rrp}</td>
+                      </tr>
+                      <tr>
+                        <td className="font-semibold py-1">Selling Price</td>
+                        <td>${row.sellingPrice}</td>
+                      </tr>
+                      <tr>
+                        <td className="font-semibold py-1">Stock Level</td>
+                        <td>{row.stockLevel?.stocklevel}</td>
+                      </tr>
+                      <tr>
+                        <td className="font-semibold py-1">Status</td>
+                        <td>
+                          <span
+                            className={`inline-block px-2 py-0.5 rounded text-xs ${row.status === "Active"
+                                ? "bg-green-100 text-green-700"
+                                : row.status === "Inactive"
+                                  ? "bg-red-100 text-red-700"
+                                  : "bg-gray-100 text-gray-700"
+                              }`}
+                          >
+                            {row.status || "N/A"}
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-between p-2 py-4 mx-2 gap-4">
+              <div>
+                <h1 className="text-black text-sm font-bold">
+                  Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
+                  {totalItems} entries
+                </h1>
+              </div>
+              <div className="flex gap-2 flex-wrap justify-center">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`border border-gray-400 px-2 rounded-md text-sm ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                >
+                  {"<"}
+                </button>
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`border border-gray-400 px-2 rounded-md text-sm ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                >
+                  {">"}
+                </button>
+              </div>
+              <div className="w-14">
+                <select
+                  value={itemsPerPage}
+                  onChange={handleItemsPerPageChange}
+                  className="px-2 py-1 text-sm border rounded-md w-full"
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
