@@ -119,7 +119,7 @@ const TableWithCheckboxes = () => {
     fileName: `File ${String(i + 1).padStart(2, "0")}`,
     description: `Description for file ${i + 1}`,
     dateCreation: `2025-05-${String((i % 20) + 1).padStart(2, "0")}`,
-    status: i % 2 === 0 ? "Active" : "Inactive",
+    status: i % 2 === 0 ? "Complete" : "Incomplete",
     action: i % 2 === 0 ? "Download" : "Re-upload",
     region: ["Asia", "North America", "Europe", "Africa"][i % 4],
     type: i % 2 === 0 ? "Online" : "Retail",
@@ -315,7 +315,7 @@ const TableWithCheckboxes = () => {
   };
 
   return (
-    <div className="p-4 mx-auto w-full max-w-7xl">
+    <div className="p-4 w-full   min-w-[640px] xl:min-w-[1300px] 2xl:min-w-[1700px] 3xl:min-w-[1800px] 4xl:min-w-[1900px] mx-auto table-auto">
       {isOpenpop && <SaleChannelPopup onClose={() => setIsOpenpop(false)} />}
       <div className="flex flex-col sm:flex-row justify-between mb-4 gap-3 items-center">
         <div className="flex items-center gap-2">
@@ -552,11 +552,11 @@ const TableWithCheckboxes = () => {
         )}
 
         {/* Table for Desktop */}
-        <div className="hidden sm:block overflow-x-auto">
-          <table className="w-full border-collapse text-sm">
+        <div className="hidden sm:block overflow-x-auto ">
+          <table className="w-full border-collapse text-sm ">
             <thead>
-              <tr className="bg-gray-50 text-xs">
-                <th className="p-3 border-b w-12 text-center">
+              <tr className="bg-gray-100 text-xs">
+                <th className="p-1 py-1 border-b-2 border-[#E7E7E7] w-12 text-center">
                   <input
                     type="checkbox"
                     checked={
@@ -567,11 +567,11 @@ const TableWithCheckboxes = () => {
                     className="text-blue-600"
                   />
                 </th>
-                <th className="p-3 border-b text-center">File Name</th>
-                <th className="p-3 border-b text-center">Description</th>
-                <th className="p-3 border-b text-center">Date Creation</th>
-                <th className="p-3 border-b text-center">Status</th>
-                <th className="p-3 border-b text-center">Action</th>
+                <th className="p-1 py-1 border-b-2 border-[#E7E7E7] text-center">File Name</th>
+                <th className="p-1 py-1 border-b-2 border-[#E7E7E7] text-center">Description</th>
+                <th className="p-1 py-1 border-b-2 border-[#E7E7E7] text-center">Date Creation</th>
+                <th className="p-1 py-1 border-b-2 border-[#E7E7E7] text-center">Status</th>
+                <th className="p-1 py-1 border-b-2 border-[#E7E7E7] text-center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -581,7 +581,7 @@ const TableWithCheckboxes = () => {
                   className="hover:bg-gray-50 cursor-pointer"
                   onClick={() => handleRowClick(row)}
                 >
-                  <td className="p-3 border-b text-center w-12">
+                  <td className="p-1 py-1 border-b-2 border-[#E7E7E7] text-center w-12">
                     <input
                       type="checkbox"
                       checked={selectedRows.includes(row.id)}
@@ -592,29 +592,29 @@ const TableWithCheckboxes = () => {
                       className="text-blue-600"
                     />
                   </td>
-                  <td className="p-3 border-b text-center">{row.fileName}</td>
-                  <td className="p-3 border-b text-center">{row.description}</td>
-                  <td className="p-3 border-b text-center">{row.dateCreation}</td>
-                  <td className="p-3 border-b text-center">
+                  <td className="p-1 py-1 border-b-2 border-[#E7E7E7] text-center">{row.fileName}</td>
+                  <td className="p-1 py-1 border-b-2 border-[#E7E7E7] text-center">{row.description}</td>
+                  <td className="p-1 py-1 border-b-2 border-[#E7E7E7] text-center">{row.dateCreation}</td>
+                  <td className="p-1 py-1 border-b-2 border-[#E7E7E7] text-center">
                     <span
                       className={`inline-block px-3 py-1 rounded-md text-xs ${
-                        row.status === "Active"
-                          ? "bg-green-100 text-green-700"
+                        row.status === "Complete"
+                          ? "bg-green-100 text-green-700  px-4"
                           : "bg-red-100 text-red-700"
                       }`}
                     >
                       {row.status}
                     </span>
                   </td>
-                  <td className="p-3 border-b text-center">
+                  <td className="p-1 py-1 border-b-2 border-[#E7E7E7] text-center">
                     {row.action === "Download" ? (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleAction(row, "Download");
                         }}
-                        className={`text-blue-600 hover:underline text-sm ${
-                          selectedRows.length === 0 ? "opacity-50 cursor-not-allowed" : ""
+                        className={`text-blue-500 hover:underline text-sm ${
+                          selectedRows.length === 0 ? "opacity-100 cursor-not-allowed" : ""
                         }`}
                         disabled={selectedRows.length === 0}
                       >
@@ -626,8 +626,8 @@ const TableWithCheckboxes = () => {
                           e.stopPropagation();
                           handleAction(row, "Re-upload");
                         }}
-                        className={`text-green-600 hover:underline text-sm ${
-                          selectedRows.length === 0 ? "opacity-50 cursor-not-allowed" : ""
+                        className={`text-blue-500 hover:underline text-sm ${
+                          selectedRows.length === 0 ? "opacity-100 cursor-not-allowed" : ""
                         }`}
                         disabled={selectedRows.length === 0}
                       >

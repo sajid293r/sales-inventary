@@ -321,7 +321,7 @@ const TableWithCheckboxes = () => {
   return (
     <>
       <div
-        className={`p-2 sm:p-4 mx-auto w-full min-w-[320px] md:w-[1000px] max-w-screen-lg ${
+        className={`p-2 sm:p-4  min-w-[640px] xl:min-w-[1300px] 2xl:min-w-[1700px] 3xl:min-w-[1800px] 4xl:min-w-[1900px] ${
           dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
         }`}
       >
@@ -347,7 +347,7 @@ const TableWithCheckboxes = () => {
         </div>
       </div>
 
-      <div className="rounded-xl border w-[300px] lg:w-full md:w-full bg-white border-gray-300 shadow-lg overflow-x-hidden">
+      <div className="rounded-xl border  bg-white border-gray-300 shadow-lg overflow-x-hidden">
         <div className="flex flex-wrap gap-2 p-2 border-b border-gray-200">
           {["All", "In Stock",  "Low Stock", "Out of Stock","Archived"].map(
             (region) => (
@@ -356,7 +356,7 @@ const TableWithCheckboxes = () => {
                 className={`py-1.5 px-3 rounded-md text-sm transition ${
                   filters.region === region
                     ? "bg-[#449ae6] text-white"
-                    : "text-gray-700 hover:bg-[#449ae6] hover:text-white"
+                    : "text-gray-700 hover:underline hover:decoration-2 hover:decoration-[#449ae6] hover:text-black hover:cursor-pointer"
                 }`}
                 onClick={() => handleRegionFilter(region)}
               >
@@ -378,7 +378,7 @@ const TableWithCheckboxes = () => {
                 setSearchQuery(e.target.value || "");
                 setCurrentPage(1);
               }}
-              className="pl-10 pr-3 py-1 w-full md:w-[780px] lg:[780px] border border-gray-300 rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
+              className="pl-10 pr-3 py-1 w-full md:w-[500px] lg:[500px] border border-gray-300 rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
             />
           </div>
           <div className="flex gap-2 relative w-full sm:w-auto justify-center sm:justify-end">
@@ -515,8 +515,8 @@ const TableWithCheckboxes = () => {
 
         <div ref={buttonsRef} className="flex gap-4 mb-2 px-4">
           <div className="flex gap-1">
-            <div className="border border-gray-300 p-1 px-4 rounded-md gap-2 flex items-center">
-              <input type="checkbox" />
+            <div className="border border-gray-300 p-1  rounded-md gap-2 flex items-center">
+              <input type="checkbox"  className="ml-6"/>
               <button className="ml-2 text-sm">{selectedRows.length} Select</button>
             </div>
             <div className="inline-block">
@@ -535,10 +535,10 @@ const TableWithCheckboxes = () => {
         </div>
 
         <div className="hidden sm:block overflow-x-hidden">
-          <table className="w-full border-collapse text-sm ml-4">
+          <table className=" w-full   mx-auto table-auto border-collapse text-sm ">
             <thead>
               <tr className="text-xs bg-[#f7f7f7]">
-                <th className="p-2 border-b w-12 text-center">
+                <th className="p-2 border-b-2 border-[#E7E7E7] w-12 text-center">
                   <input
                     type="checkbox"
                     checked={
@@ -546,14 +546,14 @@ const TableWithCheckboxes = () => {
                       selectedRows.length === paginatedData.length
                     }
                     onChange={toggleSelectAll}
-                  />
+                  className="ml-9" />
                 </th>
-                <th className="p-2 border-b text-center">Name</th>
-                <th className="p-2 border-b text-center">SKU</th>
-                <th className="p-2 border-b text-center">RRP</th>
-                <th className="p-2 border-b text-center">Selling Price</th>
-                <th className="p-2 border-b text-center">Stock Level</th>
-                <th className="p-2 border-b text-center">Status</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center">Name</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center">SKU</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center">RRP</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center">Selling Price</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center">Stock Level</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -563,7 +563,7 @@ const TableWithCheckboxes = () => {
                   className="hover:bg-gray-50 cursor-pointer"
                   onClick={() => handleRowClick(row)}
                 >
-                  <td className="p-2 border-b text-center w-12">
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center w-12">
                     <input
                       type="checkbox"
                       checked={selectedRows.includes(row.id)}
@@ -571,19 +571,19 @@ const TableWithCheckboxes = () => {
                         e.stopPropagation();
                         toggleRow(row.id);
                       }}
-                    />
+                     className="ml-9"/>
                   </td>
-                  <td className="p-2 border-b text-center">{row.name}</td>
-                  <td className="p-2 border-b text-center">{row.sku}</td>
-                  <td className="p-2 border-b text-center">${row.rrp}</td>
-                  <td className="p-2 border-b text-center">${row.sellingPrice}</td>
-                  <td className="p-2 border-b text-center">{row.stockLevel}</td>
-                  <td className="p-2 border-b text-center">
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.name}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.sku}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">${row.rrp}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">${row.sellingPrice}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.stockLevel}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">
                     <span
                       className={`py-1 px-4 rounded-md text-xs ${
                         row.status === "In Stock"
                           ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
+                          : "bg-[#DDDDDD] text-[#B4B5B4]"
                       }`}
                     >
                       {row.status}

@@ -8,70 +8,70 @@ import Link from "next/link";
 const dummyData = [
   {
     orderNo: "ORD-1001",
-    notes: "First order note",
+    notes: "First ",
     status: "Pending",
     colorCode: "#ff0000",
     paymentStatus: "Paid",
   },
   {
     orderNo: "ORD-1002",
-    notes: "Second order note",
+    notes: "Second ",
     status: "Shipped",
     colorCode: "#00ff00",
     paymentStatus: "Unpaid",
   },
   {
     orderNo: "ORD-1003",
-    notes: "Third order note",
+    notes: "Third ",
     status: "Delivered",
     colorCode: "#0000ff",
     paymentStatus: "Refunded",
   },
   {
     orderNo: "ORD-1004",
-    notes: "Fourth order note",
+    notes: "Fourth ",
     status: "Cancelled",
     colorCode: "#ffa500",
     paymentStatus: "Paid",
   },
   {
     orderNo: "ORD-1005",
-    notes: "Fifth order note",
+    notes: "Fifth ",
     status: "Pending",
     colorCode: "#800080",
     paymentStatus: "Unpaid",
   },
   {
     orderNo: "ORD-1006",
-    notes: "Sixth order note",
+    notes: "Sixth ",
     status: "Shipped",
     colorCode: "#008080",
     paymentStatus: "Paid",
   },
   {
     orderNo: "ORD-1007",
-    notes: "Seventh order note",
+    notes: "Seventh ",
     status: "Delivered",
     colorCode: "#ffc0cb",
     paymentStatus: "Unpaid",
   },
   {
     orderNo: "ORD-1008",
-    notes: "Eighth order note",
+    notes: "Eighth ",
     status: "Pending",
     colorCode: "#ffff00",
     paymentStatus: "Refunded",
   },
   {
     orderNo: "ORD-1009",
-    notes: "Ninth order note",
+    notes: "Ninth ",
     status: "Cancelled",
     colorCode: "#00ffff",
     paymentStatus: "Paid",
   },
   {
     orderNo: "ORD-1010",
-    notes: "Tenth order note",
+    notes: "Tenth ",
     status: "Shipped",
     colorCode: "#a52a2a",
     paymentStatus: "Unpaid",
@@ -171,7 +171,7 @@ const TableWithDropdowns = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8">
+    <div className="w-full min-w-[640px] xl:min-w-[1100px] 2xl:min-w-[1700px] 3xl:min-w-[1800px] 4xl:min-w-[1900px] mx-auto table-auto">
       <div className="flex justify-between">
         <h1 className="text-2xl font-semibold mb-4 flex gap-2">
           <div className="mt-1 h-6">
@@ -187,7 +187,7 @@ const TableWithDropdowns = () => {
       </div>
 
       {/* Editor Section */}
-      <div className="border border-gray-300 rounded-md w-[300px] md:w-[1000px] bg-white mb-4 md:py-3">
+      <div className="border border-gray-300 rounded-md w-full    mx-auto  bg-white mb-4 md:py-3">
         <div className="flex gap-4 px-4">
           <h1 className="text-lg font-semibold">Editor</h1>
         </div>
@@ -224,7 +224,7 @@ const TableWithDropdowns = () => {
       </div>
 
       {/* Mobile View: Card Layout */}
-      <div className="md:hidden space-y-2 overflow-x-hidden w-[300px]">
+      <div className="md:hidden space-y-2 overflow-x-hidden w-full  lg:w-[1100px] md:w-[700px]  mx-auto table-auto">
         {paginatedData.map((row, index) => (
           <div
             key={row.orderNo}
@@ -246,7 +246,7 @@ const TableWithDropdowns = () => {
                 <label className="block text-xs font-medium text-gray-500">
                   Notes
                 </label>
-                <p className="text-sm text-gray-900">{row.notes}</p>
+                <p className="text-sm text-gray-900 ">{row.notes}</p>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500">

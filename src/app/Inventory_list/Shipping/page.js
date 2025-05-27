@@ -4,7 +4,7 @@ import Link from "next/link";
 const page = () => {
   return (
     <div
-      className={`p-2 sm:p-4 mx-auto w-full min-w-[320px] md:w-[1000px] max-w-screen-auto `}
+      className={`p-2 sm:p-4 w-full   min-w-[640px] xl:min-w-[1300px] 2xl:min-w-[1700px] 3xl:min-w-[1800px] 4xl:min-w-[1900px]  mx-auto table-auto max-w-screen-auto `}
     >
       <div className="flex flex-col sm:flex-row justify-between mb-4 gap-3">
         <div className="flex items-center gap-2">
@@ -26,7 +26,7 @@ const page = () => {
           </button>
         </div>
       </div>
-      <div className="w-full border h-auto bg-white p-6 rounded-md">
+      <div className="w-full border h-auto bg-white p-6 rounded-md    mx-auto table-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 ">
           <label className="flex flex-col">
             <span className="mb-2 text-gray-900 text-sm sm:text-base">

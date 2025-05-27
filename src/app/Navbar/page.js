@@ -9,6 +9,8 @@ import {
   FiX,
 } from "react-icons/fi";
 import { Mail } from "lucide-react";
+import Lig8 from "../image/Icons/Rectangle 230.png";
+import Image from "next/image";
 
 const Page = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -47,9 +49,12 @@ const Page = () => {
   }, [popoverRefs.messages, popoverRefs.notifications, popoverRefs.profile]);
 
   return (
-    <nav className="bg-white shadow-sm  shadow-gray-600 px-4 py-2 flex items-center justify-between relative ">
+    <nav className="bg-white shadow-sm w-full shadow-gray-600 px-4 py-2 flex items-center justify-between relative ">
       {/* Logo */}
-      <div className="text-xl font-bold">Sale Channel</div>
+      <div className=" flex gap-6">
+<h1 className="text-xl font-bold ">Sale Channel</h1>
+<Image src={Lig8} alt="Logo" className="" />
+      </div>
 
       {/* Menu Button (Mobile Only) */}
       <div className="md:hidden">

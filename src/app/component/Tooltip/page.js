@@ -32,25 +32,30 @@ const TooltipAutoClose = ({ children, tooltip }) => {
   }, [show]);
 
   return (
-    <div className="relative inline-block">
-      <div
+    <div className="relative inline-block border border-black">
+      <div className='bg-blue-500'>      <div
         ref={triggerRef}
         onMouseEnter={() => setShow(true)}
-        className="inline-block"
+        className="inline-block border"
       >
         {children}
       </div>
-
+      </div>
+<div className='bg-blue-500'>
       {show && (
+
         <div
           ref={tooltipRef}
           className="absolute left-full top-1/2 -translate-y-1/2 ml-2
                      bg-gray-800 text-white text-sm px-3 py-1 rounded 
-                     whitespace-nowrap scale-z-100 shadow transition-opacity duration-200"
+                     whitespace-nowrap scale-z-100 shadow transition-opacity duration-200 w-20 h-96  border"
         >
-          {tooltip}
+          <div className='bg-blue-500'>
+          {/* {tooltip} */}
+        </div>
         </div>
       )}
+    </div>
     </div>
   );
 };

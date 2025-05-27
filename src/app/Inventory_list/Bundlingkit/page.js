@@ -91,7 +91,7 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="p-2 sm:p-4 mx-auto w-full min-w-[320px] max-w-screen-xl">
+    <div className="p-2 sm:p-4 mx-auto w-full min-w-[640px] xl:min-w-[1300px] 2xl:min-w-[1700px] 3xl:min-w-[1800px] 4xl:min-w-[1900px]">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between mb-4 gap-3">
         <div className="flex items-center gap-2">

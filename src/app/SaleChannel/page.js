@@ -317,7 +317,7 @@ const TableWithCheckboxes = () => {
 
   return (
     <div
-      className={`p-2 sm:p-4 mx-auto w-full min-w-[320px] md:w-[1000px] max-w-screen-lg ${
+      className={`p-2 sm:p-4 mx-auto w-full min-w-[640px] xl:min-w-[1300px] 2xl:min-w-[1700px] 3xl:min-w-[1800px] 4xl:min-w-[1900px] text-sm ${
         dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
       }`}
     >
@@ -332,13 +332,11 @@ const TableWithCheckboxes = () => {
           >
             Add
           </button>
-          {isOpenpop && (
-            <SaleChannelPopup onClose={() => setIsOpenpop(false)} />
-          )}
+          {isOpenpop && <SaleChannelPopup onClose={() => setIsOpenpop(false)} />}
         </div>
       </div>
 
-      <div className="rounded-xl border w-[300px] lg:w-full md:w-full bg-white border-gray-300 shadow-lg overflow-x-hidden">
+      <div className="rounded-xl border w-full bg-white border-gray-300 shadow-lg overflow-x-auto">
         <div className="flex flex-wrap gap-2 p-4 border-b border-gray-200">
           {[
             "Asia",
@@ -362,14 +360,14 @@ const TableWithCheckboxes = () => {
           ))}
           <button
             onClick={() => setShowButtons(true)}
-            className="hover:bg-[#449ae6] p-2 rounded-md text-gray-700"
+            className="hover:bg-[#449ae6] p-2 rounded-md hover:text-white text-gray-700"
           >
             Archived
           </button>
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center border-b border-gray-200">
-          <div className="relative w-full sm:w-80">
+          <div className="relative w-full sm:w-80 xl:w-96">
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
             <input
               ref={searchInputRef}
@@ -380,22 +378,20 @@ const TableWithCheckboxes = () => {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="pl-10 pr-3 py-1 w-full md:w-[780px] lg:[780px] border border-gray-300 rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
+              className="pl-10 pr-3 py-1 w-full border border-gray-300 rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
             />
           </div>
           <div className="flex gap-2 relative w-full sm:w-auto justify-center sm:justify-end">
             <button
               ref={filterButtonRef}
-              className="border border-gray-300 py-1 px-4 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
+              className="border border-gray-300 py-1 px-4 rounded-md text-sm hover:bg-gray-100 transition"
               onClick={() => toggleDropdown("filterPanel")}
             >
               Filter
-             
             </button>
-         
             <button
               ref={sortButtonRef}
-              className="border py-1 px-4 border-gray-300 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
+              className="border py-1 px-4 border-gray-300 rounded-md text-sm hover:bg-gray-100 transition"
               onClick={() => toggleDropdown("sortTooltip")}
             >
               Sort
@@ -413,7 +409,7 @@ const TableWithCheckboxes = () => {
                     onChange={() => handleSortChange("salesChannel")}
                     className="mr-2"
                   />
-                  <div className="flex gap-2 items-center">
+                  <div className="flex gap-11 items-center">
                     <span>Sales Channel</span>
                     <span>
                       {sortOptions.salesChannel ? (
@@ -431,7 +427,7 @@ const TableWithCheckboxes = () => {
                     onChange={() => handleSortChange("country")}
                     className="mr-2"
                   />
-                  <div className="flex gap-2 items-center">
+                  <div className="flex gap-20 items-center">
                     <span>Country</span>
                     <span>
                       {sortOptions.country ? (
@@ -570,22 +566,15 @@ const TableWithCheckboxes = () => {
                 <input type="checkbox" />
                 <button className="ml-2 text-sm">1 Select</button>
               </div>
-              <button className="border p-1 px-4 rounded-md">
-                <select className="text-sm">
-                  <option value="">Action</option>
-                  <option value="Unarchived">Unarchived</option>
-                  <option value="Remove">Remove</option>
-                </select>
-              </button>
             </div>
           </div>
         )}
 
-        <div className="hidden sm:block overflow-x-hidden  ">
-          <table className="w-full border-collapse text-sm  ">
-            <thead>
-              <tr className="text-xs ">
-                <th className="p-2 border-b w-12 text-center">
+        <div className="hidden sm:block overflow-x-auto">
+          <table className="w-full  table-auto border-collapse text-sm">
+            <thead className="sticky top-0 bg-white z-10">
+              <tr className="text-xs">
+                <th className="p-2 border-b-2 border-[#E7E7E7] w-12 text-center">
                   <input
                     type="checkbox"
                     checked={
@@ -593,24 +582,25 @@ const TableWithCheckboxes = () => {
                       selectedRows.length === paginatedData.length
                     }
                     onChange={toggleSelectAll}
+                    className="ml-6"
                   />
                 </th>
-                <th className="p-2 border-b text-center ">Sales Channel</th>
-                <th className="p-2 border-b text-center">Type</th>
-                <th className="p-2 border-b text-center">Payment Term</th>
-                <th className="p-2 border-b text-center">Country</th>
-                <th className="p-2 border-b text-center">Authorized Date</th>
-                <th className="p-2 border-b text-center">Status</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center w-1/4">Sales Channel</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center w-1/6">Type</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center w-1/6">Payment Term</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center w-1/6">Country</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center w-1/6">Authorized Date</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center w-1/6">Status</th>
               </tr>
             </thead>
-            <tbody className="">
+            <tbody>
               {paginatedData.map((row) => (
                 <tr
                   key={row.id}
-                  className="hover:bg-gray-50 cursor-pointer "
+                  className="hover:bg-gray-50 cursor-pointer"
                   onClick={() => handleRowClick(row)}
                 >
-                  <td className="p-2 border-b text-center w-12">
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center w-12">
                     <input
                       type="checkbox"
                       checked={selectedRows.includes(row.id)}
@@ -618,25 +608,20 @@ const TableWithCheckboxes = () => {
                         e.stopPropagation();
                         toggleRow(row.id);
                       }}
+                      className="ml-6"
                     />
                   </td>
-                  <td className="p-2 border-b text-center">
-                    {row.salesChannel}
-                  </td>
-                  <td className="p-2 border-b text-center">{row.type}</td>
-                  <td className="p-2 border-b text-center">
-                    {row.paymentTerm}
-                  </td>
-                  <td className="p-2 border-b text-center">{row.country}</td>
-                  <td className="p-2 border-b text-center">
-                    {row.authorizedDate}
-                  </td>
-                  <td className="p-2 border-b text-center">
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.salesChannel}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.type}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.paymentTerm}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.country}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.authorizedDate}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">
                     <span
                       className={`py-1 px-4 rounded-md text-xs ${
                         row.status === "Active"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
+                          ? "bg-[#A9FFAD] text-[#6DC671] px-5"
+                          : "bg-[#FFDF8D] text-[#EBA734]"
                       }`}
                     >
                       {row.status}
@@ -647,7 +632,7 @@ const TableWithCheckboxes = () => {
             </tbody>
           </table>
         </div>
-{/* mobile view content  */}
+
         <div className="block sm:hidden divide-y divide-gray-200 px-4">
           {paginatedData.map((row) => (
             <div
@@ -708,38 +693,38 @@ const TableWithCheckboxes = () => {
               {totalItems} entries
             </h1>
           </div>
-         <div className="flex gap-2 flex-wrap justify-center">
-  <button
-    onClick={() => handlePageChange(currentPage - 1)}
-    disabled={currentPage === 1}
-    className={`border border-gray-400 px-2 rounded-md text-sm ${
-      currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-    }`}
-  >
-    {"<"}
-  </button>
-  <button
-    onClick={() => handlePageChange(currentPage + 1)}
-    disabled={currentPage === totalPages}
-    className={`border border-gray-400 px-2 rounded-md text-sm ${
-      currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
-    }`}
-  >
-    {">"}
-  </button>
-</div>
+          <div className="flex gap-2 flex-wrap justify-center">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`border border-gray-400 px-2 rounded-md text-sm ${
+                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              {"<"}
+            </button>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`border border-gray-400 px-2 rounded-md text-sm ${
+                currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              {">"}
+            </button>
+          </div>
           <div className="w-14">
-          <select
-            value={itemsPerPage}
-            onChange={handleItemsPerPageChange}
-            className="px-2 py-1 text-sm border rounded-md w-full"
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-          </select>
-        </div>
+            <select
+              value={itemsPerPage}
+              onChange={handleItemsPerPageChange}
+              className="px-2 py-1 text-sm border rounded-md w-full"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+            </select>
+          </div>
         </div>
       </div>
 

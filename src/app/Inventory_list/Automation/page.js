@@ -31,7 +31,7 @@ function ServiceOpener() {
     setter(list.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
 
   return (
-    <div className="p-2 sm:p-4 mx-auto w-full min-w-[320px] md:w-[1000px] max-w-screen-lg">
+    <div className="p-2 sm:p-4 mx-auto w-full min-w-[640px] xl:min-w-[1300px] 2xl:min-w-[1700px] 3xl:min-w-[1800px] 4xl:min-w-[1900px]">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
         <div className="flex items-center gap-2">
           <div className="border rounded-md p-1">
@@ -53,7 +53,7 @@ function ServiceOpener() {
           value={input}
           onChange={handleInputChange}
           placeholder="Enter Automation Name"
-          className="w-full p-2 border rounded-lg bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#52ce66]"
+          className="w-full p-2 border rounded-lg bg-white  focus:outline-none focus:ring-2 focus:ring-[#52ce66]"
         />
 
         <div className="border rounded-md bg-white p-4 mt-4">
