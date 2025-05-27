@@ -6,7 +6,7 @@ import { FaChevronDown, FaEdit, FaTrash } from "react-icons/fa";
 import SaleChannelPopup from "../../Popup/page";
 import { getAllInventory } from "@/actions/getAllInventory";
 import { deleteInventory } from "@/actions/deleteInventory";
-
+import { useRouter } from 'next/navigation';
 const TableWithCheckboxes = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [filters, setFilters] = useState({
@@ -51,6 +51,8 @@ const TableWithCheckboxes = () => {
   const sortButtonRef = useRef(null);
   const sortTooltipRef = useRef(null);
   const searchInputRef = useRef(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchInventory = async () => {
@@ -267,8 +269,9 @@ const TableWithCheckboxes = () => {
   };
 
   const handleEdit = (e, row) => {
-    e.stopPropagation();
-    window.location.href = `/Inventory_list/Bundlingkit?action=update&data=${JSON.stringify(row)}`;
+    e.preventDefault();
+    const query = encodeURIComponent(JSON.stringify(row));
+    router.push(`/Inventory_list/Bundlingkit?action=update&data=${query}`);
   };
 
   const handleRowClick = (row) => {
