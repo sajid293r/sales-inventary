@@ -57,18 +57,10 @@ const TooltipAutoClose = ({ children, tooltip }) => {
   }, [isVisible]);
 
   // Toggle tooltip visibility on click
-  // const handleClick = () => {
-  //   setIsVisible((prev) => !prev);
-  // };
-  const handleClick = (e) => {
-    // Agar andar kisi <a> ya <Link> pe click ho raha hai
-    if (e.target.closest("a")) {
-      setIsVisible(false); // sirf tooltip band karo
-      return; // dobara toggle mat karo
-    }
-    setIsVisible((prev) => !prev); // warna toggle karo
+  const handleClick = () => {
+    setIsVisible((prev) => !prev);
   };
-  
+
   return (
     <>
       <div

@@ -5,6 +5,7 @@ import SalesInventory from "@/models/salesInventory";
 
 export const submitProductAction = async (formData) => {
   try {
+    
     // Validate product title
     if (!formData.productTitle || formData.productTitle.trim() === '') {
       return { 
@@ -16,17 +17,24 @@ export const submitProductAction = async (formData) => {
 
     await connectDB();
 
-    let result;
+    // Prepare data with explicit imageName
+    const productData = {
+      ...formData,
+      imageName: formData.imageName || "" // Ensure imageName is included
+    };
 
+    let result;
     if (formData._id) {
       // Update existing product
+      console.log('Updating existing product:', formData._id);
       result = await SalesInventory.findByIdAndUpdate(
         formData._id,
-        { $set: formData },
+        { $set: productData },
         { new: true }
       );
     } else {
       // Check if product already exists by title
+      console.log('Checking for existing product with title:', formData.productTitle);
       const existing = await SalesInventory.findOne({ productTitle: formData.productTitle });
       if (existing) {
         return {
@@ -37,10 +45,12 @@ export const submitProductAction = async (formData) => {
       }
 
       // Create new product
-      const newProduct = new SalesInventory(formData);
+      console.log('Creating new product with data:', productData);
+      const newProduct = new SalesInventory(productData);
       result = await newProduct.save();
     }
 
+    console.log('Operation result:', result);
     return {
       success: true,
       id: result._id.toString(),

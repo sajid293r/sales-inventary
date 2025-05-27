@@ -5,7 +5,10 @@ const productInventorySchema = new mongoose.Schema({
   canBePurchased: Boolean,
   trackInventory: Boolean,
 
-  productTitle: String,
+  productTitle: {
+    type: String,
+    required: true
+  },
   sku: String,
   gtin: String,
   brand: String,
@@ -15,6 +18,12 @@ const productInventorySchema = new mongoose.Schema({
   sellingPrice: String,
   shipping: String,
   shippingPrice: String,
+
+  imageName: {
+    type: String,
+    default: ""
+  },
+  imageUrl: String,
 
   upc: String,
   upcAmazonCatch: String,

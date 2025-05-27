@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
-import { FaChevronDown, FaTrash } from "react-icons/fa";
+import { FaChevronDown, FaEdit, FaTrash } from "react-icons/fa";
 import SaleChannelPopup from "../../Popup/page";
 import { getAllInventory } from "@/actions/getAllInventory";
 import { deleteInventory } from "@/actions/deleteInventory";
@@ -23,8 +23,8 @@ const TableWithCheckboxes = () => {
     sortTooltip: false,
   });
   const [sortOptions, setSortOptions] = useState({
-    name: false,
-    country: false,
+    field: "",
+    direction: "asc"
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -40,6 +40,8 @@ const TableWithCheckboxes = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [filterType, setFilterType] = useState("");
   const [filterType1, setFilterType1] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
   const [inventory, setInventory] = useState([]);
   const [error, setError] = useState("");
 
@@ -215,10 +217,10 @@ const TableWithCheckboxes = () => {
     setCurrentPage(1);
   };
 
-  const handleSortChange = (option) => {
-    setSortOptions((prev) => ({
-      ...prev,
-      [option]: !prev[option],
+  const handleSortChange = (field) => {
+    setSortOptions(prev => ({
+      field: field,
+      direction: prev.field === field ? (prev.direction === "asc" ? "desc" : "asc") : "asc"
     }));
   };
 
@@ -264,6 +266,11 @@ const TableWithCheckboxes = () => {
     }));
   };
 
+  const handleEdit = (e, row) => {
+    e.stopPropagation();
+    window.location.href = `/Inventory_list/Bundlingkit?action=update&data=${JSON.stringify(row)}`;
+  };
+
   const handleRowClick = (row) => {
     setSelectedRowData(row);
     console.log("Row clicked:", row);
@@ -271,33 +278,64 @@ const TableWithCheckboxes = () => {
 
   const filteredData = inventory
     .filter((item) => {
-      const matchStatus =
-        filters.status.length === 0 || filters.status.includes(item.status);
-      const matchType = selected1.length === 0 || selected1.includes(item.organization?.producttype);
-      const matchRegion =
-        selected.length === 0 || selected.includes(item.region);
-      const matchRegionButton =
-        filters.region === "" || item.status === filters.region;
-      return (
-        matchStatus &&
-        matchType &&
-        matchRegion &&
-        matchRegionButton
-      );
-    })
-    .filter((item) =>
-      searchQuery
+      // Filter by search query
+      const matchSearch = searchQuery
         ? item.productTitle?.toLowerCase().includes(searchQuery.toLowerCase())
-        : true
-    );
+        : true;
+
+      // Filter by region buttons (All, In Stock, etc.)
+      const matchRegionButton = !filters.region || filters.region === "All" || 
+        (filters.region === "In Stock" && Number(item.stockLevel?.stocklevel) > 0) ||
+        (filters.region === "Out of Stock" && Number(item.stockLevel?.stocklevel) <= 0) ||
+        (filters.region === "Product Listed" && item.status === "Active") ||
+        (filters.region === "Archived" && item.status === "Inactive");
+
+      // Filter by type (Can be Sold, Can be Purchased, etc.)
+      const matchType = !filterType || 
+        (filterType === "Can be Sold" && item.canBeSold) ||
+        (filterType === "Can be Purchased" && item.canBePurchased) ||
+        (filterType === "Bundle" && item.isBundle) ||
+        (filterType === "Kitting" && item.isKitting) ||
+        (filterType === "Spare Parts" && item.isSparePart) ||
+        (filterType === "Assembly Required" && item.assemblyRequired);
+
+      // Filter by status
+      const matchStatus = !selectedStatus || item.status === selectedStatus;
+
+      // Filter by brand
+      const matchBrand = !selectedBrand || item.brand === selectedBrand;
+
+      return matchSearch && matchRegionButton && matchType && matchStatus && matchBrand;
+    });
 
   const sortedData = [...filteredData].sort((a, b) => {
-    if (sortOptions.name) {
-      return sortOptions.name
-        ? (a.productTitle || "").localeCompare(b.productTitle || "")
-        : (b.productTitle || "").localeCompare(a.productTitle || "");
+    if (!sortOptions.field) return 0;
+
+    switch (sortOptions.field) {
+      case "name":
+        const nameA = (a.productTitle || "").toLowerCase();
+        const nameB = (b.productTitle || "").toLowerCase();
+        return sortOptions.direction === "asc" 
+          ? nameA.localeCompare(nameB)
+          : nameB.localeCompare(nameA);
+
+      case "dateCreated":
+        const createdAtA = new Date(a.createdAt || 0).getTime();
+        const createdAtB = new Date(b.createdAt || 0).getTime();
+        return sortOptions.direction === "asc" 
+          ? createdAtA - createdAtB
+          : createdAtB - createdAtA;
+
+      case "dateModified":
+        const updatedAtA = new Date(a.updatedAt || 0).getTime();
+        const updatedAtB = new Date(b.updatedAt || 0).getTime();
+        return sortOptions.direction === "asc" 
+          ? updatedAtA - updatedAtB
+          : updatedAtB - updatedAtA;
+
+      default:
+        return 0;
     }
-    return 0;
   });
 
   const totalItems = filteredData.length;
@@ -318,17 +356,26 @@ const TableWithCheckboxes = () => {
     setCurrentPage(1);
     setSelectedRows([]);
   };
-  const handleDelete = async (id,name) => {
-    if (confirm(`Are you sure you want to delete "${name}" item?`)) {
-      const res = await deleteInventory(id);
-      if (res.success) {
-        setInventory(prev => prev.filter(item => item._id !== id));
-      } else {
-        alert("Failed to delete: " + res.error);
-      }
+  const onDelete = (id, salesChannelName) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete the inventory item with Product Title Name: ${salesChannelName}?`
+    );
+    if (confirmDelete) {
+      
+        deleteInventory(id)
+          .then((res) => {
+            if (res.success) {
+              console.log("Inventory item deleted successfully.");
+            } else {
+              alert(`Failed to delete inventory item: ${res.error}`);
+            }
+
+      setInventory((prev) => prev.filter((item) => item._id !== id));
     }
-  };
- 
+  )
+  }
+}
+
   return (
     <>
       <div
@@ -364,8 +411,8 @@ const TableWithCheckboxes = () => {
               <button
                 key={region}
                 className={`py-1.5 px-3 rounded-md text-sm transition ${filters.region === region
-                  ? "bg-[#449ae6] text-white"
-                  : "text-gray-700 hover:bg-[#449ae6] hover:text-white"
+                    ? "bg-[#449ae6] text-white"
+                    : "text-gray-700 hover:bg-[#449ae6] hover:text-white"
                   }`}
                 onClick={() => handleRegionFilter(region)}
               >
@@ -416,7 +463,7 @@ const TableWithCheckboxes = () => {
                       type="radio"
                       name="sort"
                       value="name"
-                      checked={sortOptions.name !== false}
+                      checked={sortOptions.field === "name"}
                       onChange={() => handleSortChange("name")}
                       className="text-blue-600 focus:ring-blue-500 focus:ring-2"
                     />
@@ -426,9 +473,9 @@ const TableWithCheckboxes = () => {
                     <input
                       type="radio"
                       name="sort"
-                      value="none"
-                      checked={!sortOptions.name && !sortOptions.country}
-                      onChange={() => setSortOptions({ name: false, country: false })}
+                      value="dateCreated"
+                      checked={sortOptions.field === "dateCreated"}
+                      onChange={() => handleSortChange("dateCreated")}
                       className="text-blue-600 focus:ring-blue-500 focus:ring-2"
                     />
                     <span className="text-gray-700 text-sm font-semibold">Date Created</span>
@@ -437,21 +484,41 @@ const TableWithCheckboxes = () => {
                     <input
                       type="radio"
                       name="sort"
-                      value="none"
-                      checked={!sortOptions.name && !sortOptions.country}
-                      onChange={() => setSortOptions({ name: false, country: false })}
+                      value="dateModified"
+                      checked={sortOptions.field === "dateModified"}
+                      onChange={() => handleSortChange("dateModified")}
                       className="text-blue-600 focus:ring-blue-500 focus:ring-2"
                     />
-                    <span className="text-gray-700 text-sm font-semibold">Date Modify</span>
+                    <span className="text-gray-700 text-sm font-semibold">Date Modified</span>
                   </label>
-                  <label className="flex items-center space-x-3 border-t border-gray-200 mt-2">
-                    <MdArrowUpward />
-                    <span className="text-gray-700 text-sm font-semibold">Ascending</span>
-                  </label>
-                  <label className="flex items-center space-x-3">
-                    <MdArrowDownward />
-                    <span className="text-gray-700 text-sm font-semibold">Descending</span>
-                  </label>
+                  <div className="border-t border-gray-200 mt-2 pt-2">
+                    <label className="flex items-center space-x-3 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="direction"
+                        checked={sortOptions.direction === "asc"}
+                        onChange={() => setSortOptions(prev => ({ ...prev, direction: "asc" }))}
+                        className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                      />
+                      <div className="flex items-center space-x-2">
+                        <MdArrowUpward />
+                        <span className="text-gray-700 text-sm font-semibold">Ascending</span>
+                      </div>
+                    </label>
+                    <label className="flex items-center space-x-3 mt-1 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="direction"
+                        checked={sortOptions.direction === "desc"}
+                        onChange={() => setSortOptions(prev => ({ ...prev, direction: "desc" }))}
+                        className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                      />
+                      <div className="flex items-center space-x-2">
+                        <MdArrowDownward />
+                        <span className="text-gray-700 text-sm font-semibold">Descending</span>
+                      </div>
+                    </label>
+                  </div>
                 </form>
               </div>
             )}
@@ -483,40 +550,57 @@ const TableWithCheckboxes = () => {
                       onChange={() => setFilterType("none")}
                       className="text-blue-600 focus:ring-blue-500 focus:ring-2"
                     />
-                    <span className="text-gray-700 text-sm font-semibold">status</span>
-
+                    <span className="text-gray-700 text-sm font-semibold">Status</span>
                   </label>
-                  <select className="text-sm border w-full p-1 rounded-md" placeholder="status">
-                    <option value="" placeholder="status" >Status</option>
-                    <option value="">Active </option>
-                    <option value="Unarchived">Unactive</option>
-
+                  
+                  <select 
+                    className="text-sm border w-full p-1 rounded-md" 
+                    value={selectedStatus}
+                    onChange={(e) => setSelectedStatus(e.target.value)}
+                  >
+                    <option value="">All Status</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
                   </select>
 
+                  <label className="flex gap-4">
+                    <input
+                      type="radio"
+                      name="filterType"
+                      value="none"
+                      checked={filterType1 === "none"}
+                      onChange={() => setFilterType1("none")}
+                      className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <span className="text-gray-700 text-sm font-semibold">Brand</span>
+                  </label>
+                  
+                  <select 
+                    className="text-sm border w-full p-1 rounded-md"
+                    value={selectedBrand}
+                    onChange={(e) => setSelectedBrand(e.target.value)}
+                  >
+                    <option value="">All Brands</option>
+                    {/* Get unique brands from inventory */}
+                    {[...new Set(inventory.map(item => item.brand))].filter(Boolean).map(brand => (
+                      <option key={brand} value={brand}>{brand}</option>
+                    ))}
+                  </select>
 
-
+                  {/* Clear Filters Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFilterType("");
+                      setFilterType1("");
+                      setSelectedStatus("");
+                      setSelectedBrand("");
+                    }}
+                    className="w-full mt-2 bg-gray-100 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-200 text-sm"
+                  >
+                    Clear Filters
+                  </button>
                 </form>
-
-                <label className="flex gap-4">
-                  <input
-                    type="radio"
-                    name="filterType"
-                    value="none"
-                    checked={filterType1 === "none"}
-                    onChange={() => setFilterType1("none")}
-                    className="text-blue-600 focus:ring-blue-500 focus:ring-2 "
-                  />
-                  <span className="text-gray-700 text-sm font-semibold">
-                    Brand
-                  </span>
-
-                </label>
-                <select className="text-sm border w-full p-1 rounded-md" placeholder="status">
-                  <option value="" placeholder="status" >Brand</option>
-                  <option value="">Watch </option>
-                  <option value="Unarchived">Casio</option>
-
-                </select>
               </div>
             )}
           </div>
@@ -572,7 +656,7 @@ const TableWithCheckboxes = () => {
                 <tr
                   key={row._id}
                   className="hover:bg-gray-50 cursor-pointer"
-                  onClick={() => handleRowClick(row)}
+                  // onClick={() => handleRowClick(row)}
                 >
                   <td className="p-2 border-b text-center w-12">
                     <input
@@ -592,10 +676,10 @@ const TableWithCheckboxes = () => {
                   <td className="p-2 border-b text-center">
                     <span
                       className={`py-1 px-4 rounded-md text-xs ${row.status === "Active"
-                        ? "bg-green-100 text-green-700"
-                        : row.status === "Inactive"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-gray-100 text-gray-700"
+                          ? "bg-green-100 text-green-700"
+                          : row.status === "Inactive"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-gray-100 text-gray-700"
                         }`}
                     >
                       {row.status || "N/A"}
@@ -603,16 +687,23 @@ const TableWithCheckboxes = () => {
                   </td>
                   <td className="p-2 border-b text-center">
                     <button
-                      className="text-red-600 hover:text-red-800 transition"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent row click
-                        handleDelete(row._id, row.productTitle);
-                      }}
+                      onClick={(e) => handleEdit(e, row)}
+                      className="text-blue-500 hover:text-blue-700 mx-1 cursor-pointer"
+                      title="Edit"
                     >
-                      <FaTrash className="cursor-pointer" />
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(row._id, row.productTitle);
+                      }}
+                      className="text-red-500 hover:text-red-700 mx-1 cursor-pointer"
+                      title="Delete"
+                    >
+                      <FaTrash />
                     </button>
                   </td>
-
                 </tr>
               ))}
             </tbody>
@@ -624,7 +715,7 @@ const TableWithCheckboxes = () => {
             <div
               key={row._id}
               className="p-3 bg-gray-50 mb-3 rounded-lg shadow-sm cursor-pointer"
-              onClick={() => handleRowClick(row)}
+              // onClick={() => handleRowClick(row)}
             >
               <table className="w-full text-sm">
                 <tbody>
@@ -653,10 +744,10 @@ const TableWithCheckboxes = () => {
                     <td>
                       <span
                         className={`inline-block px-2 py-0.5 rounded text-xs ${row.status === "Active"
-                          ? "bg-green-100 text-green-700"
-                          : row.status === "Inactive"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-gray-100 text-gray-700"
+                            ? "bg-green-100 text-green-700"
+                            : row.status === "Inactive"
+                              ? "bg-red-100 text-red-700"
+                              : "bg-gray-100 text-gray-700"
                           }`}
                       >
                         {row.status || "N/A"}
