@@ -7,6 +7,9 @@ import SaleChannelPopup from "../../Popup/page";
 import { getAllInventory } from "@/actions/getAllInventory";
 import { deleteInventory } from "@/actions/deleteInventory";
 import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const TableWithCheckboxes = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [filters, setFilters] = useState({
@@ -51,6 +54,7 @@ const TableWithCheckboxes = () => {
   const sortButtonRef = useRef(null);
   const sortTooltipRef = useRef(null);
   const searchInputRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const router = useRouter();
 
@@ -151,10 +155,14 @@ const TableWithCheckboxes = () => {
   }));
 
   const toggleSelectAll = (e) => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentPageData = filteredData.slice(startIndex, endIndex);
-    setSelectedRows(e.target.checked ? currentPageData.map((d) => d.id) : []);
+    if (e.target.checked) {
+      // Select all items from filteredData, not just current page
+      const allIds = filteredData.map(item => item._id);
+      setSelectedRows(allIds);
+    } else {
+      // Deselect all
+      setSelectedRows([]);
+    }
   };
 
   const toggleRow = (id) => {
@@ -275,8 +283,7 @@ const TableWithCheckboxes = () => {
   };
 
   const handleRowClick = (row) => {
-    setSelectedRowData(row);
-    console.log("Row clicked:", row);
+    toggleRow(row._id);
   };
 
   const filteredData = inventory
@@ -359,28 +366,524 @@ const TableWithCheckboxes = () => {
     setCurrentPage(1);
     setSelectedRows([]);
   };
-  const onDelete = (id, salesChannelName) => {
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete the inventory item with Product Title Name: ${salesChannelName}?`
+  const onDelete = (id, productTitle) => {
+    // Create a custom toast for confirmation
+    toast.info(
+      <div className="flex flex-col gap-2">
+        <p>{`Are you sure you want to delete "${productTitle}"`}</p>
+        <div className="flex justify-end gap-2 mt-2">
+          <button
+            className="px-3 py-1 bg-gray-200 text-gray-800 rounded-md text-sm hover:bg-gray-300 cursor-pointer"
+            onClick={() => toast.dismiss()}
+          >
+            Cancel
+          </button>
+          <button
+            className="px-3 py-1 bg-red-500 text-white rounded-md text-sm hover:bg-red-600 cursor-pointer"
+            onClick={() => {
+              toast.dismiss();
+              
+              // Show loading toast
+              const loadingToast = toast.loading("Deleting item...");
+              
+              deleteInventory(id)
+                .then((res) => {
+                  if (res.success) {
+                    // Update loading toast with success message
+                    toast.update(loadingToast, {
+                      render: "Item deleted successfully",
+                      type: "success",
+                      isLoading: false,
+                      autoClose: 3000
+                    });
+                    setInventory((prev) => prev.filter((item) => item._id !== id));
+                  } else {
+                    // Update loading toast with error message
+                    toast.update(loadingToast, {
+                      render: `Failed to delete item: ${res.error}`,
+                      type: "error",
+                      isLoading: false,
+                      autoClose: 5000
+                    });
+                  }
+                })
+                .catch((error) => {
+                  // Update loading toast with error message
+                  toast.update(loadingToast, {
+                    render: `Error deleting item: ${error.message}`,
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 5000
+                  });
+                });
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </div>,
+      {
+        position: "top-center",
+        autoClose: false,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      }
     );
-    if (confirmDelete) {
-      
-        deleteInventory(id)
-          .then((res) => {
-            if (res.success) {
-              console.log("Inventory item deleted successfully.");
-            } else {
-              alert(`Failed to delete inventory item: ${res.error}`);
-            }
+  };
 
-      setInventory((prev) => prev.filter((item) => item._id !== id));
+  const handleImportClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const getAllHeaders = () => {
+    return [
+      // Basic Info
+      'Product Title',
+      'SKU',
+      'GTIN',
+      'Brand',
+      'Status',
+      'RRP',
+      'Selling Price',
+      'Shipping',
+      'Shipping Price',
+      
+      // Product Info
+      'UPC',
+      'UPC Amazon Catch',
+      'Certification No',
+      'Previous SKU',
+      
+      // Flags
+      'Can Be Sold',
+      'Can Be Purchased',
+      'Track Inventory',
+      
+      // Product Dimensions
+      'Product Length',
+      'Product Height',
+      'Product Width',
+      'Product Weight',
+      'Product Volume',
+      
+      // Package 1
+      'Package1 Length',
+      'Package1 Height',
+      'Package1 Width',
+      'Package1 Weight',
+      'Package1 Volume',
+      
+      // Package 2
+      'Package2 Length',
+      'Package2 Height',
+      'Package2 Width',
+      'Package2 Weight',
+      'Package2 Volume',
+      
+      // Package 3
+      'Package3 Length',
+      'Package3 Height',
+      'Package3 Width',
+      'Package3 Weight',
+      'Package3 Volume',
+      
+      // Stock Level
+      'Stock Level',
+      'Sold',
+      'Factory Second',
+      'Damaged',
+      
+      // Purchase Info
+      'Purchase Price',
+      'Cost in AUS',
+      'Profit',
+      'Profit Ratio',
+      'Return Ratio',
+      
+      // Organization
+      'Category Product',
+      'Product Type',
+      'Collection',
+      'Tags',
+      
+      // Notes
+      'Notes',
+      
+      // Image Info
+      'Image Name',
+      'Image URL'
+    ];
+  };
+
+  const convertItemToRow = (item) => {
+    return [
+      item.productTitle || '',
+      item.sku || '',
+      item.gtin || '',
+      item.brand || '',
+      item.status || '',
+      item.rrp || '',
+      item.sellingPrice || '',
+      item.shipping || '',
+      item.shippingPrice || '',
+      
+      item.upc || '',
+      item.upcAmazonCatch || '',
+      item.certificationNo || '',
+      item.previousSku || '',
+      
+      item.canBeSold ? 'Yes' : 'No',
+      item.canBePurchased ? 'Yes' : 'No',
+      item.trackInventory ? 'Yes' : 'No',
+      
+      item.productDimensions?.length || '',
+      item.productDimensions?.height || '',
+      item.productDimensions?.width || '',
+      item.productDimensions?.weight || '',
+      item.productDimensions?.volume || '',
+      
+      item.package1?.length || '',
+      item.package1?.height || '',
+      item.package1?.width || '',
+      item.package1?.weight || '',
+      item.package1?.volume || '',
+      
+      item.package2?.length || '',
+      item.package2?.height || '',
+      item.package2?.width || '',
+      item.package2?.weight || '',
+      item.package2?.volume || '',
+      
+      item.package3?.length || '',
+      item.package3?.height || '',
+      item.package3?.width || '',
+      item.package3?.weight || '',
+      item.package3?.volume || '',
+      
+      item.stockLevel?.stocklevel || '',
+      item.stockLevel?.sold || '',
+      item.stockLevel?.factorysecond || '',
+      item.stockLevel?.damaged || '',
+      
+      item.purchase?.purchaseprice || '',
+      item.purchase?.costinaus || '',
+      item.purchase?.profit || '',
+      item.purchase?.profitratio || '',
+      item.purchase?.returnratio || '',
+      
+      item.organization?.categoryproduct || '',
+      item.organization?.producttype || '',
+      item.organization?.collection || '',
+      item.organization?.tags || '',
+      
+      item.notes || '',
+      
+      item.imageName || '',
+      item.imageUrl || ''
+    ];
+  };
+
+  const handleExportSelectedCSV = () => {
+    // If no specific rows are selected, export all filtered data
+    const itemsToExport = selectedRows.length === 0 ? filteredData : filteredData.filter(item => selectedRows.includes(item._id));
+    
+    if (itemsToExport.length === 0) {
+      toast.error("No items to export");
+      return;
     }
-  )
-  }
-}
+
+    const headers = getAllHeaders();
+    const dataToExport = itemsToExport.map(convertItemToRow);
+    const csvData = [headers, ...dataToExport];
+
+    // Convert to CSV string with proper handling of commas and quotes
+    const csvString = csvData.map(row => 
+      row.map(cell => {
+        if (cell && (cell.includes(',') || cell.includes('"') || cell.includes('\n'))) {
+          return `"${cell.replace(/"/g, '""')}"`;
+        }
+        return cell;
+      }).join(',')
+    ).join('\n');
+
+    // Create and download file
+    const date = new Date().toISOString().split('T')[0];
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `inventory_export_${date}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast.success(`Successfully exported ${itemsToExport.length} items`);
+  };
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      console.log('File Details:', {
+        name: file.name,
+        type: file.type,
+        size: `${(file.size / 1024).toFixed(2)} KB`,
+        lastModified: new Date(file.lastModified).toLocaleString()
+      });
+
+      if (file.type !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" && 
+          file.type !== "application/vnd.ms-excel" &&
+          file.type !== "text/csv") {
+        toast.error("Please upload an Excel or CSV file");
+        return;
+      }
+
+      // Show loading toast
+      const loadingToast = toast.loading("Processing file...");
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const content = e.target.result;
+        
+        try {
+          // Parse CSV content
+          const rows = content.split('\n').map(row => 
+            row.split(',').map(cell => 
+              cell.trim().replace(/(^"|"$)/g, '') // Remove quotes
+            )
+          );
+          
+          const headers = rows[0];
+          const data = rows.slice(1).filter(row => row.some(cell => cell.trim())); // Remove empty rows
+
+          // Validate required fields
+          const requiredFields = ['Product Title', 'SKU'];
+          const missingFields = requiredFields.filter(field => !headers.includes(field));
+          
+          if (missingFields.length > 0) {
+            toast.update(loadingToast, {
+              render: `Missing Required Fields: ${missingFields.join(', ')}`,
+              type: "error",
+              isLoading: false,
+              autoClose: 5000
+            });
+            return;
+          }
+
+          // Process each row
+          const results = {
+            updated: 0,
+            created: 0,
+            failed: 0,
+            total: data.length
+          };
+
+          for (const row of data) {
+            try {
+              // Create inventory item object
+              const inventoryItem = {};
+              headers.forEach((header, index) => {
+                // Map CSV headers to database fields
+                switch(header) {
+                  case 'Product Title':
+                    inventoryItem.productTitle = row[index];
+                    break;
+                  case 'SKU':
+                    inventoryItem.sku = row[index];
+                    break;
+                  case 'RRP':
+                    inventoryItem.rrp = row[index];
+                    break;
+                  case 'Selling Price':
+                    inventoryItem.sellingPrice = row[index];
+                    break;
+                  case 'Stock Level':
+                    inventoryItem.stockLevel = { stocklevel: row[index] };
+                    break;
+                  case 'Brand':
+                    inventoryItem.brand = row[index];
+                    break;
+                  case 'Status':
+                    inventoryItem.status = row[index];
+                    break;
+                  // Add mappings for other fields
+                  case 'Can Be Sold':
+                    inventoryItem.canBeSold = row[index].toLowerCase() === 'yes';
+                    break;
+                  case 'Can Be Purchased':
+                    inventoryItem.canBePurchased = row[index].toLowerCase() === 'yes';
+                    break;
+                  case 'Track Inventory':
+                    inventoryItem.trackInventory = row[index].toLowerCase() === 'yes';
+                    break;
+                  case 'GTIN':
+                    inventoryItem.gtin = row[index];
+                    break;
+                  case 'UPC':
+                    inventoryItem.upc = row[index];
+                    break;
+                  case 'Notes':
+                    inventoryItem.notes = row[index];
+                    break;
+                  // Handle nested objects
+                  case 'Product Length':
+                    inventoryItem.productDimensions = inventoryItem.productDimensions || {};
+                    inventoryItem.productDimensions.length = row[index];
+                    break;
+                  case 'Product Height':
+                    inventoryItem.productDimensions = inventoryItem.productDimensions || {};
+                    inventoryItem.productDimensions.height = row[index];
+                    break;
+                  case 'Product Width':
+                    inventoryItem.productDimensions = inventoryItem.productDimensions || {};
+                    inventoryItem.productDimensions.width = row[index];
+                    break;
+                  case 'Product Weight':
+                    inventoryItem.productDimensions = inventoryItem.productDimensions || {};
+                    inventoryItem.productDimensions.weight = row[index];
+                    break;
+                  // Add more field mappings as needed
+                }
+              });
+
+              if (!inventoryItem.productTitle) {
+                console.warn('Skipping row: Missing Product Title');
+                results.failed++;
+                continue;
+              }
+
+              // Try to update or create the inventory item
+              const response = await fetch('/api/inventory/import', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(inventoryItem)
+              });
+
+              const result = await response.json();
+              
+              if (result.success) {
+                if (result.action === 'updated') {
+                  results.updated++;
+                } else {
+                  results.created++;
+                }
+              } else {
+                results.failed++;
+                if (result.error && result.error.includes("MongoDB Atlas cluster")) {
+                  // Show MongoDB connection error toast
+                  toast.update(loadingToast, {
+                    render: <div className="flex flex-col gap-2">
+                      <p className="font-semibold">Database Connection Error</p>
+                      <p className="text-sm">Unable to connect to the database. Please check:</p>
+                      <ul className="list-disc list-inside text-sm ml-2">
+                        <li>Your internet connection</li>
+                        <li>IP whitelist in MongoDB Atlas</li>
+                        <li>Database credentials</li>
+                      </ul>
+                      <p className="text-sm mt-1">Contact your administrator for assistance.</p>
+                    </div>,
+                    type: "error",
+                    isLoading: false,
+                    autoClose: false,
+                    closeButton: true
+                  });
+                  // Stop processing more rows
+                  break;
+                } else {
+                  console.error('Error processing row:', result.error);
+                }
+              }
+            } catch (error) {
+              results.failed++;
+              if (error.message && error.message.includes("MongoDB Atlas cluster")) {
+                // Show MongoDB connection error toast
+                toast.update(loadingToast, {
+                  render: <div className="flex flex-col gap-2">
+                    <p className="font-semibold">Database Connection Error</p>
+                    <p className="text-sm">Unable to connect to the database. Please check:</p>
+                    <ul className="list-disc list-inside text-sm ml-2">
+                      <li>Your internet connection</li>
+                      <li>IP whitelist in MongoDB Atlas</li>
+                      <li>Database credentials</li>
+                    </ul>
+                    <p className="text-sm mt-1">Contact your administrator for assistance.</p>
+                  </div>,
+                  type: "error",
+                  isLoading: false,
+                  autoClose: false,
+                  closeButton: true
+                });
+                // Stop processing more rows
+                break;
+              } else {
+                console.error('Error processing row:', error);
+              }
+            }
+          }
+
+          if (!results.failed || (results.updated > 0 || results.created > 0)) {
+            // Only show results toast if we have some successes or if errors weren't due to connection
+            toast.update(loadingToast, {
+              render: `Import completed: ${results.created} created, ${results.updated} updated, ${results.failed} failed`,
+              type: results.failed === 0 ? "success" : "warning",
+              isLoading: false,
+              autoClose: 5000
+            });
+          }
+
+          // Refresh the inventory list only if we had some successes
+          if (results.updated > 0 || results.created > 0) {
+            const res = await getAllInventory();
+            if (res.success) {
+              setInventory(res.data);
+            }
+          }
+
+        } catch (error) {
+          console.error('Error parsing file:', error);
+          toast.update(loadingToast, {
+            render: 'Error processing file. Please check the console for details.',
+            type: "error",
+            isLoading: false,
+            autoClose: 5000
+          });
+        }
+      };
+
+      reader.onerror = (error) => {
+        console.error('Error reading file:', error);
+        toast.update(loadingToast, {
+          render: 'Error reading file. Please try again.',
+          type: "error",
+          isLoading: false,
+          autoClose: 5000
+        });
+      };
+
+      reader.readAsText(file);
+      event.target.value = null;
+    }
+  };
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div
         className={`p-2 sm:p-4 mx-auto w-full min-w-[320px] md:w-[1000px] max-w-screen-lg ${dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
           }`}
@@ -390,14 +893,30 @@ const TableWithCheckboxes = () => {
             Inventory List
           </h1>
           <div className="flex gap-4 justify-end items-center">
-            <button className="text-md hover:bg-gray-100 transition">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              accept=".xlsx,.xls,.csv"
+              className="hidden"
+            />
+            <button 
+              className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition cursor-pointer"
+              onClick={handleImportClick}
+            >
               Import
+            </button>
+            <button 
+              className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition cursor-pointer"
+              onClick={handleExportSelectedCSV}
+            >
+              Export
             </button>
             <button className="text-md hover:bg-gray-100 transition">
               Bundling/Kitting
             </button>
             <button
-              className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition"
+              className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition cursor-pointer"
               onClick={() => setIsOpenpop(true)}
             >
               Create Inventory
@@ -612,10 +1131,30 @@ const TableWithCheckboxes = () => {
         <div ref={buttonsRef} className="flex gap-4 mb-2 px-4">
           <div className="flex gap-1">
             <div className="border border-gray-300 p-1 px-4 rounded-md gap-2 flex items-center">
-              <input type="checkbox" />
-              <button className="ml-2 text-sm">{selectedRows.length} Select</button>
+              <div className="flex flex-col items-center">
+              {selectedRows.length}
+                {/* <input
+                  type="checkbox"
+                  checked={filteredData.length > 0 && selectedRows.length === filteredData.length}
+                  onChange={toggleSelectAll}
+                  title="Select all inventory items"
+                /> */}
+                {/* <span className="text-xs text-gray-500 mt-1">
+                  {selectedRows.length} / {filteredData.length}
+                </span> */}
+              </div>
             </div>
-            <div className="inline-block">
+            <div className="inline-block flex gap-2">
+              {/* <button 
+                className={`border border-gray-300 p-1 px-3 rounded-md text-sm ${
+                  selectedRows.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'
+                }`}
+                onClick={handleExportSelectedCSV}
+                disabled={selectedRows.length === 0}
+                title={selectedRows.length === 0 ? "Select items to export" : "Export selected items"}
+              >
+                Export Selected
+              </button> */}
               <button className="border border-gray-300 p-1 rounded-md">
                 <select className="text-sm border-none outline-none px-2">
                   <option value="">More Actions</option>
@@ -635,16 +1174,24 @@ const TableWithCheckboxes = () => {
             <thead>
               <tr className="text-xs bg-[#f7f7f7]">
                 <th className="p-2 border-b w-12 text-center">
-                  <input
-                    type="checkbox"
-                    checked={
-                      paginatedData.length > 0 &&
-                      selectedRows.length === paginatedData.length
-                    }
-                    onChange={toggleSelectAll}
-                  />
+                  <div className="flex flex-col items-center">
+                    <input
+                      type="checkbox"
+                      checked={filteredData.length > 0 && selectedRows.length === filteredData.length}
+                      onChange={toggleSelectAll}
+                      title="Select all inventory items"
+                    />
+                    {/* <span className="text-xs text-gray-500 mt-1">
+                      {selectedRows.length} / {filteredData.length}
+                    </span> */}
+                  </div>
                 </th>
-                <th className="p-2 border-b text-center">Name</th>
+                <th 
+                  className="p-2 border-b text-center cursor-pointer hover:bg-gray-100"
+                  onClick={toggleSelectAll}
+                >
+                  Name
+                </th>
                 <th className="p-2 border-b text-center">SKU</th>
                 <th className="p-2 border-b text-center">RRP</th>
                 <th className="p-2 border-b text-center">Selling Price</th>
@@ -658,10 +1205,12 @@ const TableWithCheckboxes = () => {
               {paginatedData.map((row) => (
                 <tr
                   key={row._id}
-                  className="hover:bg-gray-50 cursor-pointer"
-                  // onClick={() => handleRowClick(row)}
+                  className={`hover:bg-gray-50 cursor-pointer ${
+                    selectedRows.includes(row._id) ? 'bg-blue-50' : ''
+                  }`}
+                  onClick={() => handleRowClick(row)}
                 >
-                  <td className="p-2 border-b text-center w-12">
+                  <td className="p-2 border-b text-center w-12" onClick={(e) => e.stopPropagation()}>
                     <input
                       type="checkbox"
                       checked={selectedRows.includes(row._id)}
