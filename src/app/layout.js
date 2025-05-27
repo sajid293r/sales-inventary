@@ -63,7 +63,7 @@ export default function RootLayout({ children }) {
           <div className="fixed ">
             <Slidebar />
           </div>        
-            <div className="  md:ml-45 lg:ml-45 mt-5">{children}</div>
+            <div className="mt-10 md:ml-45 lg:ml-45 mt-5">{children}</div>
         </div>
       </body>
     </html>

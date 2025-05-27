@@ -162,11 +162,9 @@ const TableWithCheckboxes = () => {
 
   const toggleSelectAll = (e) => {
     if (e.target.checked) {
-      // Select all items from filteredData, not just current page
       const allIds = filteredData.map(item => item._id);
       setSelectedRows(allIds);
     } else {
-      // Deselect all
       setSelectedRows([]);
     }
   };
@@ -191,39 +189,39 @@ const TableWithCheckboxes = () => {
     setIsOpen2(false);
   };
 
-  const toggleOption = (value) => {
-    setSelected((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
-    setCurrentPage(1);
-  };
+  // const toggleOption = (value) => {
+  //   setSelected((prev) =>
+  //     prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+  //   );
+  //   setCurrentPage(1);
+  // };
 
-  const toggleOption1 = (value) => {
-    setSelected1((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
-    setCurrentPage(1);
-  };
+  // const toggleOption1 = (value) => {
+  //   setSelected1((prev) =>
+  //     prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+  //   );
+  //   setCurrentPage(1);
+  // };
 
-  const toggleOption2 = (value) => {
-    setSelected2((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
-    setCurrentPage(1);
-  };
+  // const toggleOption2 = (value) => {
+  //   setSelected2((prev) =>
+  //     prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+  //   );
+  //   setCurrentPage(1);
+  // };
 
-  const handleFilterChange = (field, value) => {
-    setFilters((prev) => {
-      const values = prev[field];
-      return {
-        ...prev,
-        [field]: values.includes(value)
-          ? values.filter((v) => v !== value)
-          : [...values, value],
-      };
-    });
-    setCurrentPage(1);
-  };
+  // const handleFilterChange = (field, value) => {
+  //   setFilters((prev) => {
+  //     const values = prev[field];
+  //     return {
+  //       ...prev,
+  //       [field]: values.includes(value)
+  //         ? values.filter((v) => v !== value)
+  //         : [...values, value],
+  //     };
+  //   });
+  //   setCurrentPage(1);
+  // };
 
   const handleRegionFilter = (region) => {
     setFilters((prev) => ({
@@ -240,47 +238,47 @@ const TableWithCheckboxes = () => {
     }));
   };
 
-  const handleContinentDropdown = () => {
-    setIsOpen((prev) => !prev);
-    setIsOpen1(false);
-    setIsOpen2(false);
-    setDropdown((prev) => ({
-      ...prev,
-      filterPanel: true,
-      status: false,
-      type: false,
-      paymentTerm: false,
-      sortTooltip: false,
-    }));
-  };
+  // const handleContinentDropdown = () => {
+  //   setIsOpen((prev) => !prev);
+  //   setIsOpen1(false);
+  //   setIsOpen2(false);
+  //   setDropdown((prev) => ({
+  //     ...prev,
+  //     filterPanel: true,
+  //     status: false,
+  //     type: false,
+  //     paymentTerm: false,
+  //     sortTooltip: false,
+  //   }));
+  // };
 
-  const handleTypeDropdown = () => {
-    setIsOpen1((prev) => !prev);
-    setIsOpen(false);
-    setIsOpen2(false);
-    setDropdown((prev) => ({
-      ...prev,
-      filterPanel: true,
-      status: false,
-      type: false,
-      paymentTerm: false,
-      sortTooltip: false,
-    }));
-  };
+  // const handleTypeDropdown = () => {
+  //   setIsOpen1((prev) => !prev);
+  //   setIsOpen(false);
+  //   setIsOpen2(false);
+  //   setDropdown((prev) => ({
+  //     ...prev,
+  //     filterPanel: true,
+  //     status: false,
+  //     type: false,
+  //     paymentTerm: false,
+  //     sortTooltip: false,
+  //   }));
+  // };
 
-  const handlePaymentDropdown = () => {
-    setIsOpen2((prev) => !prev);
-    setIsOpen(false);
-    setIsOpen1(false);
-    setDropdown((prev) => ({
-      ...prev,
-      filterPanel: true,
-      status: false,
-      type: false,
-      paymentTerm: false,
-      sortTooltip: false,
-    }));
-  };
+  // const handlePaymentDropdown = () => {
+  //   setIsOpen2((prev) => !prev);
+  //   setIsOpen(false);
+  //   setIsOpen1(false);
+  //   setDropdown((prev) => ({
+  //     ...prev,
+  //     filterPanel: true,
+  //     status: false,
+  //     type: false,
+  //     paymentTerm: false,
+  //     sortTooltip: false,
+  //   }));
+  // };
 
   const handleEdit = (e, row) => {
     e.preventDefault();
@@ -294,19 +292,16 @@ const TableWithCheckboxes = () => {
 
   const filteredData = inventory
     .filter((item) => {
-      // Filter by search query
       const matchSearch = searchQuery
         ? item.productTitle?.toLowerCase().includes(searchQuery.toLowerCase())
         : true;
 
-      // Filter by region buttons (All, In Stock, etc.)
       const matchRegionButton = !filters.region || filters.region === "All" || 
         (filters.region === "In Stock" && Number(item.stockLevel?.stocklevel) > 0) ||
         (filters.region === "Out of Stock" && Number(item.stockLevel?.stocklevel) <= 0) ||
         (filters.region === "Product Listed" && item.status === "Active") ||
         (filters.region === "Archived" && item.status === "Inactive");
 
-      // Filter by type (Can be Sold, Can be Purchased, etc.)
       const matchType = !filterType || 
         (filterType === "Can be Sold" && item.canBeSold) ||
         (filterType === "Can be Purchased" && item.canBePurchased) ||
@@ -315,10 +310,8 @@ const TableWithCheckboxes = () => {
         (filterType === "Spare Parts" && item.isSparePart) ||
         (filterType === "Assembly Required" && item.assemblyRequired);
 
-      // Filter by status
       const matchStatus = !selectedStatus || item.status === selectedStatus;
 
-      // Filter by brand
       const matchBrand = !selectedBrand || item.brand === selectedBrand;
 
       return matchSearch && matchRegionButton && matchType && matchStatus && matchBrand;
@@ -373,7 +366,6 @@ const TableWithCheckboxes = () => {
     setSelectedRows([]);
   };
   const onDelete = (id, productTitle) => {
-    // Create a custom toast for confirmation
     toast.info(
       <div className="flex flex-col gap-2">
         <p>{`Are you sure you want to delete "${productTitle}"`}</p>
@@ -389,13 +381,11 @@ const TableWithCheckboxes = () => {
             onClick={() => {
               toast.dismiss();
               
-              // Show loading toast
               const loadingToast = toast.loading("Deleting item...");
               
               deleteInventory(id)
                 .then((res) => {
                   if (res.success) {
-                    // Update loading toast with success message
                     toast.update(loadingToast, {
                       render: "Item deleted successfully",
                       type: "success",
@@ -404,7 +394,6 @@ const TableWithCheckboxes = () => {
                     });
                     setInventory((prev) => prev.filter((item) => item._id !== id));
                   } else {
-                    // Update loading toast with error message
                     toast.update(loadingToast, {
                       render: `Failed to delete item: ${res.error}`,
                       type: "error",
@@ -414,7 +403,6 @@ const TableWithCheckboxes = () => {
                   }
                 })
                 .catch((error) => {
-                  // Update loading toast with error message
                   toast.update(loadingToast, {
                     render: `Error deleting item: ${error.message}`,
                     type: "error",
@@ -446,7 +434,6 @@ const TableWithCheckboxes = () => {
 
   const getAllHeaders = () => {
     return [
-      // Basic Info
       'Product Title',
       'SKU',
       'GTIN',
@@ -457,68 +444,57 @@ const TableWithCheckboxes = () => {
       'Shipping',
       'Shipping Price',
       
-      // Product Info
       'UPC',
       'UPC Amazon Catch',
       'Certification No',
       'Previous SKU',
       
-      // Flags
       'Can Be Sold',
       'Can Be Purchased',
       'Track Inventory',
       
-      // Product Dimensions
       'Product Length',
       'Product Height',
       'Product Width',
       'Product Weight',
       'Product Volume',
       
-      // Package 1
       'Package1 Length',
       'Package1 Height',
       'Package1 Width',
       'Package1 Weight',
       'Package1 Volume',
       
-      // Package 2
       'Package2 Length',
       'Package2 Height',
       'Package2 Width',
       'Package2 Weight',
       'Package2 Volume',
       
-      // Package 3
       'Package3 Length',
       'Package3 Height',
       'Package3 Width',
       'Package3 Weight',
       'Package3 Volume',
       
-      // Stock Level
       'Stock Level',
       'Sold',
       'Factory Second',
       'Damaged',
       
-      // Purchase Info
       'Purchase Price',
       'Cost in AUS',
       'Profit',
       'Profit Ratio',
       'Return Ratio',
       
-      // Organization
       'Category Product',
       'Product Type',
       'Collection',
       'Tags',
       
-      // Notes
       'Notes',
       
-      // Image Info
       'Image Name',
       'Image URL'
     ];
@@ -593,7 +569,6 @@ const TableWithCheckboxes = () => {
   };
 
   const handleExportSelectedCSV = () => {
-    // If no specific rows are selected, export all filtered data
     const itemsToExport = selectedRows.length === 0 ? filteredData : filteredData.filter(item => selectedRows.includes(item._id));
     
     if (itemsToExport.length === 0) {
@@ -605,7 +580,6 @@ const TableWithCheckboxes = () => {
     const dataToExport = itemsToExport.map(convertItemToRow);
     const csvData = [headers, ...dataToExport];
 
-    // Convert to CSV string with proper handling of commas and quotes
     const csvString = csvData.map(row => 
       row.map(cell => {
         if (cell && (cell.includes(',') || cell.includes('"') || cell.includes('\n'))) {
@@ -615,7 +589,6 @@ const TableWithCheckboxes = () => {
       }).join(',')
     ).join('\n');
 
-    // Create and download file
     const date = new Date().toISOString().split('T')[0];
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -647,7 +620,6 @@ const TableWithCheckboxes = () => {
         return;
       }
 
-      // Show loading toast
       const loadingToast = toast.loading("Processing file...");
 
       const reader = new FileReader();
@@ -655,17 +627,15 @@ const TableWithCheckboxes = () => {
         const content = e.target.result;
         
         try {
-          // Parse CSV content
           const rows = content.split('\n').map(row => 
             row.split(',').map(cell => 
-              cell.trim().replace(/(^"|"$)/g, '') // Remove quotes
+              cell.trim().replace(/(^"|"$)/g, '') 
             )
           );
           
           const headers = rows[0];
-          const data = rows.slice(1).filter(row => row.some(cell => cell.trim())); // Remove empty rows
+          const data = rows.slice(1).filter(row => row.some(cell => cell.trim())); 
 
-          // Validate required fields
           const requiredFields = ['Product Title', 'SKU'];
           const missingFields = requiredFields.filter(field => !headers.includes(field));
           
@@ -679,7 +649,6 @@ const TableWithCheckboxes = () => {
             return;
           }
 
-          // Process each row
           const results = {
             updated: 0,
             created: 0,
@@ -689,10 +658,8 @@ const TableWithCheckboxes = () => {
 
           for (const row of data) {
             try {
-              // Create inventory item object
               const inventoryItem = {};
               headers.forEach((header, index) => {
-                // Map CSV headers to database fields
                 switch(header) {
                   case 'Product Title':
                     inventoryItem.productTitle = row[index];
@@ -715,7 +682,6 @@ const TableWithCheckboxes = () => {
                   case 'Status':
                     inventoryItem.status = row[index];
                     break;
-                  // Add mappings for other fields
                   case 'Can Be Sold':
                     inventoryItem.canBeSold = row[index].toLowerCase() === 'yes';
                     break;
@@ -734,7 +700,6 @@ const TableWithCheckboxes = () => {
                   case 'Notes':
                     inventoryItem.notes = row[index];
                     break;
-                  // Handle nested objects
                   case 'Product Length':
                     inventoryItem.productDimensions = inventoryItem.productDimensions || {};
                     inventoryItem.productDimensions.length = row[index];
@@ -751,7 +716,6 @@ const TableWithCheckboxes = () => {
                     inventoryItem.productDimensions = inventoryItem.productDimensions || {};
                     inventoryItem.productDimensions.weight = row[index];
                     break;
-                  // Add more field mappings as needed
                 }
               });
 
@@ -761,7 +725,6 @@ const TableWithCheckboxes = () => {
                 continue;
               }
 
-              // Try to update or create the inventory item
               const response = await fetch('/api/inventory/import', {
                 method: 'POST',
                 headers: {
@@ -781,7 +744,6 @@ const TableWithCheckboxes = () => {
               } else {
                 results.failed++;
                 if (result.error && result.error.includes("MongoDB Atlas cluster")) {
-                  // Show MongoDB connection error toast
                   toast.update(loadingToast, {
                     render: <div className="flex flex-col gap-2">
                       <p className="font-semibold">Database Connection Error</p>
@@ -798,7 +760,6 @@ const TableWithCheckboxes = () => {
                     autoClose: false,
                     closeButton: true
                   });
-                  // Stop processing more rows
                   break;
                 } else {
                   console.error('Error processing row:', result.error);
@@ -807,7 +768,6 @@ const TableWithCheckboxes = () => {
             } catch (error) {
               results.failed++;
               if (error.message && error.message.includes("MongoDB Atlas cluster")) {
-                // Show MongoDB connection error toast
                 toast.update(loadingToast, {
                   render: <div className="flex flex-col gap-2">
                     <p className="font-semibold">Database Connection Error</p>
@@ -824,7 +784,6 @@ const TableWithCheckboxes = () => {
                   autoClose: false,
                   closeButton: true
                 });
-                // Stop processing more rows
                 break;
               } else {
                 console.error('Error processing row:', error);
@@ -833,7 +792,6 @@ const TableWithCheckboxes = () => {
           }
 
           if (!results.failed || (results.updated > 0 || results.created > 0)) {
-            // Only show results toast if we have some successes or if errors weren't due to connection
             toast.update(loadingToast, {
               render: `Import completed: ${results.created} created, ${results.updated} updated, ${results.failed} failed`,
               type: results.failed === 0 ? "success" : "warning",
@@ -842,7 +800,6 @@ const TableWithCheckboxes = () => {
             });
           }
 
-          // Refresh the inventory list only if we had some successes
           if (results.updated > 0 || results.created > 0) {
             const res = await getAllInventory();
             if (res.success) {
@@ -876,7 +833,6 @@ const TableWithCheckboxes = () => {
     }
   };
 
-  // Add Loader component
   const Loader = () => (
     <div className="flex flex-col items-center justify-center min-h-[400px] w-full">
       <div className="relative w-20 h-20">
