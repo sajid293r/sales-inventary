@@ -82,7 +82,7 @@ const Sidebar = () => {
       // tooltip: <Link href="/BulkEditor">BulkEditor</Link>,
        tooltip: (
         <div className="flex flex-col gap-1">
-          <div><Link href="/Inventory_list/Inventorylist">Inventory list 1</Link></div>
+          <div><Link href="/Inventory_list/Inventorylist">Inventory list</Link></div>
           
           {/* <div><Link href="/Inventory_list/Inventorylist2">Inventory list 2</Link></div> */}
           {/* <div><Link href="#">Inventory list 3</Link></div> */}

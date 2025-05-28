@@ -59,6 +59,7 @@ const [message, setMessage] = useState('');
   const sortTooltipRef = useRef(null);
   const searchInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const options = [
     "UK",
@@ -647,10 +648,104 @@ const parseCSV = (csv) => {
   }
 };
 
+const handleExport = () => {
+  try {
+    setIsExporting(true);
+    
+    // Convert data to CSV format
+    const headers = [
+      'Sales Channel',
+      'Type',
+      'Payment Term',
+      'Location',
+      'Status',
+      'Created Date',
+      'Email Platform Invoice',
+      'Email Platform Tracking File',
+      'Customer Invoice Inc GST',
+      'Email Invoice Required',
+      '1PO INV',
+      'Start On Campaign',
+      'Description Channel',
+      'Selling Channel',
+      'Plus Shipping',
+      'Off Selling Price',
+      'Calculate NZ Price',
+      'Calculate Retail Price',
+      'Calculate GST',
+      'Rounding Low',
+      'Rounding High',
+      'NZ Dropshipping Auto Calculate',
+      'Missing Invoice',
+      'Payment Required',
+      'Version'
+    ];
 
+    const csvData = [
+      headers.join(','),
+      ...salesChannels.map(row => [
+        row.salesChannelName || '',
+        row.salesChannelType || '',
+        row.payementterm || '',
+        row.suburbState || '',
+        row.emailPlatforminvoice ? 'Active' : 'Inactive',
+        new Date(row.createdAt).toLocaleDateString(),
+        row.emailPlatforminvoice ? 'Yes' : 'No',
+        row.Emailplatformatrackingfile ? 'Yes' : 'No',
+        row.CustomerinvoicelncGST ? 'Yes' : 'No',
+        row.Emailinvoicerequired ? 'Yes' : 'No',
+        row['1POINV'] ? 'Yes' : 'No',
+        row.startOnCampaign ? 'Yes' : 'No',
+        row.descriptionChannel ? 'Yes' : 'No',
+        row.sellingChannel ? 'Yes' : 'No',
+        row.plusShipping ? 'Yes' : 'No',
+        row.offSellingPricecheckbox ? 'Yes' : 'No',
+        row.calculateNZPricecheckbox ? 'Yes' : 'No',
+        row.calculateRetailPricecheckbox ? 'Yes' : 'No',
+        row.calculateGSTcheckbox ? 'Yes' : 'No',
+        row.roundingLowcheckbox ? 'Yes' : 'No',
+        row.roundingHighcheckbox ? 'Yes' : 'No',
+        row.nzDropshippingAutoCalculate ? 'Yes' : 'No',
+        row.missinginvoice ? 'Yes' : 'No',
+        row.paymentrequired ? 'Yes' : 'No',
+        row.versioncheckbox ? 'Yes' : 'No'
+      ].join(','))
+    ].join('\n');
 
+    // Create blob and download
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sales_channels_complete_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
 
-
+    toast.success(
+      <div className="flex items-center gap-2">
+        <span className="text-lg">✨</span>
+        <div>
+          <p className="font-semibold">Export Successful</p>
+          <p className="text-sm opacity-90">All data has been exported to CSV</p>
+        </div>
+      </div>
+    );
+  } catch (error) {
+    toast.error(
+      <div className="flex items-center gap-2">
+        <span className="text-lg">❌</span>
+        <div>
+          <p className="font-semibold">Export Failed</p>
+          <p className="text-sm opacity-90">{error.message}</p>
+        </div>
+      </div>
+    );
+  } finally {
+    setIsExporting(false);
+  }
+};
 
   return (
     <div
@@ -682,6 +777,23 @@ const parseCSV = (csv) => {
     </div>
   ) : (
     'Import'
+  )}
+</button>
+
+<button
+  onClick={handleExport}
+  disabled={isExporting || isLoading}
+  className={`bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm transition ${
+    isExporting || isLoading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-[#48b55a]'
+  }`}
+>
+  {isExporting ? (
+    <div className="flex items-center gap-2">
+      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+      <span>Exporting...</span>
+    </div>
+  ) : (
+    'Export'
   )}
 </button>
 
