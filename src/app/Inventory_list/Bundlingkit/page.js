@@ -283,17 +283,17 @@ const BundlingkitContent = () => {
   // Handle save
   const handleSave = async () => {
     setIsLoading(true);
-    console.log('Initial Form Data:', JSON.stringify(formData, null, 2));
+    // console.log('Initial Form Data:', JSON.stringify(formData, null, 2));
 
     try {
       let imageFileName = formData.imageName;
-      console.log('Selected Image:', selectedImage);
+      // console.log('Selected Image:', selectedImage);
 
       // Upload image if one is selected
       if (selectedImage) {
         const timestamp = new Date().getTime();
         const uniqueFileName = `${timestamp}_${selectedImage.name}`;
-        console.log('Generated filename:', uniqueFileName);
+        // console.log('Generated filename:', uniqueFileName);
         
         const imageFormData = new FormData();
         imageFormData.append('file', selectedImage);
@@ -308,9 +308,9 @@ const BundlingkitContent = () => {
         }
 
         const uploadResult = await uploadResponse.json();
-        console.log('Upload result:', uploadResult);
+        // console.log('Upload result:', uploadResult);
         imageFileName = uploadResult.fileName;
-        console.log('Image file name to be saved:', imageFileName);
+        // console.log('Image file name to be saved:', imageFileName);
       }
 
       // Submit the form data with image name
@@ -318,10 +318,10 @@ const BundlingkitContent = () => {
         ...formData,
         imageName: imageFileName
       };
-      console.log('Data being submitted:', JSON.stringify(dataToSubmit, null, 2));
+      // console.log('Data being submitted:', JSON.stringify(dataToSubmit, null, 2));
 
       const result = await submitProductAction(dataToSubmit);
-      console.log('Submit result:', result);
+      // console.log('Submit result:', result);
 
       if (result.success) {
         toast.success(action === 'update' ? 'Updated successfully!' : 'Saved successfully!');

@@ -223,7 +223,7 @@ const Sidebar = () => {
      {!expanded && hoveredId && (
   <div
     ref={tooltipRef}
-    className="w-40 h-screen bg-[#DFE7F7] p-2 text-xs overflow-y-auto shadow-xl z-[1000] transition-opacity duration-200 mt-12 rounded-md border border-[#1f51b4]"
+    className="w-52 h-screen bg-[#DFE7F7] p-2 text-xs overflow-y-auto shadow-xl z-[1000] transition-opacity duration-200 mt-12 rounded-md border-2  border-[#D5DAE1]"
     onMouseEnter={() => {
       clearTimeout(timeoutRef.current); // Cancel timeout if hovered
     }}
@@ -233,9 +233,13 @@ const Sidebar = () => {
   >
     <div className="mb-4 font-bold bg-[#CCCCCC] p-2 rounded-md"> Sale Channel</div>
 
-    <div className="text-black space-y-8 hover:bg-[#8AA9D6] p-2 rounded-md font-bold">
-      {icons.find((item) => item.id === hoveredId)?.tooltip}
+   <div className="text-black space-y-2 p-2 rounded-md font-bold">
+  {React.Children.map(icons.find((item) => item.id === hoveredId)?.tooltip?.props?.children, (child, index) => (
+    <div key={index} className="hover:bg-[#8AA9D6] p-1 rounded cursor-pointer">
+      {child}
     </div>
+  ))}
+</div>
   </div>
 )}
 
