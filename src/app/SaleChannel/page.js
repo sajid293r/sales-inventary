@@ -652,64 +652,70 @@ const handleExport = () => {
   try {
     setIsExporting(true);
     
-    // Convert data to CSV format
+    // Match the required fields from parseCSV validation
     const headers = [
-      'Sales Channel',
-      'Type',
-      'Payment Term',
-      'Location',
-      'Status',
-      'Created Date',
-      'Email Platform Invoice',
-      'Email Platform Tracking File',
-      'Customer Invoice Inc GST',
-      'Email Invoice Required',
-      '1PO INV',
-      'Start On Campaign',
-      'Description Channel',
-      'Selling Channel',
-      'Plus Shipping',
-      'Off Selling Price',
-      'Calculate NZ Price',
-      'Calculate Retail Price',
-      'Calculate GST',
-      'Rounding Low',
-      'Rounding High',
-      'NZ Dropshipping Auto Calculate',
-      'Missing Invoice',
-      'Payment Required',
-      'Version'
+      'salesChannelName',
+      'salesChannelType',
+      'suburbState',
+      'payementterm',
+      'emailPlatforminvoice',
+      'Emailplatformatrackingfile',
+      'CustomerinvoicelncGST',
+      'Emailinvoicerequired',
+      '1POINV',
+      'startOnCampaign',
+      'descriptionChannel',
+      'sellingChannel',
+      'plusShipping',
+      'offSellingPricecheckbox',
+      'calculateNZPricecheckbox',
+      'calculateRetailPricecheckbox',
+      'calculateGSTcheckbox',
+      'roundingLowcheckbox',
+      'roundingHighcheckbox',
+      'nzDropshippingAutoCalculate',
+      'missinginvoice',
+      'paymentrequired',
+      'versioncheckbox',
+      'dateFrom',
+      'dateTo'
     ];
 
     const csvData = [
       headers.join(','),
-      ...salesChannels.map(row => [
-        row.salesChannelName || '',
-        row.salesChannelType || '',
-        row.payementterm || '',
-        row.suburbState || '',
-        row.emailPlatforminvoice ? 'Active' : 'Inactive',
-        new Date(row.createdAt).toLocaleDateString(),
-        row.emailPlatforminvoice ? 'Yes' : 'No',
-        row.Emailplatformatrackingfile ? 'Yes' : 'No',
-        row.CustomerinvoicelncGST ? 'Yes' : 'No',
-        row.Emailinvoicerequired ? 'Yes' : 'No',
-        row['1POINV'] ? 'Yes' : 'No',
-        row.startOnCampaign ? 'Yes' : 'No',
-        row.descriptionChannel ? 'Yes' : 'No',
-        row.sellingChannel ? 'Yes' : 'No',
-        row.plusShipping ? 'Yes' : 'No',
-        row.offSellingPricecheckbox ? 'Yes' : 'No',
-        row.calculateNZPricecheckbox ? 'Yes' : 'No',
-        row.calculateRetailPricecheckbox ? 'Yes' : 'No',
-        row.calculateGSTcheckbox ? 'Yes' : 'No',
-        row.roundingLowcheckbox ? 'Yes' : 'No',
-        row.roundingHighcheckbox ? 'Yes' : 'No',
-        row.nzDropshippingAutoCalculate ? 'Yes' : 'No',
-        row.missinginvoice ? 'Yes' : 'No',
-        row.paymentrequired ? 'Yes' : 'No',
-        row.versioncheckbox ? 'Yes' : 'No'
-      ].join(','))
+      ...salesChannels.map(row => {
+        // Ensure all required fields are present and properly formatted
+        const rowData = {
+          salesChannelName: row.salesChannelName || '',
+          salesChannelType: row.salesChannelType || '',
+          suburbState: row.suburbState || '',
+          payementterm: row.payementterm || '',
+          emailPlatforminvoice: row.emailPlatforminvoice?.toString() || 'false',
+          Emailplatformatrackingfile: row.Emailplatformatrackingfile?.toString() || 'false',
+          CustomerinvoicelncGST: row.CustomerinvoicelncGST?.toString() || 'false',
+          Emailinvoicerequired: row.Emailinvoicerequired?.toString() || 'false',
+          '1POINV': row['1POINV']?.toString() || 'false',
+          startOnCampaign: row.startOnCampaign?.toString() || 'false',
+          descriptionChannel: row.descriptionChannel?.toString() || 'false',
+          sellingChannel: row.sellingChannel?.toString() || 'false',
+          plusShipping: row.plusShipping?.toString() || 'false',
+          offSellingPricecheckbox: row.offSellingPricecheckbox?.toString() || 'false',
+          calculateNZPricecheckbox: row.calculateNZPricecheckbox?.toString() || 'false',
+          calculateRetailPricecheckbox: row.calculateRetailPricecheckbox?.toString() || 'false',
+          calculateGSTcheckbox: row.calculateGSTcheckbox?.toString() || 'false',
+          roundingLowcheckbox: row.roundingLowcheckbox?.toString() || 'false',
+          roundingHighcheckbox: row.roundingHighcheckbox?.toString() || 'false',
+          nzDropshippingAutoCalculate: row.nzDropshippingAutoCalculate?.toString() || 'false',
+          missinginvoice: row.missinginvoice?.toString() || 'false',
+          paymentrequired: row.paymentrequired?.toString() || 'false',
+          versioncheckbox: row.versioncheckbox?.toString() || 'false',
+          dateFrom: row.dateFrom || '',
+          dateTo: row.dateTo || ''
+        };
+
+        // Return values in the same order as headers
+        return headers.map(header => rowData[header]).join(',');
+      })
     ].join('\n');
 
     // Create blob and download
@@ -717,7 +723,7 @@ const handleExport = () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `sales_channels_complete_${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `sales_channels_${new Date().toISOString().split('T')[0]}.csv`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
@@ -728,7 +734,7 @@ const handleExport = () => {
         <span className="text-lg">✨</span>
         <div>
           <p className="font-semibold">Export Successful</p>
-          <p className="text-sm opacity-90">All data has been exported to CSV</p>
+          <p className="text-sm opacity-90">Data exported in import-ready format</p>
         </div>
       </div>
     );
