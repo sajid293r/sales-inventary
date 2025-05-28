@@ -59,6 +59,7 @@ const [message, setMessage] = useState('');
   const sortTooltipRef = useRef(null);
   const searchInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const options = [
     "UK",
@@ -647,10 +648,110 @@ const parseCSV = (csv) => {
   }
 };
 
+const handleExport = () => {
+  try {
+    setIsExporting(true);
+    
+    // Match the required fields from parseCSV validation
+    const headers = [
+      'salesChannelName',
+      'salesChannelType',
+      'suburbState',
+      'payementterm',
+      'emailPlatforminvoice',
+      'Emailplatformatrackingfile',
+      'CustomerinvoicelncGST',
+      'Emailinvoicerequired',
+      '1POINV',
+      'startOnCampaign',
+      'descriptionChannel',
+      'sellingChannel',
+      'plusShipping',
+      'offSellingPricecheckbox',
+      'calculateNZPricecheckbox',
+      'calculateRetailPricecheckbox',
+      'calculateGSTcheckbox',
+      'roundingLowcheckbox',
+      'roundingHighcheckbox',
+      'nzDropshippingAutoCalculate',
+      'missinginvoice',
+      'paymentrequired',
+      'versioncheckbox',
+      'dateFrom',
+      'dateTo'
+    ];
 
+    const csvData = [
+      headers.join(','),
+      ...salesChannels.map(row => {
+        // Ensure all required fields are present and properly formatted
+        const rowData = {
+          salesChannelName: row.salesChannelName || '',
+          salesChannelType: row.salesChannelType || '',
+          suburbState: row.suburbState || '',
+          payementterm: row.payementterm || '',
+          emailPlatforminvoice: row.emailPlatforminvoice?.toString() || 'false',
+          Emailplatformatrackingfile: row.Emailplatformatrackingfile?.toString() || 'false',
+          CustomerinvoicelncGST: row.CustomerinvoicelncGST?.toString() || 'false',
+          Emailinvoicerequired: row.Emailinvoicerequired?.toString() || 'false',
+          '1POINV': row['1POINV']?.toString() || 'false',
+          startOnCampaign: row.startOnCampaign?.toString() || 'false',
+          descriptionChannel: row.descriptionChannel?.toString() || 'false',
+          sellingChannel: row.sellingChannel?.toString() || 'false',
+          plusShipping: row.plusShipping?.toString() || 'false',
+          offSellingPricecheckbox: row.offSellingPricecheckbox?.toString() || 'false',
+          calculateNZPricecheckbox: row.calculateNZPricecheckbox?.toString() || 'false',
+          calculateRetailPricecheckbox: row.calculateRetailPricecheckbox?.toString() || 'false',
+          calculateGSTcheckbox: row.calculateGSTcheckbox?.toString() || 'false',
+          roundingLowcheckbox: row.roundingLowcheckbox?.toString() || 'false',
+          roundingHighcheckbox: row.roundingHighcheckbox?.toString() || 'false',
+          nzDropshippingAutoCalculate: row.nzDropshippingAutoCalculate?.toString() || 'false',
+          missinginvoice: row.missinginvoice?.toString() || 'false',
+          paymentrequired: row.paymentrequired?.toString() || 'false',
+          versioncheckbox: row.versioncheckbox?.toString() || 'false',
+          dateFrom: row.dateFrom || '',
+          dateTo: row.dateTo || ''
+        };
 
+        // Return values in the same order as headers
+        return headers.map(header => rowData[header]).join(',');
+      })
+    ].join('\n');
 
+    // Create blob and download
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sales_channels_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
 
+    toast.success(
+      <div className="flex items-center gap-2">
+        <span className="text-lg">✨</span>
+        <div>
+          <p className="font-semibold">Export Successful</p>
+          <p className="text-sm opacity-90">Data exported in import-ready format</p>
+        </div>
+      </div>
+    );
+  } catch (error) {
+    toast.error(
+      <div className="flex items-center gap-2">
+        <span className="text-lg">❌</span>
+        <div>
+          <p className="font-semibold">Export Failed</p>
+          <p className="text-sm opacity-90">{error.message}</p>
+        </div>
+      </div>
+    );
+  } finally {
+    setIsExporting(false);
+  }
+};
 
   return (
     <div
@@ -682,6 +783,23 @@ const parseCSV = (csv) => {
     </div>
   ) : (
     'Import'
+  )}
+</button>
+
+<button
+  onClick={handleExport}
+  disabled={isExporting || isLoading}
+  className={`bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm transition ${
+    isExporting || isLoading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-[#48b55a]'
+  }`}
+>
+  {isExporting ? (
+    <div className="flex items-center gap-2">
+      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+      <span>Exporting...</span>
+    </div>
+  ) : (
+    'Export'
   )}
 </button>
 
