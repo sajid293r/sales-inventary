@@ -4,7 +4,7 @@ import Link from "next/link";
 const page = () => {
   return (
     <div
-      className={`p-2 sm:p-4 w-full   min-w-[640px] xl:min-w-[1300px] 2xl:min-w-[1700px] 3xl:min-w-[1800px] 4xl:min-w-[1900px]  mx-auto table-auto max-w-screen-auto `}
+      className={`p-2 sm:p-4 w-full   min-w-[640px] md:min-w-[800px] lg:min-w-[1000px] xl:min-w-[1300px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  mx-auto table-auto max-w-screen-auto `}
     >
       <div className="flex flex-col sm:flex-row justify-between mb-4 gap-3">
         <div className="flex items-center gap-2">

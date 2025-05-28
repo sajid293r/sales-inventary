@@ -317,7 +317,7 @@ const TableWithCheckboxes = () => {
 
   return (
     <div
-      className={`p-2 sm:p-4 mx-auto w-full min-w-[640px] xl:min-w-[1300px] 2xl:min-w-[1700px] 3xl:min-w-[1800px] 4xl:min-w-[1900px] text-sm ${
+      className={`p-2 sm:p-4 mx-auto w-full min-w-[640px] md:min-w-[800px] lg:min-w-[800px] xl:min-w-[1300px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px] text-sm ${
         dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
       }`}
     >

@@ -10,6 +10,12 @@ module.exports = {
         '3xl': '1792px', // Custom breakpoint
         '4xl': '1920px', // Custom breakpoint
       },
+       spacing: {
+      '96': '24rem',
+      '128': '32rem',
+      '160': '40rem',
+      '192': '48rem', // Optional if really needed
+    }
     },
     
   },

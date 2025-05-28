@@ -292,7 +292,7 @@ const TableWithCheckboxes = () => {
   };
 
   return (
-    <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-6  min-w-[640px] xl:min-w-[1300px] 2xl:min-w-[1700px] 3xl:min-w-[1800px] 4xl:min-w-[1900px]">
+    <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-6  min-w-[640px] md:min-w-[800px] lg:min-w-[800px] xl:min-w-[1300px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px] 4xl:min-w-[1900px]">
       <div className="flex flex-col sm:flex-row justify-between mb-6 gap-4">
         <h1 className="text-lg sm:text-xl text-gray-900 font-semibold">
           Pricing
