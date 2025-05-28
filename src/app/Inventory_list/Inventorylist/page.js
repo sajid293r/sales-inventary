@@ -774,6 +774,13 @@ const TableWithCheckboxes = () => {
     </div>
   );
 
+const handleInventory=(e)=>{
+ e.preventDefault();
+    // const query = encodeURIComponent(JSON.stringify(row));
+    router.push(`/Inventory_list/Bundlingkit`);
+  };
+
+
   return (
     <>
       <ToastContainer
@@ -788,7 +795,7 @@ const TableWithCheckboxes = () => {
         pauseOnHover
         theme="light"
       />
-      <div className={`p-2 sm:p-4 w-full  min-w-[640px] md:min-w-[800px] lg:min-w-[800px] xl:min-w-[1000px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  ${
+      <div className={`p-2 sm:p-4 w-full  min-w-[640px] md:min-w-[800px] lg:min-w-[800px] xl:min-w-[100px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  ${
           dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
         }`}>
         <div className="flex flex-col sm:flex-row justify-between mb-4 gap-3">
@@ -825,7 +832,8 @@ const TableWithCheckboxes = () => {
             </button>
             <button
               className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition cursor-pointer"
-              onClick={() => setIsOpenpop(true)}
+              // onClick={() => setIsOpenpop(true)}
+              onClick={(e)=>handleInventory(e)}
               disabled={isLoading}
             >
               Create Inventory

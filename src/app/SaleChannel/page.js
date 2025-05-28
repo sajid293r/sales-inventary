@@ -120,23 +120,40 @@ const [message, setMessage] = useState('');
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showButtons]);
-  useEffect(() => {
-    if (!isEditPopupOpen) {
-      // Refetch data when the edit popup is closed
-      const fetchData = async () => {
-        try {
-          // setIsLoading(true);
-          const data1 = await getAllSalesChannels();
-          // console.log("Sales Channels Data:", data1);
-          setSalesChannels(data1);
-        } catch (error) {
-          console.error("Error fetching sales channels:", error);
-        } 
-      };
+  // useEffect(() => {
+  //   if (!isEditPopupOpen) {
+  //     // Refetch data when the edit popup is closed
+  //     const fetchData = async () => {
+  //       try {
+  //         // setIsLoading(true);
+  //         const data1 = await getAllSalesChannels();
+  //         // console.log("Sales Channels Data:", data1);
+  //         setSalesChannels(data1);
+  //       } catch (error) {
+  //         console.error("Error fetching sales channels:", error);
+  //       } 
+  //     };
 
-      fetchData();
-    }
-  }, [isEditPopupOpen]);
+  //     fetchData();
+  //   }
+  // }, [isEditPopupOpen]);
+useEffect(() => {
+  const editPopupState = Boolean(isEditPopupOpen);
+  const openPopState = Boolean(isOpenpop);
+
+  if (!editPopupState && !openPopState) {
+    const fetchData = async () => {
+      try {
+        const data1 = await getAllSalesChannels();
+        setSalesChannels(data1);
+      } catch (error) {
+        console.error("Error fetching sales channels:", error);
+      }
+    };
+
+    fetchData();
+  }
+}, [Boolean(isEditPopupOpen), Boolean(isOpenpop)]);
 
   useEffect(() => {
     const adjustDropdownPosition = (dropdownClass, isOpen) => {
@@ -1177,7 +1194,8 @@ const parseCSV = (csv) => {
           />
         )}
         {isOpenpop && (
-          <HeaderAddSale onClose={() => setIsOpenpop(false)} />
+          <HeaderAddSale onClose={() => setIsOpenpop(false)}
+           />
         )}
         {isEditPopupOpen && editingRow && (
           <EditDetailsPopup
