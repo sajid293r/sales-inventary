@@ -84,46 +84,48 @@ const Sidebar = () => {
         <div className="flex flex-col gap-1">
           <div><Link href="/Inventory_list/Inventorylist">Inventory list 1</Link></div>
           
-          <div><Link href="/Inventory_list/Inventorylist2">Inventory list 2</Link></div>
-          <div><Link href="/BulkEditor">Inventory list 3</Link></div>
+          {/* <div><Link href="/Inventory_list/Inventorylist2">Inventory list 2</Link></div> */}
+          {/* <div><Link href="#">Inventory list 3</Link></div> */}
         </div>
       ),
     },
     {
       id: "msg3",
       icon: Message3,
-      tooltip: <Link href="/Inventory_list/TemplateName">TemplateName</Link>,
+      tooltip: <Link href="#">TemplateName</Link>,
     },
     {
       id: "msg4",
       icon: Message4,
-      tooltip: <Link href="/Inventory_list/TemplateName3">TemplateName3</Link>,
+      tooltip: <Link href="#">TemplateName3</Link>,
     },
     {
       id: "lig10",
       icon: Lig10,
-      tooltip: <Link href="/Inventory_list/Pricing">Pricing</Link>,
+      // tooltip: <Link href="/Inventory_list/Pricing">Pricing</Link>,
+            tooltip: <Link href="#">Pricing</Link>,
+
     },
     {
       id: "lig5",
       icon: Lig5,
-      tooltip: <Link href="/Inventory_list/Shipping">Shipping</Link>,
+      tooltip: <Link href="#">Shipping</Link>,
     },
     {
       id: "lig6",
       icon: Lig6,
-      tooltip: <Link href="/Inventory_list/Automation">Automation</Link>,
+      tooltip: <Link href="#">Automation</Link>,
     },
     {
       id: "lig7",
       icon: Lig7,
-      tooltip: <Link href="/Inventory_list/Shipping">Shipping</Link>,
+      tooltip: <Link href="#">Shipping</Link>,
     },
     {
       id: "lig8",
       icon: Lig8,
       tooltip: (
-        <Link href="/Inventory_list/OrderProcessAutomation">
+        <Link href="#">
           ProcessAutomation
         </Link>
       ),
@@ -132,22 +134,22 @@ const Sidebar = () => {
       id: "lig9",
       icon: Lig9,
       tooltip: (
-        <Link href="/Inventory_list/Inventorylist2">Inventorylist2</Link>
+        <Link href="#">Inventorylist2</Link>
       ),
     },
     {
       id: "lig11",
       icon: Lig11,
-      tooltip: <Link href="/Inventory_list/TemplateName2">TemplateName2</Link>,
+      tooltip: <Link href="#">TemplateName2</Link>,
     },
     {
       id: "lig12",
       icon: Lig12,
       tooltip: (
         <div className="flex flex-col gap-1">
-          <Link href="/Inventory_list/Bundlingkit">Add Inventory</Link>
-          <Link href="/Inventory_list/Bundlingkit">Update Inventory</Link>
-          <Link href="/Inventory_list/Bundlingkit">View Inventory</Link>
+          <Link href="#">Add Inventory</Link>
+          <Link href="#">Update Inventory</Link>
+          <Link href="#">View Inventory</Link>
         </div>
       ),
     },
@@ -173,7 +175,7 @@ const Sidebar = () => {
             } flex flex-col justify-between py-2 px-1 mt-12`}
         >
           {/* Top Icons */}
-          <div className="flex flex-col gap-2">
+          {/* <div className="flex flex-col gap-2">
             {icons.map((item) => (
               <div
                 key={item.id}
@@ -190,23 +192,42 @@ const Sidebar = () => {
                 />
               </div>
             ))}
-          </div>
+          </div> */}
+{/* Top Icons */}
+<div className="flex flex-col gap-2">
+  {icons.map((item) => (
+    <div
+      key={item.id}
+      className="py-2 flex justify-center relative group hover:bg-[#DBE4EE] rounded-md cursor-pointer"
+      onMouseEnter={() => handleMouseEnter(item.id)}
+      onMouseLeave={handleMouseLeave}
+    >
+      <Image
+        src={item.icon}
+        alt={`${item.id} icon`}
+        width={24}
+        height={24}
+        className="cursor-pointer"
+      />
+    </div>
+  ))}
+</div>
 
           {/* Bottom Section */}
-          <div className="flex flex-col gap-1 mt-auto px-2">
-            <Link href="/Inventory_list/TemplateName3">
+          {/* <div className="flex flex-col gap-1 mt-auto px-2">
+            <Link href="#">
               <div className="flex items-center gap-2 py-3 hover:bg-gray-100 rounded">
                 <GiDatabase size={24} />
                 {expanded && <span>TemplateName3</span>}
               </div>
             </Link>
-            <Link href="/SaleChannel">
+            <Link href="#">
               <div className="flex items-center gap-2 py-3 hover:bg-gray-100 rounded">
                 <GiDatabase size={24} />
                 {expanded && <span>Sale Channel</span>}
               </div>
             </Link>
-            <Link href="/Inventory_list/CreateMasterlist">
+            <Link href="#">
               <div className="flex items-center gap-2 py-3 hover:bg-gray-100 rounded">
                 <GiDatabase size={24} />
                 {expanded && <span>Create Master</span>}
@@ -216,11 +237,11 @@ const Sidebar = () => {
               <Settings size={24} />
               {expanded && <span>Settings</span>}
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Tooltip Display Area */}
-     {!expanded && hoveredId && (
+     {/* {!expanded && hoveredId && (
   <div
     ref={tooltipRef}
     className="w-52 h-screen bg-[#DFE7F7] p-2 text-xs overflow-y-auto shadow-xl z-[1000] transition-opacity duration-200 mt-12 rounded-md border-2  border-[#D5DAE1]"
@@ -240,6 +261,52 @@ const Sidebar = () => {
     </div>
   ))}
 </div>
+  </div>
+)} */}
+{/* Tooltip Display Area */}
+{!expanded && hoveredId && (
+  <div
+    ref={tooltipRef}
+    className="w-52 h-screen bg-[#DFE7F7] p-2 text-xs overflow-y-auto shadow-xl z-[1000] transition-opacity duration-200 mt-12 rounded-md border-2 border-[#D5DAE1]"
+    onMouseEnter={() => clearTimeout(timeoutRef.current)}
+    onMouseLeave={() => setHoveredId(null)}
+  >
+    {/* <div className="mb-4 font-bold bg-[#CCCCCC] p-2 rounded-md">Sale Channel</div> */}
+<div className="mb-4 font-bold bg-[#CCCCCC] p-2 rounded-md">
+      {hoveredId === "home" ? "Sale Channel" : "Inventory"}
+    </div>
+
+    <div className="text-black space-y-2 p-2 rounded-md font-bold">
+      {(() => {
+        const currentTooltip = icons.find((item) => item.id === hoveredId)?.tooltip;
+        if (!currentTooltip) return null;
+
+        const renderTooltipItem = (item, idx) => {
+          if (React.isValidElement(item) && item.type === Link && item.props.href) {
+            return (
+              <div key={idx} className="hover:bg-[#8AA9D6] p-1 rounded cursor-pointer">
+                <Link href={item.props.href}>{item.props.children}</Link>
+              </div>
+            );
+          } else if (React.isValidElement(item) && item.props?.children) {
+            return React.Children.map(item.props.children, (nestedChild, nestedIdx) =>
+              renderTooltipItem(nestedChild, `${idx}-${nestedIdx}`)
+            );
+          }
+          return null; // if no valid href or not a Link, don't render
+        };
+
+        if (React.isValidElement(currentTooltip)) {
+          return renderTooltipItem(currentTooltip, 0);
+        } else if (currentTooltip.props?.children) {
+          return React.Children.map(currentTooltip.props.children, (child, idx) =>
+            renderTooltipItem(child, idx)
+          );
+        }
+
+        return null;
+      })()}
+    </div>
   </div>
 )}
 
