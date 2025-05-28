@@ -76,7 +76,7 @@ const [message, setMessage] = useState('');
       try {
         setIsLoading(true);
         const data1 = await getAllSalesChannels();
-        console.log("Sales Channels Data:", data1);
+        // console.log("Sales Channels Data:", data1);
         setSalesChannels(data1);
       } catch (error) {
         console.error("Error fetching sales channels:", error);
@@ -127,7 +127,7 @@ const [message, setMessage] = useState('');
         try {
           // setIsLoading(true);
           const data1 = await getAllSalesChannels();
-          console.log("Sales Channels Data:", data1);
+          // console.log("Sales Channels Data:", data1);
           setSalesChannels(data1);
         } catch (error) {
           console.error("Error fetching sales channels:", error);
