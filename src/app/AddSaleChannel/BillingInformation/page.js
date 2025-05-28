@@ -14,7 +14,7 @@ const Page = () => {
         onClick={handleClick}
         className="bg-blue-500 text-white px-4 py-2 rounded"
       >
-        {showSection ? 'Hide Section' : 'Show Section'}
+        factuions
       </button>
 
       {showSection && (

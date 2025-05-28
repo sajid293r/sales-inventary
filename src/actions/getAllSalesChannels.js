@@ -13,4 +13,5 @@ const channels = await SalesChannel.find({}).sort({ createdAt: -1 });
     console.error("Fetch error:", error);
     return [];
   }
+  
 };

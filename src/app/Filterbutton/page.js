@@ -1,8 +1,7 @@
-// FilterButton.jsx
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { FaChevronDown } from "react-icons/fa";
- 
+
 const FilterButton = () => {
   const [filters, setFilters] = useState({
       status: [],
@@ -10,6 +9,7 @@ const FilterButton = () => {
       paymentTerm: [],
       region: "",
     });
+  
     const [dropdown, setDropdown] = useState({
       status: false,
       type: false,
@@ -17,6 +17,7 @@ const FilterButton = () => {
       filterPanel: false,
       sortTooltip: false,
     });
+  
     const [isOpen, setIsOpen] = useState(false);
       const [selected, setSelected] = useState([]);
       const [isOpen1, setIsOpen1] = useState(false);
@@ -32,12 +33,18 @@ const [currentPage, setCurrentPage] = useState(1);
     const sortButtonRef = useRef(null);
     const sortTooltipRef = useRef(null);
     const searchInputRef = useRef(null);
-    const toggleOption2 = (value) => {
-    setSelected2((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
-    setCurrentPage(1);
-  };
+
+  const options = [
+    "Asia",
+    "North America",
+    "South America",
+    "Europe",
+    "Africa",
+    "Oceania",
+  ];
+  const options1 = ["Online", "Retail"];
+  const options2 = ["Net 30", "Prepaid"];
+
    useEffect(() => {
       const handleClickOutside = (event) => {
         if (
@@ -72,16 +79,21 @@ const [currentPage, setCurrentPage] = useState(1);
         document.removeEventListener("mousedown", handleClickOutside);
       };
     }, [showButtons]);
-   const options = [
-    "Asia",
-    "North America",
-    "South America",
-    "Europe",
-    "Africa",
-    "Oceania",
-  ];
-  const options1 = ["Online", "Retail"];
-  const options2 = ["Net 30", "Prepaid"];
+
+   const toggleDropdown = (field) => {
+    setDropdown((prev) => ({
+      status: false,
+      type: false,
+      paymentTerm: false,
+      filterPanel: false,
+      sortTooltip: false,
+      [field]: !prev[field],
+    }));
+    setIsOpen(false);
+    setIsOpen1(false);
+    setIsOpen2(false);
+  };
+
   const toggleOption = (value) => {
     setSelected((prev) =>
       prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
@@ -96,8 +108,12 @@ const [currentPage, setCurrentPage] = useState(1);
     setCurrentPage(1);
   };
 
- 
-
+  const toggleOption2 = (value) => {
+    setSelected2((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
+    setCurrentPage(1);
+  };
 
   const handleContinentDropdown = () => {
     setIsOpen((prev) => !prev);
@@ -113,32 +129,6 @@ const [currentPage, setCurrentPage] = useState(1);
     }));
   };
   
-  const handlePaymentDropdown = () => {
-    setIsOpen2((prev) => !prev);
-    setIsOpen(false);
-    setIsOpen1(false);
-    setDropdown((prev) => ({
-      ...prev,
-      filterPanel: true,
-      status: false,
-      type: false,
-      paymentTerm: false,
-      sortTooltip: false,
-    }));
-  };
-   const toggleDropdown = (field) => {
-    setDropdown((prev) => ({
-      status: false,
-      type: false,
-      paymentTerm: false,
-      filterPanel: false,
-      sortTooltip: false,
-      [field]: !prev[field],
-    }));
-    setIsOpen(false);
-    setIsOpen1(false);
-    setIsOpen2(false);
-  };
   const handleTypeDropdown = () => {
     setIsOpen1((prev) => !prev);
     setIsOpen(false);
@@ -152,41 +142,21 @@ const [currentPage, setCurrentPage] = useState(1);
       sortTooltip: false,
     }));
   };
-//     const data = Array.from({ length: 80 }, (_, i) => ({
-//     id: i + 1,
-//     salesChannel: `Channel ${i + 1}`,
-//     type: i % 2 === 0 ? "Online" : "Retail",
-//     paymentTerm: i % 3 === 0 ? "Net 30" : "Prepaid",
-//     country: ["USA", "UK", "Germany", "India"][i % 4],
-//     authorizedDate: `2025-05-${String(i + 1).padStart(2, "0")}`,
-//     status: i % 2 === 0 ? "Active" : "Inactive",
-//     region: ["Asia", "North America", "Europe", "Africa"][i % 4],
-//   }));
-//  const filteredData = data
-//     .filter((item) => {
-//       const matchStatus =
-//         filters.status.length === 0 || filters.status.includes(item.status);
-//       const matchType = selected1.length === 0 || selected1.includes(item.type);
-//       const matchPayment =
-//         selected2.length === 0 || selected2.includes(item.paymentTerm);
-//       const matchRegion =
-//         selected.length === 0 || selected.includes(item.region);
-//       const matchRegionButton =
-//         filters.region === "" || item.region === filters.region;
-//       return (
-//         matchStatus &&
-//         matchType &&
-//         matchPayment &&
-//         matchRegion &&
-//         matchRegionButton
-//       );
-//     })
-//     .filter((item) =>
-//       searchQuery
-//         ? item.salesChannel.toLowerCase().includes(searchQuery.toLowerCase()) ||
-//           item.country.toLowerCase().includes(searchQuery.toLowerCase())
-//         : true
-//     );
+
+  const handlePaymentDropdown = () => {
+    setIsOpen2((prev) => !prev);
+    setIsOpen(false);
+    setIsOpen1(false);
+    setDropdown((prev) => ({
+      ...prev,
+      filterPanel: true,
+      status: false,
+      type: false,
+      paymentTerm: false,
+      sortTooltip: false,
+    }));
+  };
+
   const handleFilterChange = (field, value) => {
     setFilters((prev) => {
       const values = prev[field];
@@ -199,8 +169,10 @@ const [currentPage, setCurrentPage] = useState(1);
     });
     setCurrentPage(1);
   };
-return(
-  <div>   <button
+
+  return (
+    <div>
+      <button
               ref={filterButtonRef}
               className="border border-gray-300 py-1 px-4 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
               onClick={() => toggleDropdown("filterPanel")}
@@ -323,10 +295,8 @@ return(
                             </div>
                           </div>
                         )}
-            
             </div>
-)
-  
+  );
 };
 
 export default FilterButton;

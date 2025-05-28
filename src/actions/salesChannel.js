@@ -13,7 +13,6 @@ export const submitAction = async (formData) => {
     }
 
     await connectDB();
-
     let result;
     if (formData._id) {
       // Update existing record

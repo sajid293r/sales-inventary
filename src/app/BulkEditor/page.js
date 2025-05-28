@@ -3,74 +3,75 @@ import React, { useState } from "react";
 
 import { X } from "lucide-react";
 import { FaArrowLeft } from "react-icons/fa";
+import Link from "next/link";
 
 const dummyData = [
   {
     orderNo: "ORD-1001",
-    notes: "First order note",
+    notes: "First ",
     status: "Pending",
     colorCode: "#ff0000",
     paymentStatus: "Paid",
   },
   {
     orderNo: "ORD-1002",
-    notes: "Second order note",
+    notes: "Second ",
     status: "Shipped",
     colorCode: "#00ff00",
     paymentStatus: "Unpaid",
   },
   {
     orderNo: "ORD-1003",
-    notes: "Third order note",
+    notes: "Third ",
     status: "Delivered",
     colorCode: "#0000ff",
     paymentStatus: "Refunded",
   },
   {
     orderNo: "ORD-1004",
-    notes: "Fourth order note",
+    notes: "Fourth ",
     status: "Cancelled",
     colorCode: "#ffa500",
     paymentStatus: "Paid",
   },
   {
     orderNo: "ORD-1005",
-    notes: "Fifth order note",
+    notes: "Fifth ",
     status: "Pending",
     colorCode: "#800080",
     paymentStatus: "Unpaid",
   },
   {
     orderNo: "ORD-1006",
-    notes: "Sixth order note",
+    notes: "Sixth ",
     status: "Shipped",
     colorCode: "#008080",
     paymentStatus: "Paid",
   },
   {
     orderNo: "ORD-1007",
-    notes: "Seventh order note",
+    notes: "Seventh ",
     status: "Delivered",
     colorCode: "#ffc0cb",
     paymentStatus: "Unpaid",
   },
   {
     orderNo: "ORD-1008",
-    notes: "Eighth order note",
+    notes: "Eighth ",
     status: "Pending",
     colorCode: "#ffff00",
     paymentStatus: "Refunded",
   },
   {
     orderNo: "ORD-1009",
-    notes: "Ninth order note",
+    notes: "Ninth ",
     status: "Cancelled",
     colorCode: "#00ffff",
     paymentStatus: "Paid",
   },
   {
     orderNo: "ORD-1010",
-    notes: "Tenth order note",
+    notes: "Tenth ",
     status: "Shipped",
     colorCode: "#a52a2a",
     paymentStatus: "Unpaid",
@@ -170,11 +171,13 @@ const TableWithDropdowns = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8">
+    <div className="w-full min-w-[640px] xl:min-w-[1100px] 2xl:min-w-[1700px] 3xl:min-w-[1800px] 4xl:min-w-[1900px] mx-auto table-auto">
       <div className="flex justify-between">
         <h1 className="text-2xl font-semibold mb-4 flex gap-2">
           <div className="mt-1 h-6">
-            <FaArrowLeft className="border rounded-md px-2 py-1" />
+            <Link href="/SaleChannel">
+              <FaArrowLeft className="border rounded-md px-2 py-1" />
+            </Link>
           </div>
           Bulk Editor
         </h1>
@@ -184,8 +187,8 @@ const TableWithDropdowns = () => {
       </div>
 
       {/* Editor Section */}
-      <div className="border border-gray-300 rounded-md w-[280px] sm:w-[450px] md:w-[650px] lg:w-[750px] xl:w-[900px] bg-white mb-4 md:py-3">
-      <div className="flex gap-4 px-4">
+      <div className="border border-gray-300 rounded-md w-full    mx-auto  bg-white mb-4 md:py-3">
+        <div className="flex gap-4 px-4">
           <h1 className="text-lg font-semibold">Editor</h1>
         </div>
         <div className="flex md:flex-row sm:flex-col-1 gap-2 p-1">
@@ -221,7 +224,7 @@ const TableWithDropdowns = () => {
       </div>
 
       {/* Mobile View: Card Layout */}
-      <div className="md:hidden space-y-4 overflow-x-hidden w-[300px]">
+      <div className="md:hidden space-y-2 overflow-x-hidden w-full  lg:w-[1100px] md:w-[700px]  mx-auto table-auto">
         {paginatedData.map((row, index) => (
           <div
             key={row.orderNo}
@@ -243,7 +246,7 @@ const TableWithDropdowns = () => {
                 <label className="block text-xs font-medium text-gray-500">
                   Notes
                 </label>
-                <p className="text-sm text-gray-900">{row.notes}</p>
+                <p className="text-sm text-gray-900 ">{row.notes}</p>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500">
@@ -252,7 +255,7 @@ const TableWithDropdowns = () => {
                 <select
                   value={row.status}
                   onChange={(e) => handleStatusChange(e, startIndex + index)}
-                  className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                  className=" w-full max-w-[130px] border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                 >
                   <option value="Pending">Pending</option>
                   <option value="Shipped">Shipped</option>
@@ -267,7 +270,7 @@ const TableWithDropdowns = () => {
                 <select
                   value={row.colorCode}
                   onChange={(e) => handleColorChange(e, startIndex + index)}
-                  className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                  className="block w-full  max-w-[130px] border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                 >
                   <option
                     value="#ff0000"
@@ -350,7 +353,7 @@ const TableWithDropdowns = () => {
                   onChange={(e) =>
                     handlePaymentStatusChange(e, startIndex + index)
                   }
-                  className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                  className="block w-full max-w-[130px] border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                 >
                   <option value="Paid">Paid</option>
                   <option value="Unpaid">Unpaid</option>
@@ -363,9 +366,9 @@ const TableWithDropdowns = () => {
       </div>
 
       {/* Desktop View: Table Layout */}
-      <div className="border border-gray-300 rounded-md w-[280px] sm:w-[450px] md:w-[650px] lg:w-[750px] xl:w-[900px] bg-white mb-4 md:py-3">
-      <table className="min-w-full divide-y divide-gray-200">
-      <thead>
+      <div className="hidden md:block overflow-x-auto border border-gray-400 rounded-lg bg-white">
+        <table className="min-w-full divide-y divide-gray-200 lg:w-[1000px]">
+          <thead>
             <tr className="bg-white">
               <th className="p-3 text-center text-xs sm:text-sm font-medium text-black tracking-wider">
                 <input
@@ -449,68 +452,18 @@ const TableWithDropdowns = () => {
                   <select
                     value={row.colorCode}
                     onChange={(e) => handleColorChange(e, startIndex + index)}
-                    className="block w-full sm:w-32 mx-auto py-[2px] px-1 border border-gray-900 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                    className="block w-full max-w-[130px] sm:w-32 mx-auto py-[2px] px-1 border border-gray-900 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                   >
-                    <option
-                      value="#ff0000"
-                      style={{ backgroundColor: "#ff0000", color: "white" }}
-                    >
-                      Red
-                    </option>
-                    <option
-                      value="#00ff00"
-                      style={{ backgroundColor: "#00ff00" }}
-                    >
-                      Green
-                    </option>
-                    <option
-                      value="#0000ff"
-                      style={{ backgroundColor: "#0000ff", color: "white" }}
-                    >
-                      Blue
-                    </option>
-                    <option
-                      value="#ffa500"
-                      style={{ backgroundColor: "#ffa500" }}
-                    >
-                      Orange
-                    </option>
-                    <option
-                      value="#800080"
-                      style={{ backgroundColor: "#800080", color: "white" }}
-                    >
-                      Purple
-                    </option>
-                    <option
-                      value="#008080"
-                      style={{ backgroundColor: "#008080", color: "white" }}
-                    >
-                      Teal
-                    </option>
-                    <option
-                      value="#ffc0cb"
-                      style={{ backgroundColor: "#ffc0cb" }}
-                    >
-                      Pink
-                    </option>
-                    <option
-                      value="#ffff00"
-                      style={{ backgroundColor: "#ffff00" }}
-                    >
-                      Yellow
-                    </option>
-                    <option
-                      value="#00ffff"
-                      style={{ backgroundColor: "#00ffff" }}
-                    >
-                      Cyan
-                    </option>
-                    <option
-                      value="#a52a2a"
-                      style={{ backgroundColor: "#a52a2a", color: "white" }}
-                    >
-                      Brown
-                    </option>
+                    <option value="#ff0000">Red</option>
+                    <option value="#00ff00">Green</option>
+                    <option value="#0000ff">Blue</option>
+                    <option value="#ffa500">Orange</option>
+                    <option value="#800080">Purple</option>
+                    <option value="#008080">Teal</option>
+                    <option value="#ffc0cb">Pink</option>
+                    <option value="#ffff00">Yellow</option>
+                    <option value="#00ffff">Cyan</option>
+                    <option value="#a52a2a">Brown</option>
                   </select>
                 </td>
                 <td className="p-2">
@@ -536,7 +489,25 @@ const TableWithDropdowns = () => {
               Showing {startIndex + 1} to {endIndex} of {totalItems} entries
             </h1>
           </div>
-          
+          {/* <div className="flex gap-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-2 py-1 border rounded-md disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="px-2 py-1">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-2 py-1 border rounded-md disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div> */}
           <div className="w-14">
             <select
               value={itemsPerPage}
@@ -551,7 +522,6 @@ const TableWithDropdowns = () => {
           </div>
         </div>
       </div>
-     
     </div>
   );
 };

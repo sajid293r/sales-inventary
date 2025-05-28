@@ -3,8 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
 import { FaChevronDown } from "react-icons/fa";
-import SaleChannelPopup from "../Popup/page";
-import RowDetailsPopup from "../RowDetailsPopup/page";
+import SaleChannelPopup from "../../Popup/page";
 
 const TableWithCheckboxes = () => {
   const [selectedRows, setSelectedRows] = useState([]);
@@ -22,7 +21,7 @@ const TableWithCheckboxes = () => {
     sortTooltip: false,
   });
   const [sortOptions, setSortOptions] = useState({
-    salesChannel: false,
+    name: false,
     country: false,
   });
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,10 +33,11 @@ const TableWithCheckboxes = () => {
   const [selected2, setSelected2] = useState([]);
   const [showButtons, setShowButtons] = useState(false);
   const [isOpenpop, setIsOpenpop] = useState(false);
-  const [isRowPopupOpen, setIsRowPopupOpen] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [filterType, setFilterType] = useState("");
+   const [filterType1, setFilterType1] = useState(""); // New state for filter panel
 
   const buttonsRef = useRef(null);
   const filterButtonRef = useRef(null);
@@ -124,13 +124,16 @@ const TableWithCheckboxes = () => {
 
   const data = Array.from({ length: 80 }, (_, i) => ({
     id: i + 1,
-    salesChannel: `Channel ${i + 1}`,
+    name: `Product ${String(i + 1).padStart(2, "0")}`,
+    sku: `SKU${String(i + 1).padStart(3, "0")}`,
+    rrp: (50 + (i % 151)).toFixed(2),
+    sellingPrice: (30 + (i % 121)).toFixed(2),
+    stockLevel: 10 + (i % 91),
+    status: i % 2 === 0 ? "In Stock" : "Achived",
+    region: ["Asia", "North America", "Europe", "Africa"][i % 4],
+    country: ["USA", "UK", "Germany", "India"][i % 4],
     type: i % 2 === 0 ? "Online" : "Retail",
     paymentTerm: i % 3 === 0 ? "Net 30" : "Prepaid",
-    country: ["USA", "UK", "Germany", "India"][i % 4],
-    authorizedDate: `2025-05-${String(i + 1).padStart(2, "0")}`,
-    status: i % 2 === 0 ? "Active" : "Inactive",
-    region: ["Asia", "North America", "Europe", "Africa"][i % 4],
   }));
 
   const toggleSelectAll = (e) => {
@@ -209,11 +212,6 @@ const TableWithCheckboxes = () => {
     }));
   };
 
-  const handleRowClick = (row) => {
-    setSelectedRowData(row);
-    setIsRowPopupOpen(true);
-  };
-
   const handleContinentDropdown = () => {
     setIsOpen((prev) => !prev);
     setIsOpen1(false);
@@ -256,6 +254,11 @@ const TableWithCheckboxes = () => {
     }));
   };
 
+  const handleRowClick = (row) => {
+    setSelectedRowData(row);
+    console.log("Row clicked:", row);
+  };
+
   const filteredData = data
     .filter((item) => {
       const matchStatus =
@@ -277,16 +280,16 @@ const TableWithCheckboxes = () => {
     })
     .filter((item) =>
       searchQuery
-        ? item.salesChannel.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ? item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           item.country.toLowerCase().includes(searchQuery.toLowerCase())
         : true
     );
 
   const sortedData = [...filteredData].sort((a, b) => {
-    if (sortOptions.salesChannel) {
-      return sortOptions.salesChannel
-        ? a.salesChannel.localeCompare(b.salesChannel)
-        : b.salesChannel.localeCompare(a.salesChannel);
+    if (sortOptions.name) {
+      return sortOptions.name
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name);
     }
     if (sortOptions.country) {
       return sortOptions.country
@@ -316,82 +319,79 @@ const TableWithCheckboxes = () => {
   };
 
   return (
-    <div
-      className={`p-2 sm:p-4 mx-auto w-full min-w-[640px] md:min-w-[800px] lg:min-w-[800px] xl:min-w-[1300px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px] text-sm ${
-        dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
-      }`}
-    >
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
-        <h1 className="text-base sm:text-lg text-black font-semibold">
-          Sales Channel
-        </h1>
-        <div>
-          <button
-            onClick={() => setIsOpenpop(true)}
-            className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition"
-          >
-            Add
-          </button>
+    <>
+      <div
+        className={`p-2 sm:p-4  min-w-[640px] md:min-w-[800px] lg:min-w-[800px] xl:min-w-[1300px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px] ${
+          dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
+        }`}
+      >
+        <div className="flex flex-col sm:flex-row justify-between mb-4 gap-3">
+          <h1 className="text-base sm:text-lg text-black font-semibold">
+            Inventory List
+          </h1>
+          <div className="flex gap-4 justify-end items-center">
+            <button className="text-md hover:bg-gray-100 transition">
+              Import
+            </button>
+            <button className="text-md hover:bg-gray-100 transition">
+              Bundling/Kitting
+            </button>
+            <button
+              className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition"
+              onClick={() => setIsOpenpop(true)}
+            >
+              Create 
+            </button>
+          </div>
           {isOpenpop && <SaleChannelPopup onClose={() => setIsOpenpop(false)} />}
         </div>
       </div>
 
-      <div className="rounded-xl border w-full bg-white border-gray-300 shadow-lg overflow-x-auto">
-        <div className="flex flex-wrap gap-2 p-4 border-b border-gray-200">
-          {[
-            "Asia",
-            "North America",
-            "South America",
-            "Europe",
-            "Oceania",
-            "Africa",
-          ].map((region) => (
-            <button
-              key={region}
-              className={`py-1.5 px-3 rounded-md text-sm transition ${
-                filters.region === region
-                  ? "bg-[#449ae6] text-white"
-                  : "text-gray-700 hover:bg-[#449ae6] hover:text-white"
-              }`}
-              onClick={() => handleRegionFilter(region)}
-            >
-              {region}
-            </button>
-          ))}
-          <button
-            onClick={() => setShowButtons(true)}
-            className="hover:bg-[#449ae6] p-2 rounded-md hover:text-white text-gray-700"
-          >
-            Archived
-          </button>
+      <div className="rounded-xl border  bg-white border-gray-300 shadow-lg overflow-x-hidden">
+        <div className="flex flex-wrap gap-2 p-2 border-b border-gray-200">
+          {["All", "In Stock",  "Low Stock", "Out of Stock","Archived"].map(
+            (region) => (
+              <button
+                key={region}
+                className={`py-1.5 px-3 rounded-md text-sm transition ${
+                  filters.region === region
+                    ? "bg-[#449ae6] text-white"
+                    : "text-gray-700 hover:underline hover:decoration-2 hover:decoration-[#449ae6] hover:text-black hover:cursor-pointer"
+                }`}
+                onClick={() => handleRegionFilter(region)}
+              >
+                {region}
+              </button>
+            )
+          )}
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center border-b border-gray-200">
-          <div className="relative w-full sm:w-80 xl:w-96">
+          <div className="relative w-full sm:w-80">
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
             <input
               ref={searchInputRef}
               type="text"
               placeholder="Search..."
-              value={searchQuery}
+              value={searchQuery ?? ""}
               onChange={(e) => {
-                setSearchQuery(e.target.value);
+                setSearchQuery(e.target.value || "");
                 setCurrentPage(1);
               }}
-              className="pl-10 pr-3 py-1 w-full border border-gray-300 rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
+              className="pl-10 pr-3 py-1 w-full md:w-[500px] lg:[500px] border border-gray-300 rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
             />
           </div>
           <div className="flex gap-2 relative w-full sm:w-auto justify-center sm:justify-end">
             <button
               ref={filterButtonRef}
-              className="border border-gray-300 py-1 px-4 rounded-md text-sm hover:bg-gray-100 transition"
+              className="border border-gray-300 py-1 px-4 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
               onClick={() => toggleDropdown("filterPanel")}
             >
               Filter
             </button>
             <button
               ref={sortButtonRef}
-              className="border py-1 px-4 border-gray-300 rounded-md text-sm hover:bg-gray-100 transition"
+              className="border py-1 px-4 border-gray-300 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
               onClick={() => toggleDropdown("sortTooltip")}
             >
               Sort
@@ -399,181 +399,145 @@ const TableWithCheckboxes = () => {
             {dropdown.sortTooltip && (
               <div
                 ref={sortTooltipRef}
-                className="absolute z-20 bg-white border p-4 rounded-md shadow-lg top-full right-0 sm:right-16 mt-2 w-64 text-sm"
+                className="md:w-[170px] lg:w-[170px] w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm absolute z-30 top-full right-0 mt-2"
               >
-                <h3 className="font-semibold mb-2">Sort Options</h3>
-                <label className="flex items-center mb-2">
-                  <input
-                    type="checkbox"
-                    checked={sortOptions.salesChannel}
-                    onChange={() => handleSortChange("salesChannel")}
-                    className="mr-2"
-                  />
-                  <div className="flex gap-11 items-center">
-                    <span>Sales Channel</span>
-                    <span>
-                      {sortOptions.salesChannel ? (
-                        <MdArrowUpward />
-                      ) : (
-                        <MdArrowDownward />
-                      )}
-                    </span>
-                  </div>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={sortOptions.country}
-                    onChange={() => handleSortChange("country")}
-                    className="mr-2"
-                  />
-                  <div className="flex gap-20 items-center">
-                    <span>Country</span>
-                    <span>
-                      {sortOptions.country ? (
-                        <MdArrowUpward />
-                      ) : (
-                        <MdArrowDownward />
-                      )}
-                    </span>
-                  </div>
-                </label>
+                <form className="space-y-1">
+                  <label className="flex items-center space-x-3">
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="name"
+                      checked={sortOptions.name !== false}
+                      onChange={() => handleSortChange("name")}
+                      className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <span className="text-gray-700 text-sm font-semibold">Name</span>
+                  </label>
+                  <label className="flex items-center space-x-2 whitespace-nowrap">
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="none"
+                      checked={!sortOptions.name && !sortOptions.country}
+                      onChange={() => setSortOptions({ name: false, country: false })}
+                      className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <span className="text-gray-700 text-sm font-semibold">Date Created</span>
+                  </label>
+                  <label className="flex items-center space-x-3">
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="none"
+                      checked={!sortOptions.name && !sortOptions.country}
+                      onChange={() => setSortOptions({ name: false, country: false })}
+                      className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <span className="text-gray-700 text-sm font-semibold">Date Modify</span>
+                  </label>
+                  <label className="flex items-center space-x-3 border-t border-gray-200 mt-2">
+                    <MdArrowUpward />
+                    <span className="text-gray-700 text-sm font-semibold">Ascending</span>
+                  </label>
+                  <label className="flex items-center space-x-3">
+                    <MdArrowDownward />
+                    <span className="text-gray-700 text-sm font-semibold">Descending</span>
+                  </label>
+                </form>
               </div>
             )}
             {dropdown.filterPanel && (
               <div
                 ref={filterPanelRef}
-                className="absolute z-30 bg-white border p-4 rounded-md shadow-lg top-full right-0 mt-2 w-64 sm:w-72 text-sm overflow-visible"
+                className="md:w-[250px] lg:w-[250px] w-full space-y-3 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm absolute z-30 top-full right-0 mt-2"
               >
-                <h3 className="font-semibold mb-2">Filters</h3>
-                <div className="mb-3">
-                  <div className="flex gap-2 items-center">
-                    <h4 className="font-medium">Continent</h4>
-                    <div className="relative w-full">
-                      <button
-                        onClick={handleContinentDropdown}
-                        className="w-full sm:w-40 px-4 py-1 border border-gray-300 rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <div className="flex justify-between items-center">
-                          {selected.length > 0
-                            ? selected.join(", ")
-                            : "Select Continent"}
-                          <FaChevronDown className="text-sm" />
-                        </div>
-                      </button>
-                      {isOpen && (
-                        <div className="absolute z-50 mt-1 w-full sm:w-40 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto continent-dropdown">
-                          {options.map((option) => (
-                            <label
-                              key={option}
-                              className="flex items-center px-4 py-2 hover:bg-gray-100"
-                            >
-                              <input
-                                type="checkbox"
-                                className="mr-2"
-                                checked={selected.includes(option)}
-                                onChange={() => toggleOption(option)}
-                              />
-                              {option}
-                            </label>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="mb-3">
-                  <div className="flex gap-2 items-center">
-                    <h4 className="font-medium">Type</h4>
-                    <div className="relative w-full">
-                      <button
-                        onClick={handleTypeDropdown}
-                        className="w-full sm:w-40 px-4 py-1 md:ml-8 lg:ml-8 border border-gray-300 rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <div className="flex justify-between items-center">
-                          {selected1.length > 0
-                            ? selected1.join(", ")
-                            : "Select Type"}
-                          <FaChevronDown className="text-sm" />
-                        </div>
-                      </button>
-                      {isOpen1 && (
-                        <div className="absolute z-50 mt-1 w-full sm:w-40 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto type-dropdown">
-                          {options1.map((option) => (
-                            <label
-                              key={option}
-                              className="flex items-center px-4 py-2 hover:bg-gray-100"
-                            >
-                              <input
-                                type="checkbox"
-                                className="mr-2"
-                                checked={selected1.includes(option)}
-                                onChange={() => toggleOption1(option)}
-                              />
-                              {option}
-                            </label>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="mb-3">
-                  <div className="flex gap-2 items-center">
-                    <h4 className="font-medium">Payment</h4>
-                    <div className="relative w-full">
-                      <button
-                        onClick={handlePaymentDropdown}
-                        className="w-full sm:w-40 px-4 py-1 ml-2 border border-gray-300 rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <div className="flex justify-between items-center">
-                          {selected2.length > 0
-                            ? selected2.join(", ")
-                            : "Select Payment"}
-                          <FaChevronDown className="text-sm" />
-                        </div>
-                      </button>
-                      {isOpen2 && (
-                        <div className="absolute z-50 mt-1 w-full sm:w-40 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto payment-dropdown">
-                          {options2.map((option) => (
-                            <label
-                              key={option}
-                              className="flex items-center px-4 py-2 hover:bg-gray-100"
-                            >
-                              <input
-                                type="checkbox"
-                                className="mr-2"
-                                checked={selected2.includes(option)}
-                                onChange={() => toggleOption2(option)}
-                              />
-                              {option}
-                            </label>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                <form className="space-y-3">
+                  {["Can be Sold", "Can be Purchased", "Bundle", "Kitting", "Spare Parts", "Assembly Required"].map((type) => (
+                    <label key={type} className="flex items-center space-x-3">
+                      <input
+                        type="radio"
+                        name="filterType"
+                        value={type}
+                        checked={filterType === type}
+                        onChange={() => setFilterType(type)}
+                        className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                      />
+                      <span className="text-gray-700 text-sm font-semibold">{type}</span>
+                    </label>
+                  ))}
+                  <label className="flex items-center space-x-3">
+                    <input
+                      type="radio"
+                      name="filterType"
+                      value="none"
+                      checked={filterType === "none"}
+                      onChange={() => setFilterType("none")}
+                      className="text-blue-600 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <span className="text-gray-700 text-sm font-semibold">status</span>
+                    
+                  </label>
+ <select className="text-sm border w-full p-1 rounded-md" placeholder="status">
+                  <option value="" placeholder="status" >Status</option>
+                  <option value="">Active </option>
+                  <option value="Unarchived">Unactive</option>
+               
+                </select>
+                
+               
+                  
+                </form>
+                
+                 <label  className="flex gap-4">
+                 <input
+                      type="radio"
+                      name="filterType"
+                      value="none"
+                      checked={filterType1 === "none"}
+                      onChange={() => setFilterType1("none")}
+                      className="text-blue-600 focus:ring-blue-500 focus:ring-2 "
+                    />
+                    <span className="text-gray-700 text-sm font-semibold">
+                      Brand
+                    </span>
+                    
+                  </label>
+                  <select className="text-sm border w-full p-1 rounded-md" placeholder="status">
+                  <option value="" placeholder="status" >Brand</option>
+                  <option value="">Watch </option>
+                  <option value="Unarchived">Casio</option>
+               
+                </select>
               </div>
             )}
           </div>
         </div>
 
-        {showButtons && (
-          <div ref={buttonsRef} className="flex gap-4 mb-2 px-4">
-            <div className="flex gap-4">
-              <div className="border p-1 px-4 rounded-md gap-2 flex items-center">
-                <input type="checkbox" />
-                <button className="ml-2 text-sm">1 Select</button>
-              </div>
+        <div ref={buttonsRef} className="flex gap-4 mb-2 px-4">
+          <div className="flex gap-1">
+            <div className="border border-gray-300 p-1  rounded-md gap-2 flex items-center">
+              <input type="checkbox"  className="ml-6"/>
+              <button className="ml-2 text-sm">{selectedRows.length} Select</button>
+            </div>
+            <div className="inline-block">
+              <button className="border border-gray-300 p-1 rounded-md">
+                <select className="text-sm border-none outline-none px-2">
+                  <option value="">More Actions</option>
+                  <option value="">Bulk Edit</option>
+                  <option value="Unarchived">Bundle Update</option>
+                  <option value="Remove">Update Stock Level</option>
+                  <option value="Remove">Move to Listings</option>
+                  <option value="Remove">Export Add Notes</option>
+                </select>
+              </button>
             </div>
           </div>
-        )}
+        </div>
 
-        <div className="hidden sm:block overflow-x-auto">
-          <table className="w-full  table-auto border-collapse text-sm">
-            <thead className="sticky top-0 bg-white z-10">
-              <tr className="text-xs">
+        <div className="hidden sm:block overflow-x-hidden">
+          <table className=" w-full   mx-auto table-auto border-collapse text-sm ">
+            <thead>
+              <tr className="text-xs bg-[#f7f7f7]">
                 <th className="p-2 border-b-2 border-[#E7E7E7] w-12 text-center">
                   <input
                     type="checkbox"
@@ -582,15 +546,14 @@ const TableWithCheckboxes = () => {
                       selectedRows.length === paginatedData.length
                     }
                     onChange={toggleSelectAll}
-                    className="ml-6"
-                  />
+                  className="ml-9" />
                 </th>
-                <th className="p-2 border-b-2 border-[#E7E7E7] text-center w-1/4">Sales Channel</th>
-                <th className="p-2 border-b-2 border-[#E7E7E7] text-center w-1/6">Type</th>
-                <th className="p-2 border-b-2 border-[#E7E7E7] text-center w-1/6">Payment Term</th>
-                <th className="p-2 border-b-2 border-[#E7E7E7] text-center w-1/6">Country</th>
-                <th className="p-2 border-b-2 border-[#E7E7E7] text-center w-1/6">Authorized Date</th>
-                <th className="p-2 border-b-2 border-[#E7E7E7] text-center w-1/6">Status</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center">Name</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center">SKU</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center">RRP</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center">Selling Price</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center">Stock Level</th>
+                <th className="p-2 border-b-2 border-[#E7E7E7] text-center">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -608,20 +571,19 @@ const TableWithCheckboxes = () => {
                         e.stopPropagation();
                         toggleRow(row.id);
                       }}
-                      className="ml-6"
-                    />
+                     className="ml-9"/>
                   </td>
-                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.salesChannel}</td>
-                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.type}</td>
-                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.paymentTerm}</td>
-                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.country}</td>
-                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.authorizedDate}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.name}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.sku}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">${row.rrp}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">${row.sellingPrice}</td>
+                  <td className="p-2 border-b-2 border-[#E7E7E7] text-center">{row.stockLevel}</td>
                   <td className="p-2 border-b-2 border-[#E7E7E7] text-center">
                     <span
                       className={`py-1 px-4 rounded-md text-xs ${
-                        row.status === "Active"
-                          ? "bg-[#A9FFAD] text-[#6DC671] px-5"
-                          : "bg-[#FFDF8D] text-[#EBA734]"
+                        row.status === "In Stock"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-[#DDDDDD] text-[#B4B5B4]"
                       }`}
                     >
                       {row.status}
@@ -647,24 +609,24 @@ const TableWithCheckboxes = () => {
                     <td>{row.id}</td>
                   </tr>
                   <tr>
-                    <td className="font-semibold py-1">Sales Channel</td>
-                    <td>{row.salesChannel}</td>
+                    <td className="font-semibold py-1">Name</td>
+                    <td>{row.name}</td>
                   </tr>
                   <tr>
-                    <td className="font-semibold py-1">Type</td>
-                    <td>{row.type}</td>
+                    <td className="font-semibold py-1">SKU</td>
+                    <td>{row.sku}</td>
                   </tr>
                   <tr>
-                    <td className="font-semibold py-1">Payment Term</td>
-                    <td>{row.paymentTerm}</td>
+                    <td className="font-semibold py-1">RRP</td>
+                    <td>${row.rrp}</td>
                   </tr>
                   <tr>
-                    <td className="font-semibold py-1">Country</td>
-                    <td>{row.country}</td>
+                    <td className="font-semibold py-1">Selling Price</td>
+                    <td>${row.sellingPrice}</td>
                   </tr>
                   <tr>
-                    <td className="font-semibold py-1">Authorized Date</td>
-                    <td>{row.authorizedDate}</td>
+                    <td className="font-semibold py-1">Stock Level</td>
+                    <td>{row.stockLevel}</td>
                   </tr>
                   <tr>
                     <td className="font-semibold py-1">Status</td>
@@ -727,14 +689,9 @@ const TableWithCheckboxes = () => {
           </div>
         </div>
       </div>
-
-      {isRowPopupOpen && selectedRowData && (
-        <RowDetailsPopup
-          rowData={selectedRowData}
-          onClose={() => setIsRowPopupOpen(false)}
-        />
-      )}
-    </div>
+    
+  
+    </>
   );
 };
 
