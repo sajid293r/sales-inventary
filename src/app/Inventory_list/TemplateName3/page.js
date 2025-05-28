@@ -17,7 +17,7 @@ const Page = () => {
 
   return (
     <div
-      className={`p-2 sm:p-4 mx-auto  w-full    min-w-[640px] md:min-w-[800px] lg:min-w-[1000px] xl:min-w-[1300px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  table-auto justify-center items-center  `}
+      className={`p-2 sm:p-4 mx-auto  w-full    min-w-[640px] md:min-w-[800px] lg:min-w-[1000px] xl:min-w-[1000px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  table-auto justify-center items-center  `}
     >
       {/* Input Section */}
       <div className="bg-white p-4 border rounded-md shadow-sm mb-6">

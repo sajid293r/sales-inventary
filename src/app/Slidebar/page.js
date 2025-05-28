@@ -69,17 +69,25 @@ const Sidebar = () => {
       icon: Home2,
       tooltip: (
         <div className="flex flex-col gap-1">
-          <div><Link href="/Inventory_list/Inventorylist">Inventory list 1</Link></div>
+          <div><Link href="/SaleChannel">Sales Channel list</Link></div>
           
-          <div><Link href="/Inventory_list/Inventorylist2">Inventory list 2</Link></div>
-          <div><Link href="/BulkEditor">Inventory list 3</Link></div>
+          {/* <div><Link href="/Inventory_list/Inventorylist2">Inventory list 2</Link></div>
+          <div><Link href="/BulkEditor">Inventory list 3</Link></div> */}
         </div>
       ),
     },
     {
       id: "box",
       icon: Box,
-      tooltip: <Link href="/BulkEditor">BulkEditor</Link>,
+      // tooltip: <Link href="/BulkEditor">BulkEditor</Link>,
+       tooltip: (
+        <div className="flex flex-col gap-1">
+          <div><Link href="/Inventory_list/Inventorylist">Inventory list 1</Link></div>
+          
+          <div><Link href="/Inventory_list/Inventorylist2">Inventory list 2</Link></div>
+          <div><Link href="/BulkEditor">Inventory list 3</Link></div>
+        </div>
+      ),
     },
     {
       id: "msg3",
