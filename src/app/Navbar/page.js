@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 
@@ -23,6 +22,18 @@ const Page = () => {
     notifications: useRef(null),
     messages: useRef(null),
     profile: useRef(null),
+  };
+
+  const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch((e) => {
+        console.log(`Error attempting to enable fullscreen: ${e.message}`);
+      });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
   };
 
   const togglePopover = (type) => {
@@ -53,9 +64,14 @@ const Page = () => {
   return (
     <nav className="bg-white shadow-sm w-full shadow-gray-600 px-4 py-2 flex items-center justify-between relative ">
       {/* Logo */}
-      <div className=" flex gap-6">
-<h1 className="text-xl font-bold ">Sale Channel</h1>
-<Image src={Lig8} alt="Logo" className="" />
+      <div className="flex gap-6">
+        <h1 className="text-xl font-bold">Sale Channel</h1>
+        <Image 
+          src={Lig8} 
+          alt="Logo" 
+          className="cursor-pointer" 
+          onClick={toggleFullScreen}
+        />
       </div>
 
       {/* Menu Button (Mobile Only) */}
