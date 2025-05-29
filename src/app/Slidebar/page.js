@@ -165,7 +165,7 @@ const Sidebar = () => {
       </div>
 
       {/* Sidebar with Tooltip Panel */}
-      <div className="flex flex-row h-screen fixed top-0 left-0 z-[900]">
+      <div className="flex flex-row h-screen fixed top-0 left-0 z-[900] mt-3">
         {/* Sidebar */}
         <div
           ref={sidebarRef}

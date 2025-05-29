@@ -14,6 +14,8 @@ import {
 } from "react-icons/fi";
 import { Mail } from "lucide-react";
 import Lig8 from "../image/Icons/Rectangle 230.png";
+import Logo from "../image/Logo.png";
+
 import Image from "next/image";
 
 const Page = () => {
@@ -111,14 +113,20 @@ const Page = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm w-full shadow-gray-600 px-4 py-2 flex items-center justify-between relative ">
+    <nav className="bg-white shadow-sm w-full mb-10 shadow-gray-600 px-4 py-2 flex items-center justify-between relative ">
       {/* Logo */}
-      <div className="flex gap-6">
-        <h1 className="text-xl font-bold">Sale Channel</h1>
+      <div className="flex gap-4">
+        {/* <h1 className="text-xl font-bold">Sale Channel</h1> */}
+        <Image 
+          src={Logo} 
+          alt="Logo" 
+          className="cursor-pointer h-10 w-50" 
+          onClick={toggleFullScreen}
+        />
         <Image 
           src={Lig8} 
           alt="Logo" 
-          className="cursor-pointer" 
+          className="cursor-pointer h-6 w-7 mt-3" 
           onClick={toggleFullScreen}
         />
       </div>
@@ -203,7 +211,7 @@ const Page = () => {
               </p>
               <button 
                 onClick={handleLogout}
-                className="text-blue-500 hover:underline text-sm"
+                className="text-blue-500 hover:underline text-sm cursor-pointer"
               >
                 Logout
               </button>

@@ -5,54 +5,31 @@ import Layer2 from "../../image/Layer_2.png";
 import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter, useSearchParams } from "next/navigation";
-import Cookies from 'js-cookie';
-import toast from 'react-hot-toast';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { loginUser } from '../../../redux/features/auth/authSlice';
 
 const LoginPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const dispatch = useAppDispatch();
+  const { isLoading, isAuthenticated } = useAppSelector(state => state.auth);
+  
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false);
 
-  // Prevent back navigation when not authenticated
+  // Redirect if already authenticated
   useEffect(() => {
-    const preventBackNavigation = (event) => {
-      const token = Cookies.get('token');
-      if (!token) {
-        window.history.forward();
+    if (isAuthenticated) {
+      const callbackUrl = searchParams.get('callbackUrl');
+      if (callbackUrl && callbackUrl !== '/') {
+        router.push(decodeURIComponent(callbackUrl));
+      } else {
+        router.push('/SaleChannel');
       }
-    };
-
-    window.addEventListener('popstate', preventBackNavigation);
-    
-    // Clear any existing history when the login page loads
-    if (!Cookies.get('token')) {
-      window.history.pushState(null, '', window.location.href);
     }
-
-    return () => window.removeEventListener('popstate', preventBackNavigation);
-  }, []);
-
-  // Check authentication status and handle redirection
-  useEffect(() => {
-    const checkAuth = () => {
-      const token = Cookies.get('token');
-      if (token) {
-        const callbackUrl = searchParams.get('callbackUrl');
-        // If there's a callback URL and it's not the root path, redirect to it
-        if (callbackUrl && callbackUrl !== '/') {
-          router.push(decodeURIComponent(callbackUrl));
-        } else {
-          router.push('/SaleChannel');
-        }
-      }
-    };
-
-    checkAuth();
-  }, [router, searchParams]);
+  }, [isAuthenticated, router, searchParams]);
 
   const handleChange = (e) => {
     setFormData({
@@ -63,70 +40,21 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        credentials: 'include'
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Login failed");
-      }
-
-      // Store token in cookie with secure settings
-      Cookies.set('token', data.token, { 
-        expires: 1,
-        path: '/',
-        secure: true,
-        sameSite: 'strict'
-      });
-      
-      // Store user data in localStorage
-      localStorage.setItem("user", JSON.stringify({
-        id: data.user.id,
-        email: formData.email,
-        name: data.user.name
-      }));
-
-      toast.success('Login successful!');
-      
-      // Handle redirection after successful login
-      const callbackUrl = searchParams.get('callbackUrl');
-      // If there's a callback URL and it's not the root path, redirect to it
-      if (callbackUrl && callbackUrl !== '/') {
-        router.push(decodeURIComponent(callbackUrl));
-      } else {
-        router.push("/SaleChannel");
-      }
-    } catch (err) {
-      toast.error(err.message);
-      // Clear any existing token and user data if login fails
-      Cookies.remove('token', { path: '/' });
-      localStorage.removeItem("user");
-    } finally {
-      setLoading(false);
-    }
+    dispatch(loginUser(formData));
   };
 
   return (
-    <div className="main-h-[50%] flex flex-col md:flex-row bg-white">
+    <div className="min-h-screen flex flex-col md:flex-row bg-white">
       {/* Left Section */}
       <div className="md:w-1/2 flex flex-col items-center justify-center p-10 text-center">
-        <Image src={Logo} alt="Logo" width={300} className="mb-6" />
+        <Image src={Logo} alt="Logo" width={300} className="mb-6" priority />
         <Image
           src={Layer2}
           alt="Illustration"
           className="mb-6"
           width={400}
           height={400}
+          priority
         />
         <h2 className="text-xl font-semibold mb-1">
           Do More. Better. Faster with
@@ -149,7 +77,7 @@ const LoginPage = () => {
 
           {/* Google Login */}
           <div className="flex justify-center items-center">
-            <button className="px-2 gap-2 flex items-center justify-center bg-white text-black py-2 rounded-full shadow ">
+            <button className="px-2 gap-2 flex items-center justify-center bg-white text-black py-2 rounded-full shadow">
               <FcGoogle size={20} />
               Log In with Google
             </button>
@@ -164,7 +92,7 @@ const LoginPage = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full mt-1 px-4 py-2 border-b-1 border-white bg-transparent text-white focus:outline-none"
+                className="w-full mt-1 px-4 py-2 border-b border-white bg-transparent text-white focus:outline-none"
                 required
               />
             </div>
@@ -176,7 +104,7 @@ const LoginPage = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full mt-1 px-4 py-2 border-b-1 border-white bg-transparent text-white focus:outline-none"
+                className="w-full mt-1 px-4 py-2 border-b border-white bg-transparent text-white focus:outline-none"
                 required
               />
             </div>
@@ -189,10 +117,10 @@ const LoginPage = () => {
               <div>
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={isLoading}
                   className="py-2 px-6 rounded-full bg-[#7B76F1] text-white text-sm cursor-pointer disabled:opacity-50"
                 >
-                  {loading ? "Loading..." : "LOG IN"}
+                  {isLoading ? "Loading..." : "LOG IN"}
                 </button>
               </div>
             </div>
