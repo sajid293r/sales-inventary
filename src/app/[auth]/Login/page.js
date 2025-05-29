@@ -1,19 +1,58 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "../../image/Logo.png";
 import Layer2 from "../../image/Layer_2.png";
 import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import Cookies from 'js-cookie';
+import toast from 'react-hot-toast';
 
 const LoginPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Prevent back navigation when not authenticated
+  useEffect(() => {
+    const preventBackNavigation = (event) => {
+      const token = Cookies.get('token');
+      if (!token) {
+        window.history.forward();
+      }
+    };
+
+    window.addEventListener('popstate', preventBackNavigation);
+    
+    // Clear any existing history when the login page loads
+    if (!Cookies.get('token')) {
+      window.history.pushState(null, '', window.location.href);
+    }
+
+    return () => window.removeEventListener('popstate', preventBackNavigation);
+  }, []);
+
+  // Check authentication status and handle redirection
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = Cookies.get('token');
+      if (token) {
+        const callbackUrl = searchParams.get('callbackUrl');
+        // If there's a callback URL and it's not the root path, redirect to it
+        if (callbackUrl && callbackUrl !== '/') {
+          router.push(decodeURIComponent(callbackUrl));
+        } else {
+          router.push('/SaleChannel');
+        }
+      }
+    };
+
+    checkAuth();
+  }, [router, searchParams]);
 
   const handleChange = (e) => {
     setFormData({
@@ -24,7 +63,6 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
@@ -34,6 +72,7 @@ const LoginPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        credentials: 'include'
       });
 
       const data = await response.json();
@@ -42,14 +81,36 @@ const LoginPage = () => {
         throw new Error(data.error || "Login failed");
       }
 
-      // Store token in localStorage
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      // Store token in cookie with secure settings
+      Cookies.set('token', data.token, { 
+        expires: 1,
+        path: '/',
+        secure: true,
+        sameSite: 'strict'
+      });
+      
+      // Store user data in localStorage
+      localStorage.setItem("user", JSON.stringify({
+        id: data.user.id,
+        email: formData.email,
+        name: data.user.name
+      }));
 
-      // Redirect to dashboard
-      router.push("/SaleChannel");
+      toast.success('Login successful!');
+      
+      // Handle redirection after successful login
+      const callbackUrl = searchParams.get('callbackUrl');
+      // If there's a callback URL and it's not the root path, redirect to it
+      if (callbackUrl && callbackUrl !== '/') {
+        router.push(decodeURIComponent(callbackUrl));
+      } else {
+        router.push("/SaleChannel");
+      }
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message);
+      // Clear any existing token and user data if login fails
+      Cookies.remove('token', { path: '/' });
+      localStorage.removeItem("user");
     } finally {
       setLoading(false);
     }
@@ -85,12 +146,6 @@ const LoginPage = () => {
           <h2 className="text-white text-xl font-semibold text-center">
             Welcome back to eComsChannel
           </h2>
-
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-              {error}
-            </div>
-          )}
 
           {/* Google Login */}
           <div className="flex justify-center items-center">

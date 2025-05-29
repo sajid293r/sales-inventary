@@ -1,5 +1,8 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 import {
   FiSearch,
@@ -17,6 +20,20 @@ const Page = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [activePopover, setActivePopover] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+  const router = useRouter();
+
+  // Add effect to prevent back navigation after logout
+  useEffect(() => {
+    const preventBackNavigation = (event) => {
+      if (!Cookies.get('token')) {
+        window.history.forward();
+      }
+    };
+
+    window.addEventListener('popstate', preventBackNavigation);
+    return () => window.removeEventListener('popstate', preventBackNavigation);
+  }, []);
 
   const popoverRefs = {
     notifications: useRef(null),
@@ -60,6 +77,38 @@ const Page = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, [popoverRefs.notifications, popoverRefs.messages, popoverRefs.profile]);
+
+  useEffect(() => {
+    // Get user data from localStorage
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const user = JSON.parse(userData);
+      setUserEmail(user.email);
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    // Remove token from cookies
+    Cookies.remove('token', { path: '/' });
+    
+    // Remove user data from localStorage
+    localStorage.clear(); // Clear all localStorage data
+    
+    // Show success message
+    toast.success('Logged out successfully');
+
+    // Clear browser history
+    const loginPageUrl = '/app/Login';
+    
+    // Replace the current state and clear history
+    window.history.replaceState(null, '', loginPageUrl);
+    
+    // Add a new state to prevent going back
+    window.history.pushState(null, '', loginPageUrl);
+    
+    // Force a hard navigation to login page
+    window.location.href = loginPageUrl;
+  };
 
   return (
     <nav className="bg-white shadow-sm w-full shadow-gray-600 px-4 py-2 flex items-center justify-between relative ">
@@ -150,9 +199,12 @@ const Page = () => {
           {activePopover === "profile" && (
             <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg p-4 z-10">
               <p className="text-sm mb-2">
-                Signed in as <strong>user@example.com</strong>
+                Signed in as <strong>{userEmail}</strong>
               </p>
-              <button className="text-blue-500 hover:underline text-sm">
+              <button 
+                onClick={handleLogout}
+                className="text-blue-500 hover:underline text-sm"
+              >
                 Logout
               </button>
             </div>
