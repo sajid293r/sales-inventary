@@ -221,10 +221,16 @@ const TableWithCheckboxes = () => {
         : true;
 
       const matchRegionButton = !filters.region || filters.region === "All" || 
-        (filters.region === "In Stock" && Number(item.stockLevel?.stocklevel) > 0) ||
-        (filters.region === "Out of Stock" && Number(item.stockLevel?.stocklevel) <= 0) ||
+        // (filters.region === "In Stock" && Number(item.stockLevel?.stocklevel) > 0) ||
+        // (filters.region === "Out of Stock" && Number(item.stockLevel?.stocklevel) <= 0) ||
+        (filters.region === "In Stock" && item.status === "InStock") ||
+        (filters.region === "Out of Stock" && item.status === "OutofStock") ||
         (filters.region === "Product Listed" && item.status === "Active") ||
-        (filters.region === "Archived" && item.status === "Inactive");
+        (filters.region === "Archived" && item.status === "Archived")||
+
+        (filters.region === "Pending Approval" && item.status === "Pending Approval")||
+        (filters.region === "Recent Updated" && item.status === "Archived")||
+        (filters.region === "New Updated" && item.status === "Archived");
 
       const matchType = !filterType || 
         (filterType === "Can be Sold" && item.canBeSold) ||
@@ -849,14 +855,14 @@ const handleInventory=(e)=>{
         ) : (
           <>
         <div className="flex flex-wrap gap-2 p-2 border-b border-gray-200">
-          {["All", "In Stock", "Out of Stock", "Product Listed", "Archived"].map(
+          {["All", "In Stock", "Out of Stock", "Product Listed", "Archived", "Pending Approval","Recent Updated", "New Products"].map(
             (region) => (
               <button
                 key={region}
-                className={`py-1.5 px-3 rounded-md text-sm transition ${
+                className={`py-1.5 px-3 cursor-pointer rounded-md text-sm transition ${
                   filters.region === region
-                    ? "bg-[#449ae6] text-white"
-                    : "text-gray-700 hover:underline hover:decoration-2 hover:decoration-[#449ae6] hover:text-black cursor-pointer"
+                    ? "underline decoration-[#449ae6] decoration-2 underline-offset-4 font-bold "
+                    : "text-gray-700 cursor-pointer"
                 }`}
                 onClick={() => handleRegionFilter(region)}
               >
@@ -995,7 +1001,7 @@ const handleInventory=(e)=>{
                       className="text-blue-600 focus:ring-blue-500 focus:ring-2"
                     />
                     <span className="text-gray-700 text-sm font-semibold">Status</span>
-                  </label> */}-+
+                  </label> */}Status
                   
                   <select 
                     className="text-sm border w-full p-1 rounded-md" 
@@ -1059,11 +1065,13 @@ const handleInventory=(e)=>{
               <button className="border border-gray-300 p-1 rounded-md">
                 <select className="text-sm border-none outline-none px-2">
                   <option value="">More Actions</option>
-                  <option value="">Bulk Edit</option>
-                  <option value="Unarchived">Bundle Update</option>
+                  <option value="BulkEdit">Bulk Edit</option>
+                  <option value="Unarchived">Bulk Edit Bundle</option>
                   <option value="Remove">Update Stock Level</option>
                   <option value="Remove">Move to Listings</option>
-                  <option value="Remove">Export Add Notes</option>
+                  <option value="Remove">Export</option>
+                  <option value="Remove">Add Notes</option>
+
                 </select>
               </button>
             </div>
@@ -1092,7 +1100,7 @@ const handleInventory=(e)=>{
                 <th className="p-2 border-b text-center">Selling Price</th>
                 <th className="p-2 border-b text-center">Stock Level</th>
                 <th className="p-2 border-b text-center">Status</th>
-                <th className="p-2 border-b text-center">Action</th>
+                {/* <th className="p-2 border-b text-center">Action</th> */}
               </tr>
             </thead>
             <tbody>
@@ -1122,17 +1130,21 @@ const handleInventory=(e)=>{
                   <td className="p-2 border-b text-center">
                     <span
                       className={`py-1 px-4 rounded-md text-xs ${
-                        row.status === "Active"
-                          ? "bg-green-100 text-green-700"
-                          : row.status === "Inactive"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-gray-100 text-gray-700"
+                       row.status === "InStock"
+        ? "bg-green-100 text-green-700"
+        : row.status === "OutofStock"
+        ? "bg-red-100 text-red-700"
+        : row.status === "Archived"
+        ? "bg-yellow-100 text-yellow-700"
+        : row.status === "Pending Approval"
+        ? "bg-blue-100 text-blue-700"
+        : "bg-gray-100 text-gray-700"
                       }`}
                     >
                       {row.status || "N/A"}
                     </span>
                   </td>
-                  <td className="p-2 border-b text-center">
+                  {/* <td className="p-2 border-b text-center">
                     <button
                       onClick={(e) => handleEdit(e, row)}
                       className="text-blue-500 hover:text-blue-700 mx-1 cursor-pointer"
@@ -1150,7 +1162,7 @@ const handleInventory=(e)=>{
                     >
                       <FaTrash />
                     </button>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

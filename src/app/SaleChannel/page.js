@@ -51,7 +51,7 @@ const TableWithCheckboxes = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [editingRow, setEditingRow] = useState(null);
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
-const [message, setMessage] = useState('');
+  const [message, setMessage] = useState('');
   const buttonsRef = useRef(null);
   const filterButtonRef = useRef(null);
   const filterPanelRef = useRef(null);
@@ -71,6 +71,25 @@ const [message, setMessage] = useState('');
   ];
   const options1 = ["Plateform", "Price List", "Dropshiper", "DropshiperNZ", "Others"];
   const options2 = ["7 Day", "14 Days", "30 Days", "60 Days", "90 Days", "120 Days"];
+
+  const initialFormState = {
+    canBeSold: false,
+    canBePurchased: false,
+    trackInventory: false,
+    assemblyRequired: false,
+    spareParts: false,
+    saleExelude: false,
+    productTitle: "",
+    sku: "",
+    numberOfCartons: "",
+    productDimensions: {
+      length: "",
+      height: "",
+      width: "",
+      weight: "",
+      volume: ""
+    },
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -138,23 +157,23 @@ const [message, setMessage] = useState('');
   //     fetchData();
   //   }
   // }, [isEditPopupOpen]);
-useEffect(() => {
-  const editPopupState = Boolean(isEditPopupOpen);
-  const openPopState = Boolean(isOpenpop);
+  useEffect(() => {
+    const editPopupState = Boolean(isEditPopupOpen);
+    const openPopState = Boolean(isOpenpop);
 
-  if (!editPopupState && !openPopState) {
-    const fetchData = async () => {
-      try {
-        const data1 = await getAllSalesChannels();
-        setSalesChannels(data1);
-      } catch (error) {
-        console.error("Error fetching sales channels:", error);
-      }
-    };
+    if (!editPopupState && !openPopState) {
+      const fetchData = async () => {
+        try {
+          const data1 = await getAllSalesChannels();
+          setSalesChannels(data1);
+        } catch (error) {
+          console.error("Error fetching sales channels:", error);
+        }
+      };
 
-    fetchData();
-  }
-}, [Boolean(isEditPopupOpen), Boolean(isOpenpop)]);
+      fetchData();
+    }
+  }, [Boolean(isEditPopupOpen), Boolean(isOpenpop)]);
 
   useEffect(() => {
     const adjustDropdownPosition = (dropdownClass, isOpen) => {
@@ -263,16 +282,22 @@ useEffect(() => {
   const paginatedData = sortedData.slice(startIndex, endIndex);
 
   const toggleSelectAll = (e) => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentPageData = filteredData.slice(startIndex, endIndex);
-    setSelectedRows(e.target.checked ? currentPageData.map((d) => d._id) : []);
+    const currentPageData = paginatedData.map(row => row._id);
+    if (e.target.checked) {
+      setSelectedRows(currentPageData);
+    } else {
+      setSelectedRows([]);
+    }
   };
 
   const toggleRow = (id) => {
-    setSelectedRows((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+    setSelectedRows(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(rowId => rowId !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
   };
 
   const toggleDropdown = (field) => {
@@ -440,7 +465,7 @@ useEffect(() => {
     });
   };
 
-const handleDeleteConfirm = async (id, name) => {
+  const handleDeleteConfirm = async (id, name) => {
     try {
       const res = await deleteSalesChannel(id);
 
@@ -482,11 +507,11 @@ const handleDeleteConfirm = async (id, name) => {
     }
   };
 
-const handleAddClick = () => {
-  fileInputRef.current?.click();
-};
+  const handleAddClick = () => {
+    fileInputRef.current?.click();
+  };
 
-const handleFileUpload = async (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -508,7 +533,7 @@ const handleFileUpload = async (e) => {
     }
 
     setIsUploading(true);
-    
+
     // Show loading toast
     const loadingToast = toast.loading(
       <div className="flex items-center gap-3">
@@ -524,10 +549,10 @@ const handleFileUpload = async (e) => {
         const content = event.target.result;
         const parsedData = parseCSV(content);
         const result = await bulkSaveSalesChannels(parsedData);
-        
+
         // Dismiss loading toast
         toast.dismiss(loadingToast);
-        
+
         if (result.success) {
           toast.success(
             <div className="flex items-center gap-2">
@@ -540,7 +565,7 @@ const handleFileUpload = async (e) => {
               </div>
             </div>
           );
-          
+
           const updated = await getAllSalesChannels();
           setSalesChannels(updated);
         } else {
@@ -587,177 +612,177 @@ const handleFileUpload = async (e) => {
     reader.readAsText(file);
   };
 
-const parseCSV = (csv) => {
-  try {
-    const lines = csv.split('\n').filter(Boolean);
-    if (lines.length < 2) {
-      throw new Error('File must contain headers and at least one data row');
-    }
-
-    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-    
-    // Validate required headers
-    const requiredFields = ['salesChannelName', 'salesChannelType', 'suburbState'];
-    const missingFields = requiredFields.filter(field => !headers.includes(field));
-    if (missingFields.length > 0) {
-      throw new Error(`Missing required headers: ${missingFields.join(', ')}`);
-    }
-
-    const booleanFields = [
-      "emailPlatforminvoice", "Emailplatformatrackingfile", "CustomerinvoicelncGST",
-      "Emailinvoicerequired", "1POINV", "startOnCampaign", "descriptionChannel",
-      "sellingChannel", "plusShipping", "offSellingPricecheckbox", "calculateNZPricecheckbox",
-      "calculateRetailPricecheckbox", "calculateGSTcheckbox", "roundingLowcheckbox",
-      "roundingHighcheckbox", "nzDropshippingAutoCalculate", "missinginvoice", "paymentrequired",
-      "versioncheckbox"
-    ];
-
-    const dateFields = ["dateFrom", "dateTo"];
-
-    return lines.slice(1).map((line, index) => {
-      const values = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
-      if (values.length !== headers.length) {
-        throw new Error(`Row ${index + 2} has incorrect number of fields`);
+  const parseCSV = (csv) => {
+    try {
+      const lines = csv.split('\n').filter(Boolean);
+      if (lines.length < 2) {
+        throw new Error('File must contain headers and at least one data row');
       }
 
-      const obj = {};
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
 
-      headers.forEach((key, i) => {
-        const val = values[i]?.trim();
+      // Validate required headers
+      const requiredFields = ['salesChannelName', 'salesChannelType', 'suburbState'];
+      const missingFields = requiredFields.filter(field => !headers.includes(field));
+      if (missingFields.length > 0) {
+        throw new Error(`Missing required headers: ${missingFields.join(', ')}`);
+      }
 
-        if (booleanFields.includes(key)) {
-          obj[key] = val?.toLowerCase() === 'true';
-        } else if (dateFields.includes(key)) {
-          obj[key] = val ? new Date(val) : null;
-        } else {
-          obj[key] = val || '';
+      const booleanFields = [
+        "emailPlatforminvoice", "Emailplatformatrackingfile", "CustomerinvoicelncGST",
+        "Emailinvoicerequired", "1POINV", "startOnCampaign", "descriptionChannel",
+        "sellingChannel", "plusShipping", "offSellingPricecheckbox", "calculateNZPricecheckbox",
+        "calculateRetailPricecheckbox", "calculateGSTcheckbox", "roundingLowcheckbox",
+        "roundingHighcheckbox", "nzDropshippingAutoCalculate", "missinginvoice", "paymentrequired",
+        "versioncheckbox"
+      ];
+
+      const dateFields = ["dateFrom", "dateTo"];
+
+      return lines.slice(1).map((line, index) => {
+        const values = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+        if (values.length !== headers.length) {
+          throw new Error(`Row ${index + 2} has incorrect number of fields`);
         }
+
+        const obj = {};
+
+        headers.forEach((key, i) => {
+          const val = values[i]?.trim();
+
+          if (booleanFields.includes(key)) {
+            obj[key] = val?.toLowerCase() === 'true';
+          } else if (dateFields.includes(key)) {
+            obj[key] = val ? new Date(val) : null;
+          } else {
+            obj[key] = val || '';
+          }
+        });
+
+        // Validate required fields in each row
+        const missingRequiredFields = requiredFields.filter(field => !obj[field]);
+        if (missingRequiredFields.length > 0) {
+          throw new Error(`Row ${index + 2} is missing required fields: ${missingRequiredFields.join(', ')}`);
+        }
+
+        return obj;
       });
+    } catch (error) {
+      console.error('CSV parsing error:', error);
+      throw error;
+    }
+  };
 
-      // Validate required fields in each row
-      const missingRequiredFields = requiredFields.filter(field => !obj[field]);
-      if (missingRequiredFields.length > 0) {
-        throw new Error(`Row ${index + 2} is missing required fields: ${missingRequiredFields.join(', ')}`);
-      }
+  const handleExport = () => {
+    try {
+      setIsExporting(true);
 
-      return obj;
-    });
-  } catch (error) {
-    console.error('CSV parsing error:', error);
-    throw error;
-  }
-};
+      // Match the required fields from parseCSV validation
+      const headers = [
+        'salesChannelName',
+        'salesChannelType',
+        'suburbState',
+        'payementterm',
+        'emailPlatforminvoice',
+        'Emailplatformatrackingfile',
+        'CustomerinvoicelncGST',
+        'Emailinvoicerequired',
+        '1POINV',
+        'startOnCampaign',
+        'descriptionChannel',
+        'sellingChannel',
+        'plusShipping',
+        'offSellingPricecheckbox',
+        'calculateNZPricecheckbox',
+        'calculateRetailPricecheckbox',
+        'calculateGSTcheckbox',
+        'roundingLowcheckbox',
+        'roundingHighcheckbox',
+        'nzDropshippingAutoCalculate',
+        'missinginvoice',
+        'paymentrequired',
+        'versioncheckbox',
+        'dateFrom',
+        'dateTo'
+      ];
 
-const handleExport = () => {
-  try {
-    setIsExporting(true);
-    
-    // Match the required fields from parseCSV validation
-    const headers = [
-      'salesChannelName',
-      'salesChannelType',
-      'suburbState',
-      'payementterm',
-      'emailPlatforminvoice',
-      'Emailplatformatrackingfile',
-      'CustomerinvoicelncGST',
-      'Emailinvoicerequired',
-      '1POINV',
-      'startOnCampaign',
-      'descriptionChannel',
-      'sellingChannel',
-      'plusShipping',
-      'offSellingPricecheckbox',
-      'calculateNZPricecheckbox',
-      'calculateRetailPricecheckbox',
-      'calculateGSTcheckbox',
-      'roundingLowcheckbox',
-      'roundingHighcheckbox',
-      'nzDropshippingAutoCalculate',
-      'missinginvoice',
-      'paymentrequired',
-      'versioncheckbox',
-      'dateFrom',
-      'dateTo'
-    ];
+      const csvData = [
+        headers.join(','),
+        ...salesChannels.map(row => {
+          // Ensure all required fields are present and properly formatted
+          const rowData = {
+            salesChannelName: row.salesChannelName || '',
+            salesChannelType: row.salesChannelType || '',
+            suburbState: row.suburbState || '',
+            payementterm: row.payementterm || '',
+            emailPlatforminvoice: row.emailPlatforminvoice?.toString() || 'false',
+            Emailplatformatrackingfile: row.Emailplatformatrackingfile?.toString() || 'false',
+            CustomerinvoicelncGST: row.CustomerinvoicelncGST?.toString() || 'false',
+            Emailinvoicerequired: row.Emailinvoicerequired?.toString() || 'false',
+            '1POINV': row['1POINV']?.toString() || 'false',
+            startOnCampaign: row.startOnCampaign?.toString() || 'false',
+            descriptionChannel: row.descriptionChannel?.toString() || 'false',
+            sellingChannel: row.sellingChannel?.toString() || 'false',
+            plusShipping: row.plusShipping?.toString() || 'false',
+            offSellingPricecheckbox: row.offSellingPricecheckbox?.toString() || 'false',
+            calculateNZPricecheckbox: row.calculateNZPricecheckbox?.toString() || 'false',
+            calculateRetailPricecheckbox: row.calculateRetailPricecheckbox?.toString() || 'false',
+            calculateGSTcheckbox: row.calculateGSTcheckbox?.toString() || 'false',
+            roundingLowcheckbox: row.roundingLowcheckbox?.toString() || 'false',
+            roundingHighcheckbox: row.roundingHighcheckbox?.toString() || 'false',
+            nzDropshippingAutoCalculate: row.nzDropshippingAutoCalculate?.toString() || 'false',
+            missinginvoice: row.missinginvoice?.toString() || 'false',
+            paymentrequired: row.paymentrequired?.toString() || 'false',
+            versioncheckbox: row.versioncheckbox?.toString() || 'false',
+            dateFrom: row.dateFrom || '',
+            dateTo: row.dateTo || ''
+          };
 
-    const csvData = [
-      headers.join(','),
-      ...salesChannels.map(row => {
-        // Ensure all required fields are present and properly formatted
-        const rowData = {
-          salesChannelName: row.salesChannelName || '',
-          salesChannelType: row.salesChannelType || '',
-          suburbState: row.suburbState || '',
-          payementterm: row.payementterm || '',
-          emailPlatforminvoice: row.emailPlatforminvoice?.toString() || 'false',
-          Emailplatformatrackingfile: row.Emailplatformatrackingfile?.toString() || 'false',
-          CustomerinvoicelncGST: row.CustomerinvoicelncGST?.toString() || 'false',
-          Emailinvoicerequired: row.Emailinvoicerequired?.toString() || 'false',
-          '1POINV': row['1POINV']?.toString() || 'false',
-          startOnCampaign: row.startOnCampaign?.toString() || 'false',
-          descriptionChannel: row.descriptionChannel?.toString() || 'false',
-          sellingChannel: row.sellingChannel?.toString() || 'false',
-          plusShipping: row.plusShipping?.toString() || 'false',
-          offSellingPricecheckbox: row.offSellingPricecheckbox?.toString() || 'false',
-          calculateNZPricecheckbox: row.calculateNZPricecheckbox?.toString() || 'false',
-          calculateRetailPricecheckbox: row.calculateRetailPricecheckbox?.toString() || 'false',
-          calculateGSTcheckbox: row.calculateGSTcheckbox?.toString() || 'false',
-          roundingLowcheckbox: row.roundingLowcheckbox?.toString() || 'false',
-          roundingHighcheckbox: row.roundingHighcheckbox?.toString() || 'false',
-          nzDropshippingAutoCalculate: row.nzDropshippingAutoCalculate?.toString() || 'false',
-          missinginvoice: row.missinginvoice?.toString() || 'false',
-          paymentrequired: row.paymentrequired?.toString() || 'false',
-          versioncheckbox: row.versioncheckbox?.toString() || 'false',
-          dateFrom: row.dateFrom || '',
-          dateTo: row.dateTo || ''
-        };
+          // Return values in the same order as headers
+          return headers.map(header => rowData[header]).join(',');
+        })
+      ].join('\n');
 
-        // Return values in the same order as headers
-        return headers.map(header => rowData[header]).join(',');
-      })
-    ].join('\n');
+      // Create blob and download
+      const blob = new Blob([csvData], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `sales_channels_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
 
-    // Create blob and download
-    const blob = new Blob([csvData], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `sales_channels_${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-
-    toast.success(
-      <div className="flex items-center gap-2">
-        <span className="text-lg">✨</span>
-        <div>
-          <p className="font-semibold">Export Successful</p>
-          <p className="text-sm opacity-90">Data exported in import-ready format</p>
+      toast.success(
+        <div className="flex items-center gap-2">
+          <span className="text-lg">✨</span>
+          <div>
+            <p className="font-semibold">Export Successful</p>
+            <p className="text-sm opacity-90">Data exported in import-ready format</p>
+          </div>
         </div>
-      </div>
-    );
-  } catch (error) {
-    toast.error(
-      <div className="flex items-center gap-2">
-        <span className="text-lg">❌</span>
-        <div>
-          <p className="font-semibold">Export Failed</p>
-          <p className="text-sm opacity-90">{error.message}</p>
+      );
+    } catch (error) {
+      toast.error(
+        <div className="flex items-center gap-2">
+          <span className="text-lg">❌</span>
+          <div>
+            <p className="font-semibold">Export Failed</p>
+            <p className="text-sm opacity-90">{error.message}</p>
+          </div>
         </div>
-      </div>
-    );
-  } finally {
-    setIsExporting(false);
-  }
-};
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div
-    
-    // className=" mt-10 w-full max-w-screen-xl mx-auto grid grid-cols-1 gap-4 md:grid-cols-12"
-          className={`p-2 sm:p-4 mx-auto  w-full    min-w-[640px] md:min-w-[800px] lg:min-w-[1000px] xl:min-w-[1000px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  table-auto justify-center items-center  `}
+
+      // className=" mt-10 w-full max-w-screen-xl mx-auto grid grid-cols-1 gap-4 md:grid-cols-12"
+      className={`p-2 sm:p-4 mx-auto  w-full    min-w-[640px] md:min-w-[800px] lg:min-w-[1000px] xl:min-w-[1000px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  table-auto justify-center items-center  `}
 
     >
       <div
@@ -769,7 +794,7 @@ const handleExport = () => {
             Sales Channel
           </h1>
           <div className="flex gap-2">
-           <button
+            {/* <button
   onClick={handleAddClick}
   disabled={isUploading}
   className={`bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm transition ${
@@ -809,9 +834,9 @@ const handleExport = () => {
   ref={fileInputRef}
   onChange={handleFileUpload}
   className="hidden"
-/>
- 
-<button
+/> */}
+
+            <button
               onClick={() => setIsOpenpop(true)}
               className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition"
             >
@@ -823,7 +848,7 @@ const handleExport = () => {
         </div>
 
         <div className="rounded-xl border w-[300px] lg:w-full md:w-full bg-white border-gray-300 shadow-lg overflow-x-hidden">
-          <div className="flex flex-wrap gap-2 p-4 border-b border-gray-200">
+          <div className="flex flex-wrap gap-2 p-4 border-b border-gray-200  ">
             {[
               "Asia",
               "North America",
@@ -835,9 +860,9 @@ const handleExport = () => {
             ].map((region) => (
               <button
                 key={region}
-                className={`py-1.5 px-3 rounded-md text-sm transition ${filters.region === region
-                  ? "bg-[#449ae6] text-white"
-                  : "text-gray-700 hover:bg-[#449ae6] hover:text-white"
+                className={`py-1.5 px-3 cursor-pointer rounded-md text-sm transition  ${filters.region === region
+                  ? "underline decoration-[#449ae6] decoration-2 underline-offset-4 font-bold "
+                  : "text-gray-700"
                   }`}
                 onClick={() => handleRegionFilter(region)}
               >
@@ -893,9 +918,11 @@ const handleExport = () => {
                       <span>Sales Channel</span>
                       <span>
                         {sortOptions.salesChannel ? (
-                          <MdArrowUpward />
-                        ) : (
                           <MdArrowDownward />
+
+                        ) : (
+                          <MdArrowUpward />
+
                         )}
                       </span>
                     </div>
@@ -1059,23 +1086,28 @@ const handleExport = () => {
             </div>
           </div>
 
-          {showButtons && (
-            <div ref={buttonsRef} className="flex gap-4 mb-2 px-4">
-              <div className="flex gap-4">
-                <div className="border p-1 px-4 rounded-md gap-2 flex items-center">
-                  <input type="checkbox" />
-                  <button className="ml-2 text-sm">1 Select</button>
-                </div>
-                <button className="border p-1 px-4 rounded-md">
-                  <select className="text-sm">
-                    <option value="">Action</option>
-                    <option value="Unarchived">Unarchived</option>
-                    <option value="Remove">Remove</option>
-                  </select>
-                </button>
+          {/* {showButtons && ( */}
+          <div ref={buttonsRef} className="flex gap-4 mb-2 px-4">
+            <div className="flex gap-4">
+              <div className="border p-1 px-4 rounded-md gap-2 flex items-center">
+                <input 
+                  type="checkbox" 
+                  checked={selectedRows.length > 0 && selectedRows.length === paginatedData.length}
+                  onChange={toggleSelectAll}
+                  className="cursor-pointer"
+                />
+                <button className="ml-2 text-sm">{selectedRows.length} Selected</button>
               </div>
+              <button className="border p-1 px-4 rounded-md">
+                <select className="text-sm" disabled={selectedRows.length === 0}>
+                  <option value="">Action</option>
+                  <option value="Unarchived">Unarchived</option>
+                  <option value="Remove">Remove</option>
+                </select>
+              </button>
             </div>
-          )}
+          </div>
+          {/* )} */}
 
           {isLoading ? (
             <div className="flex flex-col justify-center items-center min-h-[400px] gap-4">
@@ -1111,11 +1143,21 @@ const handleExport = () => {
             </div>
           ) : (
             <>
-              <div className="hidden sm:block overflow-x-hidden">
+              {/* <div className="hidden sm:block overflow-x-hidden">
                 <table className="w-full border-collapse text-sm">
                   <thead>
                     <tr className="text-xs">
-                      <th className="p-2 border-b text-center">Id</th>
+                      <th className="p-2 border-b w-12 text-center">
+                  <div className="flex flex-col items-center">
+                    <input
+                      type="checkbox"
+                      checked={filteredData.length > 0 && selectedRows.length === filteredData.length}
+                      onChange={toggleSelectAll}
+                      title="Select all inventory items"
+                    />
+                  </div>
+                </th>
+                      // <th className="p-2 border-b text-center">Id</th> 
 
                       <th className="p-2 border-b text-center">Sales Channel</th>
                       <th className="p-2 border-b text-center">Type</th>
@@ -1136,8 +1178,17 @@ const handleExport = () => {
 
                       >
 
-                        <td className="p-2 border-b text-center ">{(startIndex + index + 1).toString()}</td>
-
+                        // <td className="p-2 border-b text-center ">{(startIndex + index + 1).toString()}</td> 
+<td className="p-2 border-b text-center w-12" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={selectedRows.includes(row._id)}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        toggleRow(row._id);
+                      }}
+                    />
+                  </td>
                         <td className="p-2 border-b text-center"
                           // onClick={() => handleRowClick(row)}
                         >
@@ -1164,8 +1215,8 @@ const handleExport = () => {
                         >
                           <span
                             className={`py-1 px-4 rounded-md text-xs ${row.emailPlatforminvoice
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
+                              ? "bg-green-200 text-green-700"
+                              : "bg-orange-200 text-red-700"
                               }`}
                           >
                             {row.emailPlatforminvoice ? "Active" : "Inactive"}
@@ -1196,14 +1247,98 @@ const handleExport = () => {
                     ))}
                   </tbody>
                 </table>
+              </div> */}
+              <div className="hidden sm:block overflow-x-hidden">
+                <table className="w-full border-collapse text-sm">
+                  <thead>
+                    <tr className="text-xs border-b-4 border-gray-300">
+                      <th className="p-2 w-12 text-center">
+                        <div className="flex flex-col items-center">
+                          <input
+                            type="checkbox"
+                            checked={paginatedData.length > 0 && paginatedData.every(row => selectedRows.includes(row._id))}
+                            onChange={toggleSelectAll}
+                            className="cursor-pointer"
+                            title="Select all items on this page"
+                          />
+                        </div>
+                      </th>
+                      <th className="p-2 text-center">Sales Channel</th>
+                      <th className="p-2 text-center">Type</th>
+                      <th className="p-2 text-center">Payment Term</th>
+                      <th className="p-2 text-center">Location</th>
+                      <th className="p-2 text-center">Created Date</th>
+                      <th className="p-2 text-center">Status</th>
+                      {/* <th className="p-2 text-center">Action</th> */}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedData.map((row, index) => (
+                      <tr
+                        key={row._id}
+                        className="hover:bg-gray-50 cursor-pointer"
+                      >
+                        <td className="p-2 border-b-4 border-gray-300 text-center w-12" onClick={(e) => e.stopPropagation()}>
+                          <input
+                            type="checkbox"
+                            checked={selectedRows.includes(row._id)}
+                            onChange={() => toggleRow(row._id)}
+                            className="cursor-pointer"
+                          />
+                        </td>
+                        <td className="p-2 border-b-4 border-gray-300 text-center">{row.salesChannelName}</td>
+                        <td className="p-2 border-b-4 border-gray-300 text-center">{row.salesChannelType}</td>
+                        <td className="p-2 border-b-4 border-gray-300 text-center">{row.payementterm}</td>
+                        <td className="p-2 border-b-4 border-gray-300 text-center">{row.suburbState}</td>
+                        <td className="p-2 border-b-4 border-gray-300 text-center">
+                          {new Date(row.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="p-2 border-b-4 border-gray-300 text-center">
+                          <span
+                            className={`py-1 px-4 rounded-md text-xs ${row.emailPlatforminvoice
+                                ? "bg-green-200 text-green-700"
+                                : "bg-orange-200 text-red-700"
+                              }`}
+                          >
+                            {row.emailPlatforminvoice ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+                        {/* <td className="p-2 border-b-4 border-gray-300 text-center">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onEdit(row);
+                            }}
+                            className="text-blue-500 hover:text-blue-700 mx-1 cursor-pointer"
+                            title="Edit"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDelete(row._id, row.salesChannelName);
+                            }}
+                            className="text-red-500 hover:text-red-700 mx-1 cursor-pointer"
+                            title="Delete"
+                          >
+                            <FaTrash />
+                          </button>
+                        </td> */}
+                      </tr>
+                    ))}
+                  </tbody>
+
+                </table>
               </div>
+
               {/* mobile view content  */}
               <div className="block sm:hidden divide-y divide-gray-200 px-4">
                 {paginatedData.map((row) => (
                   <div
                     key={row._id}
                     className="p-3 bg-gray-50 mb-3 rounded-lg shadow-sm cursor-pointer"
-                    // onClick={() => handleRowClick(row)}
+                  // onClick={() => handleRowClick(row)}
                   >
                     <table className="w-full text-sm">
                       <tbody>
@@ -1313,7 +1448,7 @@ const handleExport = () => {
         )}
         {isOpenpop && (
           <HeaderAddSale onClose={() => setIsOpenpop(false)}
-           />
+          />
         )}
         {isEditPopupOpen && editingRow && (
           <EditDetailsPopup

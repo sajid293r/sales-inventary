@@ -10,8 +10,11 @@ import 'react-toastify/dist/ReactToastify.css';
 const initialFormState = {
   canBeSold: false,
   canBePurchased: false,
-  trackInventory: false,
+   assemblyRequired: false,
+  spareParts:false,
+    saleExelude:false,
   productTitle: "",
+  numberOfCartons:"",
   sku: "",
   gtin: "",
   brand: "",
@@ -319,7 +322,7 @@ const BundlingkitContent = () => {
         imageName: imageFileName
       };
       // console.log('Data being submitted:', JSON.stringify(dataToSubmit, null, 2));
-
+console.log(dataToSubmit)
       const result = await submitProductAction(dataToSubmit);
       // console.log('Submit result:', result);
 
@@ -488,13 +491,36 @@ const BundlingkitContent = () => {
                   type="checkbox" 
                   className="h-4 w-4" 
                   disabled={isReadOnly}
-                  name="trackInventory"
-                  checked={formData.trackInventory}
+                  name="saleExelude"
+                  checked={formData.saleExelude}
                   onChange={handleInputChange}
                 />
-                <span className="text-sm sm:text-base">Track Inventory</span>
+                <span className="text-sm sm:text-base">Sale Exelude</span>
+              </label>
+                <label className="flex items-center gap-2">
+                <input 
+                  type="checkbox" 
+                  className="h-4 w-4" 
+                  disabled={isReadOnly}
+                  name="assemblyRequired"
+                  checked={formData.assemblyRequired}
+                  onChange={handleInputChange}
+                />
+                <span className="text-sm sm:text-base">Assembly Required</span>
+              </label>
+                <label className="flex items-center gap-2">
+                <input 
+                  type="checkbox" 
+                  className="h-4 w-4" 
+                  disabled={isReadOnly}
+                  name="spareParts"
+                  checked={formData.spareParts}
+                  onChange={handleInputChange}
+                />
+                <span className="text-sm sm:text-base">Spare Parts</span>
               </label>
             </div>
+            
           </div>
 
           {/* Right Section */}
@@ -507,8 +533,12 @@ const BundlingkitContent = () => {
                 </span>
                 <select className="text-sm border w-full p-2 rounded-md" disabled={isReadOnly} name="status" value={formData.status} onChange={handleInputChange}>
                   <option value="">Status</option>
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
+                  <option value="InStock">InStock</option>
+                  <option value="OutofStock">OutofStock</option>
+                                    <option value="Archived">Archived</option>
+
+                  <option value="Pending Approval">Pending Approval</option>
+
                 </select>
               </label>
             </div>
@@ -670,7 +700,7 @@ const BundlingkitContent = () => {
 
             {/* Toggleable Sections */}
             <div className="border rounded-md bg-white p-4">
-              <div className="flex flex-wrap gap-4 sm:gap-6 mb-4">
+              {/* <div className="flex flex-wrap gap-4 sm:gap-6 mb-4">
                 <span
                   onClick={toggleText}
                   className="cursor-pointer hover:text-gray-700 text-sm sm:text-base"
@@ -701,7 +731,75 @@ const BundlingkitContent = () => {
                 >
                   Notes
                 </span>
-              </div>
+              </div> */}
+
+<div className="flex flex-wrap gap-4 sm:gap-6 mb-4">
+  <span
+    onClick={toggleText}
+    className={`cursor-pointer text-sm sm:text-base border-b-4 ${isGeneralOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+  >
+    General
+  </span>
+  <span
+    onClick={togglePackage}
+    className={`cursor-pointer text-sm sm:text-base border-b-4 ${isPackageOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+  >
+    Package
+  </span>
+  <span
+    onClick={toggleStock}
+    className={`cursor-pointer text-sm sm:text-base border-b-4 ${isStockOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+  >
+    Stock Level
+  </span>
+  <span
+    onClick={togglePurchase}
+    className={`cursor-pointer text-sm sm:text-base border-b-4 ${isPurchaseOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+  >
+    Purchase
+  </span>
+  <span
+    onClick={toggleNotes}
+    className={`cursor-pointer text-sm sm:text-base border-b-4 ${isNotesOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+  >
+    Notes
+  </span>
+</div>
+
+
+
+{/* <div className="flex flex-wrap gap-4 sm:gap-6 mb-4">
+  <span
+    onClick={toggleText}
+    className={`cursor-pointer text-sm sm:text-base border-b-2 ${isGeneralOpen ? 'border-blue-500  font-semibold' : 'border-transparent hover:text-gray-700'}`}
+  >
+    General
+  </span>
+  <span
+    onClick={togglePackage}
+    className={`cursor-pointer text-sm sm:text-base border-b-2 ${isPackageOpen ? 'border-blue-500  font-semibold' : 'border-transparent hover:text-gray-700'}`}
+  >
+    Package
+  </span>
+  <span
+    onClick={toggleStock}
+    className={`cursor-pointer text-sm sm:text-base border-b-2 ${isStockOpen ? 'border-blue-500  font-semibold' : 'border-transparent hover:text-gray-700'}`}
+  >
+    Stock Level
+  </span>
+  <span
+    onClick={togglePurchase}
+    className={`cursor-pointer text-sm sm:text-base border-b-2 ${isPurchaseOpen ? 'border-blue-500  font-semibold' : 'border-transparent hover:text-gray-700'}`}
+  >
+    Purchase
+  </span>
+  <span
+    onClick={toggleNotes}
+    className={`cursor-pointer text-sm sm:text-base border-b-2 ${isNotesOpen ? 'border-blue-500  font-semibold' : 'border-transparent hover:text-gray-700'}`}
+  >
+    Notes
+  </span>
+</div> */}
 
               {/* General Section */}
               <div ref={generalRef}>
@@ -774,7 +872,7 @@ const BundlingkitContent = () => {
                           Length(cm)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="productDimensions.length"
@@ -787,7 +885,7 @@ const BundlingkitContent = () => {
                           Height(cm)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="productDimensions.height"
@@ -800,7 +898,7 @@ const BundlingkitContent = () => {
                           Width(cm)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="productDimensions.width"
@@ -813,7 +911,7 @@ const BundlingkitContent = () => {
                           Weight(kg)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="productDimensions.weight"
@@ -823,10 +921,10 @@ const BundlingkitContent = () => {
                       </div>
                       <div className="flex flex-col">
                         <span className="mb-1 text-gray-900 text-sm sm:text-base">
-                          Volume(cm3)
+                          CBM (cm²)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="productDimensions.volume"
@@ -835,6 +933,19 @@ const BundlingkitContent = () => {
                         />
                       </div>
                     </div>
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start sm:items-center mt-4">
+  <h1  className="text-sm text-gray-900 w-full sm:w-32">
+    Number of Cartons
+  </h1 >
+  <input
+    type="number"
+    className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-32"
+    name="numberOfCartons"
+    value={formData.numberOfCartons || ""}
+    onChange={handleInputChange}
+  />
+</div>
+
                     <h1 className="mt-2">Package1</h1>
                     <div className="flex gap-10 mt-4">
                       <div className="flex flex-col">
@@ -842,7 +953,7 @@ const BundlingkitContent = () => {
                           Length(cm)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.length"
@@ -855,7 +966,7 @@ const BundlingkitContent = () => {
                           Height(cm)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.height"
@@ -868,7 +979,7 @@ const BundlingkitContent = () => {
                           Width(cm)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.width"
@@ -881,7 +992,7 @@ const BundlingkitContent = () => {
                           Weight(kg)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.weight"
@@ -891,10 +1002,10 @@ const BundlingkitContent = () => {
                       </div>
                       <div className="flex flex-col">
                         <span className="mb-1 text-gray-900 text-sm sm:text-base">
-                          Volume(cm3)
+                          CBM (cm²)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.volume"
@@ -910,7 +1021,7 @@ const BundlingkitContent = () => {
                           Length(cm)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package2.length"
@@ -923,7 +1034,7 @@ const BundlingkitContent = () => {
                           Height(cm)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package2.height"
@@ -936,7 +1047,7 @@ const BundlingkitContent = () => {
                           Width(cm)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package2.width"
@@ -949,7 +1060,7 @@ const BundlingkitContent = () => {
                           Weight(kg)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package2.weight"
@@ -959,10 +1070,10 @@ const BundlingkitContent = () => {
                       </div>
                       <div className="flex flex-col">
                         <span className="mb-1 text-gray-900 text-sm sm:text-base">
-                          Volume(cm3)
+CBM (cm²)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package2.volume"
@@ -978,7 +1089,7 @@ const BundlingkitContent = () => {
                           Length(cm)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package3.length"
@@ -991,7 +1102,7 @@ const BundlingkitContent = () => {
                           Height(cm)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package3.height"
@@ -1004,7 +1115,7 @@ const BundlingkitContent = () => {
                           Width(cm)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package3.width"
@@ -1017,7 +1128,7 @@ const BundlingkitContent = () => {
                           Weight(kg)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package3.weight"
@@ -1027,10 +1138,10 @@ const BundlingkitContent = () => {
                       </div>
                       <div className="flex flex-col">
                         <span className="mb-1 text-gray-900 text-sm sm:text-base">
-                          Volume(cm3)
+                        CBM (cm²)
                         </span>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package3.volume"
@@ -1057,7 +1168,7 @@ const BundlingkitContent = () => {
                             {label}
                           </label>
                           <input
-                            type="text"
+                            type="number"
                             className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-32"
                             name={`stockLevel.${label.toLowerCase().replace(/\s+/g, '')}`}
                             value={formData.stockLevel[label.toLowerCase().replace(/\s+/g, '')] || ""}
@@ -1074,6 +1185,7 @@ const BundlingkitContent = () => {
               <div ref={purchaseRef}>
                 {isPurchaseOpen && (
                   <div className="space-y-4 mt-4">
+                    
                     {[
                       "Purchase Price",
                       "Cost in Aus",
@@ -1089,7 +1201,7 @@ const BundlingkitContent = () => {
                           {label}
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-32"
                           name={`purchase.${label.toLowerCase().replace(/[\s()]+/g, '')}`}
                           value={formData.purchase[label.toLowerCase().replace(/[\s()]+/g, '')] || ""}

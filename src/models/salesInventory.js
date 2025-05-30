@@ -3,8 +3,10 @@ import mongoose from "mongoose";
 const productInventorySchema = new mongoose.Schema({
   canBeSold: Boolean,
   canBePurchased: Boolean,
-  trackInventory: Boolean,
-
+  assemblyRequired: Boolean,
+ spareParts: Boolean,
+  saleExelude: Boolean,
+  numberOfCartons:Number,
   productTitle: {
     type: String,
     required: true
