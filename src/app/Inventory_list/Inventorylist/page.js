@@ -816,7 +816,7 @@ const handleInventory=(e)=>{
               accept=".xlsx,.xls,.csv"
               className="hidden"
             />
-            <button 
+            {/* <button 
               className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition cursor-pointer"
               onClick={handleImportClick}
               disabled={isLoading}
@@ -829,7 +829,7 @@ const handleInventory=(e)=>{
               disabled={isLoading}
             >
               Export
-            </button>
+            </button> */}
             <button 
               className="text-md hover:bg-gray-100 transition"
               disabled={isLoading}
@@ -1079,7 +1079,7 @@ const handleInventory=(e)=>{
         </div>
 
         <div className="hidden sm:block overflow-x-hidden">
-          <table className="w-full border-collapse text-sm ml-4">
+          {/* <table className="w-full border-collapse text-sm ml-4">
             <thead>
               <tr className="text-xs bg-[#f7f7f7]">
                 <th className="p-2 border-b w-12 text-center">
@@ -1100,7 +1100,7 @@ const handleInventory=(e)=>{
                 <th className="p-2 border-b text-center">Selling Price</th>
                 <th className="p-2 border-b text-center">Stock Level</th>
                 <th className="p-2 border-b text-center">Status</th>
-                {/* <th className="p-2 border-b text-center">Action</th> */}
+             //    <th className="p-2 border-b text-center">Action</th> 
               </tr>
             </thead>
             <tbody>
@@ -1127,10 +1127,11 @@ const handleInventory=(e)=>{
                   <td className="p-2 border-b text-center">${row.rrp}</td>
                   <td className="p-2 border-b text-center">${row.sellingPrice}</td>
                   <td className="p-2 border-b text-center">{row.stockLevel?.stocklevel}</td>
+                 
                   <td className="p-2 border-b text-center">
-                    <span
-                      className={`py-1 px-4 rounded-md text-xs ${
-                       row.status === "InStock"
+  <span
+    className={`py-1 px-4 rounded-md text-xs inline-block min-w-[120px] text-center ${
+      row.status === "InStock"
         ? "bg-green-100 text-green-700"
         : row.status === "OutofStock"
         ? "bg-red-100 text-red-700"
@@ -1139,34 +1140,84 @@ const handleInventory=(e)=>{
         : row.status === "Pending Approval"
         ? "bg-blue-100 text-blue-700"
         : "bg-gray-100 text-gray-700"
-                      }`}
-                    >
-                      {row.status || "N/A"}
-                    </span>
-                  </td>
-                  {/* <td className="p-2 border-b text-center">
-                    <button
-                      onClick={(e) => handleEdit(e, row)}
-                      className="text-blue-500 hover:text-blue-700 mx-1 cursor-pointer"
-                      title="Edit"
-                    >
-                      <FaEdit />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete(row._id, row.productTitle);
-                      }}
-                      className="text-red-500 hover:text-red-700 mx-1 cursor-pointer"
-                      title="Delete"
-                    >
-                      <FaTrash />
-                    </button>
-                  </td> */}
+    }`}
+  >
+    {row.status || "N/A"}
+  </span>
+</td>
+
+                 
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table> */}
+          <table className="w-full border-collapse text-sm ml-4">
+  <thead>
+    <tr className="text-xs bg-[#f7f7f7]">
+      <th className="p-2 border-b-[0.5px] w-12 text-center">
+        <div className="flex flex-col items-center">
+          <input
+            type="checkbox"
+            checked={filteredData.length > 0 && selectedRows.length === filteredData.length}
+            onChange={toggleSelectAll}
+            title="Select all inventory items"
+          />
+        </div>
+      </th>
+      <th className="p-2 border-b-[0.5px] text-center cursor-pointer hover:bg-gray-100">Name</th>
+      <th className="p-2 border-b-[0.5px] text-center">SKU</th>
+      <th className="p-2 border-b-[0.5px] text-center">RRP</th>
+      <th className="p-2 border-b-[0.5px] text-center">Selling Price</th>
+      <th className="p-2 border-b-[0.5px] text-center">Stock Level</th>
+      <th className="p-2 border-b-[0.5px] text-center">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {paginatedData.map((row) => (
+      <tr
+        key={row._id}
+        className={`hover:bg-gray-50 cursor-pointer ${
+          selectedRows.includes(row._id) ? 'bg-blue-50' : ''
+        }`}
+        onClick={() => handleRowClick(row)}
+      >
+        <td className="p-2 border-b-[0.5px] text-center w-12" onClick={(e) => e.stopPropagation()}>
+          <input
+            type="checkbox"
+            checked={selectedRows.includes(row._id)}
+            onChange={(e) => {
+              e.stopPropagation();
+              toggleRow(row._id);
+            }}
+          />
+        </td>
+        <td className="p-2 border-b-[0.5px] text-center">{row.productTitle}</td>
+        <td className="p-2 border-b-[0.5px] text-center">{row.sku}</td>
+        <td className="p-2 border-b-[0.5px] text-center">${row.rrp}</td>
+        <td className="p-2 border-b-[0.5px] text-center">${row.sellingPrice}</td>
+        <td className="p-2 border-b-[0.5px] text-center">{row.stockLevel?.stocklevel}</td>
+        <td className="p-2 border-b-[0.5px] text-center">
+          <span
+            className={`py-1 px-4 rounded-md text-xs inline-block min-w-[120px] text-center ${
+              row.status === "InStock"
+                ? "bg-green-100 text-green-700"
+                : row.status === "OutofStock"
+                ? "bg-red-100 text-red-700"
+                : row.status === "Archived"
+                ? "bg-yellow-100 text-yellow-700"
+                : row.status === "Pending Approval"
+                ? "bg-blue-100 text-blue-700"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {row.status || "N/A"}
+          </span>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
         </div>
 
         <div className="block sm:hidden divide-y divide-gray-200 px-4">

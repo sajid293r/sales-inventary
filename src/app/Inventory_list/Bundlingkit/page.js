@@ -10,11 +10,11 @@ import 'react-toastify/dist/ReactToastify.css';
 const initialFormState = {
   canBeSold: false,
   canBePurchased: false,
-   assemblyRequired: false,
-  spareParts:false,
-    saleExelude:false,
+  assemblyRequired: false,
+  spareParts: false,
+  saleExelude: false,
   productTitle: "",
-  numberOfCartons:"",
+  numberOfCartons: "",
   sku: "",
   gtin: "",
   brand: "",
@@ -148,7 +148,7 @@ const BundlingkitContent = () => {
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
-    
+
     // Check if a file was selected
     if (!file) {
       toast.error('Please select a file');
@@ -163,7 +163,7 @@ const BundlingkitContent = () => {
       'image/gif',
       'image/webp'
     ];
-    
+
     // Check if file is an image
     if (!allowedTypes.includes(file.type)) {
       toast.error('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
@@ -225,7 +225,7 @@ const BundlingkitContent = () => {
   // Close all sections if clicking outside
   const handleClickOutside = (event) => {
     if (!mounted.current) return;
-    
+
     if (
       generalRef.current &&
       !generalRef.current.contains(event.target) &&
@@ -263,7 +263,7 @@ const BundlingkitContent = () => {
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
+
     if (name.includes('.')) {
       // Handle nested objects (e.g., productDimensions.length)
       const [parent, child] = name.split('.');
@@ -297,10 +297,10 @@ const BundlingkitContent = () => {
         const timestamp = new Date().getTime();
         const uniqueFileName = `${timestamp}_${selectedImage.name}`;
         // console.log('Generated filename:', uniqueFileName);
-        
+
         const imageFormData = new FormData();
         imageFormData.append('file', selectedImage);
-        
+
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
           body: imageFormData
@@ -322,7 +322,7 @@ const BundlingkitContent = () => {
         imageName: imageFileName
       };
       // console.log('Data being submitted:', JSON.stringify(dataToSubmit, null, 2));
-console.log(dataToSubmit)
+      console.log(dataToSubmit)
       const result = await submitProductAction(dataToSubmit);
       // console.log('Submit result:', result);
 
@@ -360,11 +360,11 @@ console.log(dataToSubmit)
     <>
       <ToastContainer position="top-right" autoClose={1500} />
       {/* Header Section */}
-       <div className="py-4 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 3xl:px-20 4xl:px-24">
-    {/* Your entire content starts here */}
+      <div className="py-4 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 3xl:px-20 4xl:px-24">
+        {/* Your entire content starts here */}
         <div className="flex flex-col sm:flex-row justify-between mb-4 gap-3">
           <div className="flex items-center gap-2">
-            <div className="border rounded-md p-1">
+            <div className="border border-[#888888] rounded-md p-1">
               <Link href="/Inventory_list/Inventorylist">
                 <FaArrowLeft size={16} className="text-sm" />
               </Link>
@@ -378,7 +378,7 @@ console.log(dataToSubmit)
               Bundling/Kitting
             </button>
             {action !== 'view' && (
-              <button 
+              <button
                 onClick={handleSave}
                 disabled={isLoading}
                 className="bg-[#52ce66] text-white py-1 sm:py-2 px-3 sm:px-4 rounded-md text-sm hover:bg-[#48b55a] transition flex items-center gap-2"
@@ -402,9 +402,9 @@ console.log(dataToSubmit)
           <div className="border rounded-md w-full lg:w-3/4 bg-white p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 mb-4">
               <label className="flex items-center gap-2">
-                <input 
-                  type="checkbox" 
-                  className="h-4 w-4" 
+                <input
+                  type="checkbox"
+                  className="h-4 w-4"
                   disabled={isReadOnly}
                   name="canBeSold"
                   checked={formData.canBeSold}
@@ -413,9 +413,9 @@ console.log(dataToSubmit)
                 <span className="text-sm sm:text-base">Can be Sold</span>
               </label>
               <label className="flex items-center gap-2">
-                <input 
-                  type="checkbox" 
-                  className="h-4 w-4" 
+                <input
+                  type="checkbox"
+                  className="h-4 w-4"
                   disabled={isReadOnly}
                   name="canBePurchased"
                   checked={formData.canBePurchased}
@@ -446,7 +446,7 @@ console.log(dataToSubmit)
                 </span>
                 <input
                   type="text"
-                  className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                  className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                   placeholder="SKU"
                   name="sku"
                   value={formData.sku}
@@ -487,9 +487,9 @@ console.log(dataToSubmit)
 
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mt-4">
               <label className="flex items-center gap-2">
-                <input 
-                  type="checkbox" 
-                  className="h-4 w-4" 
+                <input
+                  type="checkbox"
+                  className="h-4 w-4"
                   disabled={isReadOnly}
                   name="saleExelude"
                   checked={formData.saleExelude}
@@ -497,10 +497,10 @@ console.log(dataToSubmit)
                 />
                 <span className="text-sm sm:text-base">Sale Exelude</span>
               </label>
-                <label className="flex items-center gap-2">
-                <input 
-                  type="checkbox" 
-                  className="h-4 w-4" 
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4"
                   disabled={isReadOnly}
                   name="assemblyRequired"
                   checked={formData.assemblyRequired}
@@ -508,10 +508,10 @@ console.log(dataToSubmit)
                 />
                 <span className="text-sm sm:text-base">Assembly Required</span>
               </label>
-                <label className="flex items-center gap-2">
-                <input 
-                  type="checkbox" 
-                  className="h-4 w-4" 
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4"
                   disabled={isReadOnly}
                   name="spareParts"
                   checked={formData.spareParts}
@@ -520,7 +520,7 @@ console.log(dataToSubmit)
                 <span className="text-sm sm:text-base">Spare Parts</span>
               </label>
             </div>
-            
+
           </div>
 
           {/* Right Section */}
@@ -535,7 +535,7 @@ console.log(dataToSubmit)
                   <option value="">Status</option>
                   <option value="InStock">InStock</option>
                   <option value="OutofStock">OutofStock</option>
-                                    <option value="Archived">Archived</option>
+                  <option value="Archived">Archived</option>
 
                   <option value="Pending Approval">Pending Approval</option>
 
@@ -552,7 +552,7 @@ console.log(dataToSubmit)
                   </span>
                   <input
                     type="text"
-                    className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                    className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder="$ 0.00"
                     name="rrp"
                     value={formData.rrp}
@@ -566,7 +566,7 @@ console.log(dataToSubmit)
                   </span>
                   <input
                     type="text"
-                    className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                    className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder="$ 0.00"
                     name="sellingPrice"
                     value={formData.sellingPrice}
@@ -629,14 +629,14 @@ console.log(dataToSubmit)
                   >
                     {fileName}
                   </button>
-                  <span 
-                    onClick={() => setShowUrlInput(true)} 
+                  <span
+                    onClick={() => setShowUrlInput(true)}
                     className="text-blue-300 text-sm sm:text-base cursor-pointer hover:underline"
                   >
                     Add File URL
                   </span>
                 </div>
-                
+
                 {showUrlInput && (
                   <div className="flex flex-col sm:flex-row gap-2 mt-2 w-full">
                     <input
@@ -666,21 +666,21 @@ console.log(dataToSubmit)
                   </div>
                 )}
                 {formData.imageUrl && !showUrlInput && (
-  <div className="flex items-center gap-2 mt-2">
-    <span className="text-sm text-gray-600 max-w-xs truncate overflow-hidden">
-      Added URL: {formData.imageUrl}
-    </span>
-    <button
-      onClick={() => {
-        setFormData(prev => ({ ...prev, imageUrl: "" }));
-        setFileUrl("");
-      }}
-      className="text-red-500 hover:text-red-600"
-    >
-      ✕
-    </button>
-  </div>
-)}
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-sm text-gray-600 max-w-xs truncate overflow-hidden">
+                      Added URL: {formData.imageUrl}
+                    </span>
+                    <button
+                      onClick={() => {
+                        setFormData(prev => ({ ...prev, imageUrl: "" }));
+                        setFileUrl("");
+                      }}
+                      className="text-red-500 hover:text-red-600"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
                 {/* {formData.imageUrl && !showUrlInput && (
                   <div className="flex items-center gap-2 mt-2">
                     <span className="text-sm text-gray-600">Added URL: {formData.imageUrl}</span>
@@ -733,42 +733,42 @@ console.log(dataToSubmit)
                 </span>
               </div> */}
 
-<div className="flex flex-wrap gap-4 sm:gap-6 mb-4">
-  <span
-    onClick={toggleText}
-    className={`cursor-pointer text-sm sm:text-base border-b-4 ${isGeneralOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
-  >
-    General
-  </span>
-  <span
-    onClick={togglePackage}
-    className={`cursor-pointer text-sm sm:text-base border-b-4 ${isPackageOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
-  >
-    Package
-  </span>
-  <span
-    onClick={toggleStock}
-    className={`cursor-pointer text-sm sm:text-base border-b-4 ${isStockOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
-  >
-    Stock Level
-  </span>
-  <span
-    onClick={togglePurchase}
-    className={`cursor-pointer text-sm sm:text-base border-b-4 ${isPurchaseOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
-  >
-    Purchase
-  </span>
-  <span
-    onClick={toggleNotes}
-    className={`cursor-pointer text-sm sm:text-base border-b-4 ${isNotesOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
-  >
-    Notes
-  </span>
-</div>
+              <div className="flex flex-wrap gap-4 sm:gap-6 mb-4">
+                <span
+                  onClick={toggleText}
+                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isGeneralOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+                >
+                  General
+                </span>
+                <span
+                  onClick={togglePackage}
+                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isPackageOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+                >
+                  Package
+                </span>
+                <span
+                  onClick={toggleStock}
+                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isStockOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+                >
+                  Stock Level
+                </span>
+                <span
+                  onClick={togglePurchase}
+                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isPurchaseOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+                >
+                  Purchase
+                </span>
+                <span
+                  onClick={toggleNotes}
+                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isNotesOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+                >
+                  Notes
+                </span>
+              </div>
 
 
 
-{/* <div className="flex flex-wrap gap-4 sm:gap-6 mb-4">
+              {/* <div className="flex flex-wrap gap-4 sm:gap-6 mb-4">
   <span
     onClick={toggleText}
     className={`cursor-pointer text-sm sm:text-base border-b-2 ${isGeneralOpen ? 'border-blue-500  font-semibold' : 'border-transparent hover:text-gray-700'}`}
@@ -934,17 +934,17 @@ console.log(dataToSubmit)
                       </div>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start sm:items-center mt-4">
-  <h1  className="text-sm text-gray-900 w-full sm:w-32">
-    Number of Cartons
-  </h1 >
-  <input
-    type="number"
-    className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-32"
-    name="numberOfCartons"
-    value={formData.numberOfCartons || ""}
-    onChange={handleInputChange}
-  />
-</div>
+                      <h1 className="text-sm text-gray-900 w-full sm:w-32">
+                        Number of Cartons
+                      </h1 >
+                      <input
+                        type="number"
+                        className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-32"
+                        name="numberOfCartons"
+                        value={formData.numberOfCartons || ""}
+                        onChange={handleInputChange}
+                      />
+                    </div>
 
                     <h1 className="mt-2">Package1</h1>
                     <div className="flex gap-10 mt-4">
@@ -954,7 +954,7 @@ console.log(dataToSubmit)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.length"
                           value={formData.package1.length}
@@ -967,7 +967,7 @@ console.log(dataToSubmit)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.height"
                           value={formData.package1.height}
@@ -980,7 +980,7 @@ console.log(dataToSubmit)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.width"
                           value={formData.package1.width}
@@ -993,7 +993,7 @@ console.log(dataToSubmit)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.weight"
                           value={formData.package1.weight}
@@ -1006,7 +1006,7 @@ console.log(dataToSubmit)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-gray-400  rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.volume"
                           value={formData.package1.volume}
@@ -1070,7 +1070,7 @@ console.log(dataToSubmit)
                       </div>
                       <div className="flex flex-col">
                         <span className="mb-1 text-gray-900 text-sm sm:text-base">
-CBM (cm²)
+                          CBM (cm²)
                         </span>
                         <input
                           type="number"
@@ -1138,7 +1138,7 @@ CBM (cm²)
                       </div>
                       <div className="flex flex-col">
                         <span className="mb-1 text-gray-900 text-sm sm:text-base">
-                        CBM (cm²)
+                          CBM (cm²)
                         </span>
                         <input
                           type="number"
@@ -1185,7 +1185,7 @@ CBM (cm²)
               <div ref={purchaseRef}>
                 {isPurchaseOpen && (
                   <div className="space-y-4 mt-4">
-                    
+
                     {[
                       "Purchase Price",
                       "Cost in Aus",
@@ -1256,7 +1256,7 @@ CBM (cm²)
             )}
           </div>
         </div>
-        </div>
+      </div>
     </>
   );
 };

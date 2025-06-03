@@ -860,8 +860,8 @@ const TableWithCheckboxes = () => {
             ].map((region) => (
               <button
                 key={region}
-                className={`py-1.5 px-3 cursor-pointer rounded-md text-sm transition  ${filters.region === region
-                  ? "underline decoration-[#449ae6] decoration-2 underline-offset-4 font-bold "
+                className={`py-1.5 pl-3 cursor-pointer rounded-md text-sm transition  ${filters.region === region
+                  ? "underline decoration-[#449ae6] decoration-2 underline-offset-4 "
                   : "text-gray-700"
                   }`}
                 onClick={() => handleRegionFilter(region)}
@@ -1251,7 +1251,7 @@ const TableWithCheckboxes = () => {
               <div className="hidden sm:block overflow-x-hidden">
                 <table className="w-full border-collapse text-sm">
                   <thead>
-                    <tr className="text-xs border-b-4 border-gray-300">
+                    <tr className="text-xs border-b-[0.5px]">
                       <th className="p-2 w-12 text-center">
                         <div className="flex flex-col items-center">
                           <input
@@ -1278,7 +1278,7 @@ const TableWithCheckboxes = () => {
                         key={row._id}
                         className="hover:bg-gray-50 cursor-pointer"
                       >
-                        <td className="p-2 border-b-4 border-gray-300 text-center w-12" onClick={(e) => e.stopPropagation()}>
+                        <td className="p-2 border-b-[0.5px] text-center w-12" onClick={(e) => e.stopPropagation()}>
                           <input
                             type="checkbox"
                             checked={selectedRows.includes(row._id)}
@@ -1286,14 +1286,14 @@ const TableWithCheckboxes = () => {
                             className="cursor-pointer"
                           />
                         </td>
-                        <td className="p-2 border-b-4 border-gray-300 text-center">{row.salesChannelName}</td>
-                        <td className="p-2 border-b-4 border-gray-300 text-center">{row.salesChannelType}</td>
-                        <td className="p-2 border-b-4 border-gray-300 text-center">{row.payementterm}</td>
-                        <td className="p-2 border-b-4 border-gray-300 text-center">{row.suburbState}</td>
-                        <td className="p-2 border-b-4 border-gray-300 text-center">
+                        <td className="p-2 border-b-[0.5px] text-center">{row.salesChannelName}</td>
+                        <td className="p-2 border-b-[0.5px] text-center">{row.salesChannelType}</td>
+                        <td className="p-2 border-b-[0.5px] text-center">{row.payementterm}</td>
+                        <td className="p-2 border-b-[0.5px] text-center">{row.suburbState}</td>
+                        <td className="p-2 border-b-[0.5px] text-center">
                           {new Date(row.createdAt).toLocaleDateString()}
                         </td>
-                        <td className="p-2 border-b-4 border-gray-300 text-center">
+                        <td className="p-2 border-b-[0.5px] text-center">
                           <span
                             className={`py-1 px-4 rounded-md text-xs ${row.emailPlatforminvoice
                                 ? "bg-green-200 text-green-700"
