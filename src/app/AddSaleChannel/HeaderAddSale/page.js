@@ -1464,7 +1464,7 @@ const handleclose= () => {
           <button onClick={handleclose} 
             className="hover:text-red-400 cursor-pointer"
           >
-          <X size={20} className="border rounded-lg" />
+          <X size={20} className=" rounded-lg" />
           </button>
         </div>
 
