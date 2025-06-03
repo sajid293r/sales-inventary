@@ -1427,7 +1427,8 @@ const handleclose= () => {
             </div>
           </div>
         );
-        onClose();
+        // onClose();
+        router.push('/SaleChannel');
       } else {
         toast.error(
           <div className="flex items-center gap-2">
