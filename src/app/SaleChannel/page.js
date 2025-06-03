@@ -10,13 +10,15 @@ import { deleteSalesChannel } from '@/actions/deleteSalesChannel';
 import SaleChannelPopup from "../Popup/page";
 import HeaderAddSale from '../AddSaleChannel/HeaderAddSale/page'
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+
 import { bulkSaveSalesChannels } from '@/actions/bulkSaveSalesChannels';
 const TableWithCheckboxes = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [salesChannels, setSalesChannels] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const fileInputRef = useRef();
-
+  const router = useRouter();
 
   const [filters, setFilters] = useState({
     status: [],
@@ -395,6 +397,11 @@ const TableWithCheckboxes = () => {
     }));
   };
 
+const handleSaleChannel=(e)=>{
+ e.preventDefault();
+    // const query = encodeURIComponent(JSON.stringify(row));
+    router.push(`/AddSaleChannel/HeaderAddSale`);
+  };
   const handlePaymentDropdown = () => {
     setIsOpen2((prev) => !prev);
     setIsOpen(false);
@@ -837,7 +844,9 @@ const TableWithCheckboxes = () => {
 /> */}
 
             <button
-              onClick={() => setIsOpenpop(true)}
+              // onClick={() => setIsOpenpop(true)}
+                onClick={(e)=>handleSaleChannel(e)}
+              disabled={isLoading}
               className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition"
             >
               Add
