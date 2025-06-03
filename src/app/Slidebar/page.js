@@ -68,20 +68,40 @@ const Sidebar = () => {
       clearTimeout(timeoutRef.current); // Cleanup timeout on unmount
     };
   }, []);
-  const labelMap = {
-    inventory: "Inventory",
-    dollar: "Sales",
-    y: "Sales Channels",
-    gpt: "Configs",
-    verified: "Authority",
-    app: "Operation",
-    lig6: "Automation",
-    lig7: "Shipping",
-    lig8: "ProcessAutomation",
-    lig9: "InventoryList2",
-    lig11: "TemplateName2",
-    lig12: "Inventory Actions",
-  };
+  // const labelMap = {
+  //   inventory: "Inventory",
+  //   dollar: "Sales",
+  //   y: "Sales Channels",
+  //   gpt: "Configs",
+  //   verified: "Authority",
+  //   app: "Operation",
+  //   lig6: "Automation",
+  //   lig7: "Shipping",
+  //   lig8: "ProcessAutomation",
+  //   lig9: "InventoryList2",
+  //   lig11: "TemplateName2",
+  //   lig12: "Inventory Actions",
+  // };
+const labelMap = {
+  home: "Inventory",
+  box: "Sales",
+  msg3: "Sales Channels",
+  msg4: "Configs",
+  lig10: "Authority",
+  lig5: "Operation",
+  lig6: "Automation",
+  lig7: "Shipping",
+  lig8: "Process Automation",
+  lig9: "Inventory List 2",
+  lig11: "Template 2",
+  lig12: "Inventory Actions",
+  inventory: "Inventory",
+  dollar: "Sales",
+  y: "Sales Channels",
+  gpt: "Configs",
+  verified: "Authority",
+  app: "Operation"
+};
 
   // const icons = [
   //   {
@@ -416,7 +436,9 @@ const Sidebar = () => {
               {/* {hoveredId === "home" ? "Inventory" : "In4ventory"} */}
               {hoveredId && (
                 <div className="text-sm font-medium text-gray-700">
-                  {labelMap[hoveredId] || "Default Label"}
+                  {/* {labelMap[hoveredId] || "Default Label"} */}
+                    {labelMap[hoveredId] ?? hoveredId ?? "No Label"}
+
                 </div>
               )}
 
