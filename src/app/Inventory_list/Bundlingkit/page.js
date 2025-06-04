@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect, Suspense } from "react";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeftLong } from "react-icons/fa6";
 import Link from "next/link";
 import { useSearchParams } from 'next/navigation';
 import { submitProductAction } from "@/actions/inventory";
@@ -364,9 +364,9 @@ const BundlingkitContent = () => {
         {/* Your entire content starts here */}
         <div className="flex flex-col sm:flex-row justify-between mb-4 gap-3">
           <div className="flex items-center gap-2">
-            <div className="border border-[#888888] rounded-md p-1">
+            <div className="border border-[#888888] rounded-md p-2">
               <Link href="/Inventory_list/Inventorylist">
-                <FaArrowLeft size={16} className="text-sm" />
+<FaArrowLeftLong size={20} className="text-sm" />
               </Link>
             </div>
             <h1 className="text-base sm:text-lg md:text-xl text-black font-semibold">

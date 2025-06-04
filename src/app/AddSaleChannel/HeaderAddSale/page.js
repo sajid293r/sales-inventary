@@ -1457,8 +1457,10 @@ const handleclose= () => {
   };
 
   return (
-    <div className="fixed inset-0   flex justify-center items-center mt-15 overflow-y-auto">
-      <div className="bg-white rounded-lg p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+    <div 
+    className="fixed inset-0    flex justify-center items-center mt-15 overflow-y-auto"
+    >
+      <div className="bg-white  rounded-lg p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Add Sales Channel</h2>
           <button onClick={handleclose} 

@@ -268,7 +268,7 @@ const TableWithCheckboxes = () => {
 
     if (sortOptions.country) {
       const stateA = a.suburbState || "";
-      const stateB = b.suburbState || "";
+      const statenavigationB = b.suburbState || "";
       return sortOptions.country
         ? stateA.localeCompare(stateB)
         : stateB.localeCompare(stateA);
@@ -276,31 +276,48 @@ const TableWithCheckboxes = () => {
 
     return 0;
   });
-
   const totalItems = filteredData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedData = sortedData.slice(startIndex, endIndex);
 
-  const toggleSelectAll = (e) => {
-    const currentPageData = paginatedData.map(row => row._id);
-    if (e.target.checked) {
-      setSelectedRows(currentPageData);
-    } else {
-      setSelectedRows([]);
-    }
-  };
+  // const toggleSelectAll = (e) => {
+  //   const currentPageData = paginatedData.map(row => row._id);
+  //   if (e.target.checked) {
+  //     setSelectedRows(currentPageData);
+  //   } else {
+  //     setSelectedRows([]);
+  //   }
+  // };
+const toggleSelectAll = (e) => {
+  const allFilteredIds = filteredData.map((row) => row._id); // not just paginatedData
+  if (e.target.checked) {
+    setSelectedRows(allFilteredIds);
+  } else {
+    setSelectedRows([]);
+  }
+};
 
-  const toggleRow = (id) => {
-    setSelectedRows(prev => {
-      if (prev.includes(id)) {
-        return prev.filter(rowId => rowId !== id);
-      } else {
-        return [...prev, id];
-      }
-    });
-  };
+const toggleRow = (id) => {
+  setSelectedRows((prev) => {
+    if (prev.includes(id)) {
+      return prev.filter((rowId) => rowId !== id);
+    } else {
+      return [...prev, id];
+    }
+  });
+};
+
+  // const toggleRow = (id) => {
+  //   setSelectedRows(prev => {
+  //     if (prev.innavigationcludes(id)) {
+  //       return prev.filter(rowId => rowId !== id);
+  //     } else {
+  //       return [...prev, id];
+  //     }
+  //   });
+  // };
 
   const toggleDropdown = (field) => {
     setDropdown((prev) => ({
@@ -337,13 +354,13 @@ const TableWithCheckboxes = () => {
     setCurrentPage(1);
   };
 
-  const handleFilterChange = (field, value) => {
+  const handleFiltnavigationerChange = (field, value) => {
     setFilters((prev) => {
       const values = prev[field];
       return {
         ...prev,
         [field]: values.includes(value)
-          ? values.filter((v) => v !== value)
+          ? valuesnavigation.filter((v) => v !== value)
           : [...values, value],
       };
     });
@@ -626,7 +643,7 @@ const handleSaleChannel=(e)=>{
         throw new Error('File must contain headers and at least one data row');
       }
 
-      const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+      const headernavigations = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
 
       // Validate required headers
       const requiredFields = ['salesChannelName', 'salesChannelType', 'suburbState'];
@@ -744,7 +761,6 @@ const handleSaleChannel=(e)=>{
             dateFrom: row.dateFrom || '',
             dateTo: row.dateTo || ''
           };
-
           // Return values in the same order as headers
           return headers.map(header => rowData[header]).join(',');
         })
@@ -793,7 +809,7 @@ const handleSaleChannel=(e)=>{
 
     >
       <div
-        className={`p-2  mt-10 sm:p-4 mx-auto min-w-[640px] md:min-w-[800px] lg:min-w-[1000px] xl:min-w-[1000px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  table-auto justify-center items-center  ${dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
+        className={`p-2   sm:p-4 mx-auto min-w-[640px] md:min-w-[800px] lg:min-w-[1000px] xl:min-w-[1000px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  table-auto justify-center items-center  ${dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
           }`}
       >
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
@@ -959,7 +975,7 @@ const handleSaleChannel=(e)=>{
               {dropdown.filterPanel && (
                 <div
                   ref={filterPanelRef}
-                  className="absolute z-30 bg-white border p-4 rounded-md shadow-lg top-full right-0 mt-2 w-64 sm:w-72 text-sm overflow-visible"
+                  className="absolute z-30 bg-white border p-4 rounded-md shadow-lg top-full right-0 mt-2 w-64 sm:w-72 text-sm overflow-visible overflow-y-auto "
                 >
                   <h3 className="font-semibold mb-2">Filters</h3>
 
@@ -1099,12 +1115,22 @@ const handleSaleChannel=(e)=>{
           <div ref={buttonsRef} className="flex gap-4 mb-2 px-4">
             <div className="flex gap-4">
               <div className="border p-1 px-4 rounded-md gap-2 flex items-center">
-                <input 
+                {/* <input 
                   type="checkbox" 
                   checked={selectedRows.length > 0 && selectedRows.length === paginatedData.length}
                   onChange={toggleSelectAll}
                   className="cursor-pointer"
-                />
+                /> */}
+  <input
+  type="checkbox"
+  checked={
+    filteredData.length > 0 &&
+    filteredData.every((row) => selectedRows.includes(row._id))
+  }
+  onChange={toggleSelectAll}
+/>
+
+
                 <button className="ml-2 text-sm">{selectedRows.length} Selected</button>
               </div>
               <button className="border p-1 px-4 rounded-md">
@@ -1291,7 +1317,11 @@ const handleSaleChannel=(e)=>{
                           <input
                             type="checkbox"
                             checked={selectedRows.includes(row._id)}
-                            onChange={() => toggleRow(row._id)}
+                            // onChange={() => toggleRow(row._id)}
+                           onChange={(e) => {
+              e.stopPropagation();
+              toggleRow(row._id);
+            }}
                             className="cursor-pointer"
                           />
                         </td>

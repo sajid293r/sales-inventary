@@ -116,17 +116,17 @@ const Page = () => {
     <nav className="bg-white shadow-sm w-full mb-10 shadow-gray-600 px-4 py-2 flex items-center justify-between relative ">
       {/* Logo */}
       <div className="flex gap-4">
-        {/* <h1 className="text-xl font-bold">Sale Channel</h1> */}
-        <Image 
+        <h1 className="text-xl font-bold">Sale Channel</h1>
+        {/* <Image 
           src={Logo} 
           alt="Logo" 
           className="cursor-pointer h-10 w-50" 
           onClick={toggleFullScreen}
-        />
+        /> */}
         <Image 
           src={Lig8} 
           alt="Logo" 
-          className="cursor-pointer h-6 w-7 mt-3" 
+          className="cursor-pointer h-6 w-7 " 
           onClick={toggleFullScreen}
         />
       </div>

@@ -861,7 +861,7 @@ const handleInventory=(e)=>{
                 key={region}
                 className={`py-1.5 px-3 cursor-pointer rounded-md text-sm transition ${
                   filters.region === region
-                    ? "underline decoration-[#449ae6] decoration-2 underline-offset-4 font-bold "
+                    ? "underline decoration-[#449ae6] decoration-2 underline-offset-4  "
                     : "text-gray-700 cursor-pointer"
                 }`}
                 onClick={() => handleRegionFilter(region)}
@@ -1063,7 +1063,7 @@ const handleInventory=(e)=>{
             </div>
             <div className="inline-block flex gap-2">
               <button className="border border-gray-300 p-1 rounded-md">
-                <select className="text-sm border-none outline-none px-2">
+                <select className="text-sm border-none outline-none px-2" disabled={selectedRows.length === 0}>
                   <option value="">More Actions</option>
                   <option value="BulkEdit">Bulk Edit</option>
                   <option value="Unarchived">Bulk Edit Bundle</option>

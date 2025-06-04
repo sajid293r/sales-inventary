@@ -14,6 +14,26 @@ export const submitProductAction = async (formData) => {
         type: "validation_error"
       };
     }
+    if (!formData.sku || formData.sku.trim() === '') {
+      return { 
+        success: false, 
+        error: "Please enter SKU",
+        type: "validation_error"
+      };
+    }
+    if (!formData.sellingPrice || formData.sellingPrice.trim() === '') {
+      return { 
+        success: false, 
+        error: "Please enter Selling Price",
+        type: "validation_error"
+      };
+    }if (!formData.rrp || formData.rrp.trim() === '') {
+      return { 
+        success: false, 
+        error: "Please enter RRP",
+        type: "validation_error"
+      };
+    }
     const title = formData.productTitle.trim();
     if (title === title.toLowerCase() || title === title.toUpperCase()) {
       return {
