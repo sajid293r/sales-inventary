@@ -823,7 +823,7 @@ const handleApply = () => {
   // 3. Update inventory sellingPrice only for selectedRows (frontend only)
   const updatedInventory = inventory.map((item) => {
     if (selectedRows.includes(item._id)) {
-      const newPrice = Number(item.sellingPrice || 0) + adjustment;
+      const newPrice = Number(item.rrp || 0) + adjustment;
       return { ...item, adjustedSellingPrice: newPrice.toFixed(2) };
     }
     return { ...item, adjustedSellingPrice: item.sellingPrice }; // fallback
