@@ -868,7 +868,7 @@ const handleApply = () => {
       />
       <div className={`p-2 sm:p-4 w-full  min-w-[640px] md:min-w-[800px] lg:min-w-[800px] xl:min-w-[100px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  ${dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
         }`}>
-        <div className="flex flex-col sm:flex-row justify-between mb-4 gap-3">
+        <div className="flex flex-col sm:flex-row justify-between gap-3">
           <h1 className="text-base sm:text-lg text-black font-semibold">
             Inventory List
           </h1>

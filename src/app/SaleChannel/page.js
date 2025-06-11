@@ -268,7 +268,7 @@ const TableWithCheckboxes = () => {
 
     if (sortOptions.country) {
       const stateA = a.suburbState || "";
-      const statenavigationB = b.suburbState || "";
+      const stateB = b.suburbState || "";
       return sortOptions.country
         ? stateA.localeCompare(stateB)
         : stateB.localeCompare(stateA);
@@ -896,7 +896,7 @@ const handleSaleChannel=(e)=>{
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center border-b border-gray-200">
+          <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center border-b border-gray-00">
             <div className="relative w-full sm:w-80">
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
               <input
@@ -929,53 +929,59 @@ const handleSaleChannel=(e)=>{
               {dropdown.sortTooltip && (
                 <div
                   ref={sortTooltipRef}
-                  className="absolute z-20 bg-white border p-4 rounded-md shadow-lg top-full right-0 sm:right-16 mt-2 w-64 text-sm"
+                  className="absolute z-20 bg-white border border-gray-300 p-4 rounded-md shadow-lg top-full right-0 sm:right-16 mt-2 w-64 text-sm"
                 >
                   <h3 className="font-semibold mb-2">Sort Options</h3>
                   <label className="flex items-center mb-2">
-                    <input
-                      type="checkbox"
-                      checked={sortOptions.salesChannel}
-                      onChange={() => handleSortChange("salesChannel")}
-                      className="mr-2"
-                    />
-                    <div className="flex gap-2 items-center">
-                      <span>Sales Channel</span>
-                      <span>
-                        {sortOptions.salesChannel ? (
-                          <MdArrowDownward />
+                    
+                   <div className="flex flex-col gap-2 w-full">
+  <label className="flex items-center w-full relative">
+    <input
+      type="checkbox"
+      checked={sortOptions.salesChannel}
+      onChange={() => handleSortChange("salesChannel")}
+      className="mr-2"
+    />
+    <div className="flex items-center w-full pr-6">
+      <span>Sales Channel</span>
+    </div>
+    <span className="absolute right-0">
+      {sortOptions.salesChannel ? (
+        <MdArrowDownward />
+      ) : (
+        <MdArrowUpward />
+      )}
+    </span>
+  </label>
 
-                        ) : (
-                          <MdArrowUpward />
+  <label className="flex items-center w-full relative">
+    <input
+      type="checkbox"
+      checked={sortOptions.country}
+      onChange={() => handleSortChange("country")}
+      className="mr-2"
+    />
+    <div className="flex items-center w-full pr-6">
+      <span>Country</span>
+    </div>
+    <span className="absolute right-0">
+      {sortOptions.country ? (
+        <MdArrowUpward />
+      ) : (
+        <MdArrowDownward />
+      )}
+    </span>
+  </label>
+</div>
 
-                        )}
-                      </span>
-                    </div>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={sortOptions.country}
-                      onChange={() => handleSortChange("country")}
-                      className="mr-2"
-                    />
-                    <div className="flex gap-2 items-center">
-                      <span>Country</span>
-                      <span>
-                        {sortOptions.country ? (
-                          <MdArrowUpward />
-                        ) : (
-                          <MdArrowDownward />
-                        )}
-                      </span>
-                    </div>
                   </label>
                 </div>
+                
               )}
               {dropdown.filterPanel && (
                 <div
                   ref={filterPanelRef}
-                  className="absolute z-30 bg-white border p-4 rounded-md shadow-lg top-full right-0 mt-2 w-64 sm:w-72 text-sm overflow-visible overflow-y-auto "
+                  className="absolute z-30 bg-white border border-gray-300 p-4 rounded-md shadow-lg top-full right-0 mt-2 w-64 sm:w-72 text-sm overflow-visible overflow-y-auto "
                 >
                   <h3 className="font-semibold mb-2">Filters</h3>
 
@@ -1112,15 +1118,12 @@ const handleSaleChannel=(e)=>{
           </div>
 
           {/* {showButtons && ( */}
+          {selectedRows.length > 0 && (
           <div ref={buttonsRef} className="flex gap-4 mb-2 px-4">
             <div className="flex gap-4">
-              <div className="border p-1 px-4 rounded-md gap-2 flex items-center">
-                {/* <input 
-                  type="checkbox" 
-                  checked={selectedRows.length > 0 && selectedRows.length === paginatedData.length}
-                  onChange={toggleSelectAll}
-                  className="cursor-pointer"
-                /> */}
+              
+              <div className="border  p-1 px-4 rounded-md gap-2 flex items-center">
+               
   <input
   type="checkbox"
   checked={
@@ -1142,6 +1145,7 @@ const handleSaleChannel=(e)=>{
               </button>
             </div>
           </div>
+          )}
           {/* )} */}
 
           {isLoading ? (
@@ -1438,7 +1442,7 @@ const handleSaleChannel=(e)=>{
               >
                 {"<"}
               </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1)
+              {/* {Array.from({ length: totalPages }, (_, i) => i + 1)
                 .slice(
                   Math.max(0, currentPage - 2),
                   Math.min(totalPages, currentPage + 1)
@@ -1452,11 +1456,11 @@ const handleSaleChannel=(e)=>{
                   >
                     {page}
                   </button>
-                ))}
+                ))} */}
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className={`border border-gray-400 px-2 rounded-md text-sm ${currentPage === totalPages
+                className={`border border-gray-400 px-2 text-blue-500 rounded-md text-sm ${currentPage === totalPages
                   ? "opacity-50 cursor-not-allowed"
                   : ""
                   }`}
