@@ -736,31 +736,31 @@ const BundlingkitContent = () => {
               <div className="flex flex-wrap gap-4 sm:gap-6 mb-4">
                 <span
                   onClick={toggleText}
-                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isGeneralOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isGeneralOpen ? 'border-blue-500 ' : 'border-transparent hover:text-gray-700'}`}
                 >
                   General
                 </span>
                 <span
                   onClick={togglePackage}
-                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isPackageOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isPackageOpen ? 'border-blue-500 ' : 'border-transparent hover:text-gray-700'}`}
                 >
                   Package
                 </span>
                 <span
                   onClick={toggleStock}
-                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isStockOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isStockOpen ? 'border-blue-500 ' : 'border-transparent hover:text-gray-700'}`}
                 >
                   Stock Level
                 </span>
                 <span
                   onClick={togglePurchase}
-                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isPurchaseOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isPurchaseOpen ? 'border-blue-500 ' : 'border-transparent hover:text-gray-700'}`}
                 >
                   Purchase
                 </span>
                 <span
                   onClick={toggleNotes}
-                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isNotesOpen ? 'border-blue-500 font-semibold' : 'border-transparent hover:text-gray-700'}`}
+                  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isNotesOpen ? 'border-blue-500 ' : 'border-transparent hover:text-gray-700'}`}
                 >
                   Notes
                 </span>
