@@ -399,7 +399,7 @@ const BundlingkitContent = () => {
         {/* Main Content */}
         <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
           {/* Left Section */}
-          <div className="border rounded-md w-full lg:w-3/4 bg-white p-4 sm:p-6">
+          <div className="border border-[#888888] rounded-md w-full lg:w-3/4 bg-white p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 mb-4">
               <label className="flex items-center gap-2">
                 <input
@@ -412,10 +412,10 @@ const BundlingkitContent = () => {
                 />
                 <span className="text-sm sm:text-base">Can be Sold</span>
               </label>
-              <label className="flex items-center gap-2">
+              <label className="flex items-center gap-2 ">
                 <input
                   type="checkbox"
-                  className="h-4 w-4"
+                  className="h-4 w-4 border border-[#888888]"
                   disabled={isReadOnly}
                   name="canBePurchased"
                   checked={formData.canBePurchased}
@@ -426,12 +426,12 @@ const BundlingkitContent = () => {
             </div>
 
             <label className="flex flex-col mt-4">
-              <span className="mb-2 text-gray-900 text-sm sm:text-base">
+              <span className="mb-2 text-black text-sm sm:text-base">
                 Product Title
               </span>
               <input
                 type="text"
-                className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                 name="productTitle"
                 value={formData.productTitle}
                 onChange={handleInputChange}
@@ -441,12 +441,12 @@ const BundlingkitContent = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
               <label className="flex flex-col">
-                <span className="mb-2 text-gray-900 text-sm sm:text-base">
+                <span className="mb-2 text-black text-sm sm:text-base">
                   SKU
                 </span>
                 <input
                   type="text"
-                  className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                  className="border border-[#888888] bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                   placeholder="SKU"
                   name="sku"
                   value={formData.sku}
@@ -455,12 +455,12 @@ const BundlingkitContent = () => {
                 />
               </label>
               <label className="flex flex-col">
-                <span className="mb-2 text-gray-900 text-sm sm:text-base">
+                <span className="mb-2 text-black text-sm sm:text-base">
                   GTIN
                 </span>
                 <input
                   type="text"
-                  className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                  className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                   placeholder="GTIN"
                   name="gtin"
                   value={formData.gtin}
@@ -471,12 +471,12 @@ const BundlingkitContent = () => {
             </div>
 
             <label className="flex flex-col mt-4">
-              <span className="mb-2 text-gray-900 text-sm sm:text-base">
+              <span className="mb-2 text-black text-sm sm:text-base">
                 Brand
               </span>
               <input
                 type="text"
-                className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-1/2"
+                className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-1/2"
                 placeholder="Brand"
                 name="brand"
                 value={formData.brand}
@@ -489,7 +489,7 @@ const BundlingkitContent = () => {
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  className="h-4 w-4"
+                  className="h-4 w-4 border border-[#888888]"
                   disabled={isReadOnly}
                   name="saleExelude"
                   checked={formData.saleExelude}
@@ -500,7 +500,7 @@ const BundlingkitContent = () => {
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  className="h-4 w-4"
+                  className="h-4 w-4 border border-[#888888]"
                   disabled={isReadOnly}
                   name="assemblyRequired"
                   checked={formData.assemblyRequired}
@@ -511,7 +511,7 @@ const BundlingkitContent = () => {
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  className="h-4 w-4"
+                  className="h-4 w-4 border border-[#888888]"
                   disabled={isReadOnly}
                   name="spareParts"
                   checked={formData.spareParts}
@@ -531,7 +531,7 @@ const BundlingkitContent = () => {
                 <span className="text-black text-sm font-semibold mb-2">
                   Status
                 </span>
-                <select className="text-sm border w-full p-2 rounded-md" disabled={isReadOnly} name="status" value={formData.status} onChange={handleInputChange}>
+                <select className="text-sm border border-[#888888] w-full p-2 rounded-md" disabled={isReadOnly} name="status" value={formData.status} onChange={handleInputChange}>
                   <option value="">Status</option>
                   <option value="InStock">InStock</option>
                   <option value="OutofStock">OutofStock</option>
@@ -547,12 +547,12 @@ const BundlingkitContent = () => {
             <div className="border rounded-md bg-white p-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <label className="flex flex-col">
-                  <span className="mb-2 text-gray-900 text-sm sm:text-base">
+                  <span className="mb-2 text-black text-sm sm:text-base">
                     RRP (AUD)
                   </span>
                   <input
                     type="text"
-                    className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                    className="border border-[#888888]bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder="$ 0.00"
                     name="rrp"
                     value={formData.rrp}
@@ -561,12 +561,12 @@ const BundlingkitContent = () => {
                   />
                 </label>
                 <label className="flex flex-col">
-                  <span className="mb-2 text-gray-900 text-sm sm:text-base">
+                  <span className="mb-2 text-black text-sm sm:text-base">
                     Selling Price
                   </span>
                   <input
                     type="text"
-                    className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                    className="border border-[#888888]bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder="$ 0.00"
                     name="sellingPrice"
                     value={formData.sellingPrice}
@@ -575,12 +575,12 @@ const BundlingkitContent = () => {
                   />
                 </label>
                 <label className="flex flex-col">
-                  <span className="mb-2 text-gray-900 text-sm sm:text-base">
+                  <span className="mb-2 text-black text-sm sm:text-base">
                     Shipping
                   </span>
                   <input
                     type="text"
-                    className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                    className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder="$ 0.00"
                     name="shipping"
                     value={formData.shipping}
@@ -589,12 +589,12 @@ const BundlingkitContent = () => {
                   />
                 </label>
                 <label className="flex flex-col">
-                  <span className="mb-2 text-gray-900 text-sm sm:text-base">
+                  <span className="mb-2 text-black text-sm sm:text-base">
                     ShippingPrice
                   </span>
                   <input
                     type="text"
-                    className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                    className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder="$ 0.00"
                     name="shippingPrice"
                     value={formData.shippingPrice}
@@ -612,14 +612,14 @@ const BundlingkitContent = () => {
           {/* Media and Toggle Sections */}
           <div className="flex flex-col w-full lg:w-3/4 gap-4">
             {/* Media Section */}
-            <div className="border rounded-md bg-white p-4">
+            <div className="border border-[#888888] rounded-md bg-white p-4">
               <h1 className="text-sm sm:text-base font-semibold">Media</h1>
               <div className="flex flex-col gap-3 min-h-[100px] border-2 border-dashed border-gray-400 p-4">
                 <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                   <input
                     type="file"
                     ref={fileInputRef}
-                    className="hidden"
+                    className="hidden border border-[#888888]"
                     onChange={handleFileChange}
                     accept="image/*"
                   />
@@ -644,7 +644,7 @@ const BundlingkitContent = () => {
                       value={fileUrl}
                       onChange={(e) => setFileUrl(e.target.value)}
                       placeholder="Enter file URL"
-                      className="flex-1 border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="flex-1 border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <div className="flex gap-2">
                       <button
@@ -658,7 +658,7 @@ const BundlingkitContent = () => {
                           setShowUrlInput(false);
                           setFileUrl("");
                         }}
-                        className="bg-gray-300 text-gray-700 px-4 py-1 rounded hover:bg-gray-400"
+                        className="bg-gray-300 text-black px-4 py-1 rounded hover:bg-gray-400"
                       >
                         Cancel
                       </button>
@@ -699,7 +699,7 @@ const BundlingkitContent = () => {
             </div>
 
             {/* Toggleable Sections */}
-            <div className="border rounded-md bg-white p-4">
+            <div className="border border-[#888888] rounded-md bg-white p-4">
               {/* <div className="flex flex-wrap gap-4 sm:gap-6 mb-4">
                 <span
                   onClick={toggleText}
@@ -806,12 +806,12 @@ const BundlingkitContent = () => {
                 {isGeneralOpen && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <label className="flex flex-col">
-                      <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                      <span className="mb-1 text-black text-sm sm:text-base">
                         UPC
                       </span>
                       <input
                         type="text"
-                        className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                        className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         placeholder="UPC"
                         name="upc"
                         value={formData.upc}
@@ -819,12 +819,12 @@ const BundlingkitContent = () => {
                       />
                     </label>
                     <label className="flex flex-col">
-                      <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                      <span className="mb-1 text-black text-sm sm:text-base">
                         UPC Amazon/Catch
                       </span>
                       <input
                         type="text"
-                        className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                        className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         placeholder="UPC Amazon/Catch"
                         name="upcAmazonCatch"
                         value={formData.upcAmazonCatch}
@@ -832,12 +832,12 @@ const BundlingkitContent = () => {
                       />
                     </label>
                     <label className="flex flex-col">
-                      <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                      <span className="mb-1 text-black text-sm sm:text-base">
                         Certification No
                       </span>
                       <input
                         type="text"
-                        className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                        className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         placeholder="Certification No"
                         name="certificationNo"
                         value={formData.certificationNo}
@@ -845,12 +845,12 @@ const BundlingkitContent = () => {
                       />
                     </label>
                     <label className="flex flex-col">
-                      <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                      <span className="mb-1 text-black text-sm sm:text-base">
                         Previous SKU
                       </span>
                       <input
                         type="text"
-                        className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                        className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         placeholder="Previous SKU"
                         name="previousSku"
                         value={formData.previousSku}
@@ -868,12 +868,12 @@ const BundlingkitContent = () => {
                     <h1>Product Dimensions</h1>
                     <div className="flex gap-10 mt-4">
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Length(cm)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="productDimensions.length"
                           value={formData.productDimensions.length}
@@ -881,12 +881,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Height(cm)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="productDimensions.height"
                           value={formData.productDimensions.height}
@@ -894,12 +894,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Width(cm)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="productDimensions.width"
                           value={formData.productDimensions.width}
@@ -907,12 +907,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Weight(kg)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="productDimensions.weight"
                           value={formData.productDimensions.weight}
@@ -920,12 +920,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           CBM (cm²)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="productDimensions.volume"
                           value={formData.productDimensions.volume}
@@ -934,12 +934,12 @@ const BundlingkitContent = () => {
                       </div>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start sm:items-center mt-4">
-                      <h1 className="text-sm text-gray-900 w-full sm:w-32">
+                      <h1 className="text-sm text-black w-full sm:w-32">
                         Number of Cartons
                       </h1 >
                       <input
                         type="number"
-                        className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-32"
+                        className="border border-[#888888]rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-32"
                         name="numberOfCartons"
                         value={formData.numberOfCartons || ""}
                         onChange={handleInputChange}
@@ -949,12 +949,12 @@ const BundlingkitContent = () => {
                     <h1 className="mt-2">Package1</h1>
                     <div className="flex gap-10 mt-4">
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Length(cm)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.length"
                           value={formData.package1.length}
@@ -962,12 +962,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Height(cm)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.height"
                           value={formData.package1.height}
@@ -975,12 +975,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Width(cm)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.width"
                           value={formData.package1.width}
@@ -988,12 +988,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Weight(kg)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.weight"
                           value={formData.package1.weight}
@@ -1001,12 +1001,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           CBM (cm²)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400  rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package1.volume"
                           value={formData.package1.volume}
@@ -1017,12 +1017,12 @@ const BundlingkitContent = () => {
                     <h1 className="mt-2">Package2</h1>
                     <div className="flex gap-10 mt-4">
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Length(cm)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package2.length"
                           value={formData.package2.length}
@@ -1030,12 +1030,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Height(cm)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package2.height"
                           value={formData.package2.height}
@@ -1043,12 +1043,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Width(cm)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package2.width"
                           value={formData.package2.width}
@@ -1056,12 +1056,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Weight(kg)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package2.weight"
                           value={formData.package2.weight}
@@ -1069,12 +1069,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           CBM (cm²)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package2.volume"
                           value={formData.package2.volume}
@@ -1085,12 +1085,12 @@ const BundlingkitContent = () => {
                     <h1 className="mt-2">Package3</h1>
                     <div className="flex gap-10 mt-4">
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Length(cm)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package3.length"
                           value={formData.package3.length}
@@ -1098,12 +1098,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Height(cm)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package3.height"
                           value={formData.package3.height}
@@ -1111,12 +1111,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Width(cm)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package3.width"
                           value={formData.package3.width}
@@ -1124,12 +1124,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           Weight(kg)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package3.weight"
                           value={formData.package3.weight}
@@ -1137,12 +1137,12 @@ const BundlingkitContent = () => {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="mb-1 text-gray-900 text-sm sm:text-base">
+                        <span className="mb-1 text-black text-sm sm:text-base">
                           CBM (cm²)
                         </span>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
+                          className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px]"
                           placeholder="0.0"
                           name="package3.volume"
                           value={formData.package3.volume}
@@ -1164,12 +1164,12 @@ const BundlingkitContent = () => {
                           key={label}
                           className="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start sm:items-center"
                         >
-                          <label className="text-sm text-gray-900 w-full sm:w-32">
+                          <label className="text-sm text-black w-full sm:w-32">
                             {label}
                           </label>
                           <input
                             type="number"
-                            className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-32"
+                            className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-32"
                             name={`stockLevel.${label.toLowerCase().replace(/\s+/g, '')}`}
                             value={formData.stockLevel[label.toLowerCase().replace(/\s+/g, '')] || ""}
                             onChange={handleInputChange}
@@ -1197,12 +1197,12 @@ const BundlingkitContent = () => {
                         key={label}
                         className="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start sm:items-center"
                       >
-                        <label className="text-sm text-gray-900 w-full sm:w-32">
+                        <label className="text-sm text-black w-full sm:w-32">
                           {label}
                         </label>
                         <input
                           type="number"
-                          className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-32"
+                          className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-32"
                           name={`purchase.${label.toLowerCase().replace(/[\s()]+/g, '')}`}
                           value={formData.purchase[label.toLowerCase().replace(/[\s()]+/g, '')] || ""}
                           onChange={handleInputChange}
@@ -1218,7 +1218,7 @@ const BundlingkitContent = () => {
                 {isNotesOpen && (
                   <div className="mt-4">
                     <textarea
-                      className="w-full h-40 sm:h-56 p-4 outline-none border border-gray-400 rounded-md focus:ring-2 focus:ring-blue-500"
+                      className="w-full h-40 sm:h-56 p-4 outline-none border border-[#888888] rounded-md focus:ring-2 focus:ring-blue-500"
                       placeholder="Note"
                       name="notes"
                       value={formData.notes}
@@ -1239,12 +1239,12 @@ const BundlingkitContent = () => {
             {["Category Product", "Product Type", "Collection", "Tags"].map(
               (label) => (
                 <label key={label} className="flex flex-col mt-4">
-                  <span className="mb-2 text-gray-900 text-sm sm:text-base">
+                  <span className="mb-2 text-black text-sm sm:text-base">
                     {label}
                   </span>
                   <input
                     type="text"
-                    className="border border-gray-400 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                    className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder={label}
 
                     name={`organization.${label.toLowerCase().replace(/\s+/g, '')}`}

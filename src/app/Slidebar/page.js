@@ -326,7 +326,7 @@ const labelMap = {
       </div>
 
       {/* Sidebar with Tooltip Panel */}
-      <div className="flex flex-row h-screen fixed top-0 left-0 z-[900] mt-3">
+      <div className="flex flex-row h-screen fixed top-0 left-0 z-[900] ">
         {/* Sidebar */}
         <div
           ref={sidebarRef}

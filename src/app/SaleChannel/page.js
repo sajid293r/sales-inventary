@@ -142,6 +142,7 @@ const TableWithCheckboxes = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showButtons]);
+
   // useEffect(() => {
   //   if (!isEditPopupOpen) {
   //     // Refetch data when the edit popup is closed
@@ -206,6 +207,18 @@ const TableWithCheckboxes = () => {
     adjustDropdownPosition(".type-dropdown", isOpen1);
     adjustDropdownPosition(".payment-dropdown", isOpen2);
   }, [isOpen, isOpen1, isOpen2]);
+const handleFilterChange = (field, value) => {
+  setFilters((prev) => {
+    const values = prev[field];
+    return {
+      ...prev,
+      [field]: values.includes(value)
+        ? values.filter((v) => v !== value)
+        : [...values, value],
+    };
+  });
+  setCurrentPage(1);
+};
 
   const filteredData = salesChannels
     .filter((item) => {
@@ -805,11 +818,11 @@ const handleSaleChannel=(e)=>{
     <div
 
       // className=" mt-10 w-full max-w-screen-xl mx-auto grid grid-cols-1 gap-4 md:grid-cols-12"
-      className={`p-2 sm:p-4 mx-auto  w-full    min-w-[640px] md:min-w-[800px] lg:min-w-[1000px] xl:min-w-[1000px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  table-auto justify-center items-center  `}
+      className={`p-2 sm:pt-4 mx-auto  w-full    min-w-[640px] md:min-w-[800px] lg:min-w-[1000px] xl:min-w-[1000px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  table-auto justify-center items-center  `}
 
     >
       <div
-        className={`p-2   sm:p-4 mx-auto min-w-[640px] md:min-w-[800px] lg:min-w-[1000px] xl:min-w-[1000px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  table-auto justify-center items-center  ${dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
+        className={`sm:pt-4 mx-auto min-w-[640px] md:min-w-[800px] lg:min-w-[1000px] xl:min-w-[1000px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  table-auto justify-center items-center  ${dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
           }`}
       >
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
@@ -872,8 +885,8 @@ const handleSaleChannel=(e)=>{
           {message && <p className="mt-4 text-green-600 font-semibold">{message}</p>}
         </div>
 
-        <div className="rounded-xl border w-[300px] lg:w-full md:w-full bg-white border-gray-300 shadow-lg overflow-x-hidden">
-          <div className="flex flex-wrap gap-2 p-4 border-b border-gray-200  ">
+        <div className="rounded-xl border w-[300px] lg:w-full md:w-full bg-white border-[#888888] shadow-lg overflow-x-hidden">
+          <div className="flex flex-wrap gap-2 p-2 border-b border-[#888888]  ">
             {[
               "Asia",
               "North America",
@@ -896,7 +909,7 @@ const handleSaleChannel=(e)=>{
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center border-b border-gray-00">
+          <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center border-b border-[#888888]">
             <div className="relative w-full sm:w-80">
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
               <input
@@ -908,20 +921,20 @@ const handleSaleChannel=(e)=>{
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="pl-10 pr-3 py-1 w-full md:w-[780px] lg:[780px] border border-gray-300 rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
+                className="pl-10 pr-3 py-1 w-full md:w-[780px] lg:[780px] border border-[#888888] rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
               />
             </div>
             <div className="flex gap-2 relative w-full sm:w-auto justify-center sm:justify-end">
               <button
                 ref={filterButtonRef}
-                className="border border-gray-300 py-1 px-4 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
+                className="border border-[#888888] py-1 px-4 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
                 onClick={() => toggleDropdown("filterPanel")}
               >
                 Filter
               </button>
               <button
                 ref={sortButtonRef}
-                className="border py-1 px-4 border-gray-300 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
+                className="border py-1 px-4 border border-[#888888] rounded-md text-sm hover:bg-gray-100 transition max-w-full"
                 onClick={() => toggleDropdown("sortTooltip")}
               >
                 Sort
@@ -929,7 +942,7 @@ const handleSaleChannel=(e)=>{
               {dropdown.sortTooltip && (
                 <div
                   ref={sortTooltipRef}
-                  className="absolute z-20 bg-white border border-gray-300 p-4 rounded-md shadow-lg top-full right-0 sm:right-16 mt-2 w-64 text-sm"
+                  className="absolute z-20 bg-white border border-[#888888] p-4 rounded-md shadow-lg top-full right-0 sm:right-16 mt-2 w-64 text-sm"
                 >
                   <h3 className="font-semibold mb-2">Sort Options</h3>
                   <label className="flex items-center mb-2">
@@ -981,7 +994,7 @@ const handleSaleChannel=(e)=>{
               {dropdown.filterPanel && (
                 <div
                   ref={filterPanelRef}
-                  className="absolute z-30 bg-white border border-gray-300 p-4 rounded-md shadow-lg top-full right-0 mt-2 w-64 sm:w-72 text-sm overflow-visible overflow-y-auto "
+                  className="absolute z-30 bg-white border border-[#888888] p-4 rounded-md shadow-lg top-full right-0 mt-2 w-64 sm:w-72 text-sm overflow-visible overflow-y-auto "
                 >
                   <h3 className="font-semibold mb-2">Filters</h3>
 
@@ -992,7 +1005,7 @@ const handleSaleChannel=(e)=>{
                         <label key={status} className="flex items-center">
                           <input
                             type="checkbox"
-                            className="mr-2"
+                            className="mr-2 border border-[#888888]"
                             checked={filters.status.includes(status)}
                             onChange={() => handleFilterChange("status", status)}
                           />
@@ -1008,7 +1021,7 @@ const handleSaleChannel=(e)=>{
                       <div className="relative w-full">
                         <button
                           onClick={handleContinentDropdown}
-                          className="w-full sm:w-40 px-4 py-1 border border-gray-300 rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full sm:w-40 px-4 py-1 border border-[#888888] rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <div className="flex justify-between items-center">
                             {selected.length > 0
@@ -1018,7 +1031,7 @@ const handleSaleChannel=(e)=>{
                           </div>
                         </button>
                         {isOpen && (
-                          <div className="absolute z-50 mt-1 w-full sm:w-40 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto continent-dropdown">
+                          <div className="absolute z-50 mt-1 w-full sm:w-40 bg-white border border-[#888888] rounded-md shadow-lg max-h-60 overflow-y-auto continent-dropdown">
                             {options.map((option) => (
                               <label
                                 key={option}
@@ -1045,7 +1058,7 @@ const handleSaleChannel=(e)=>{
                       <div className="relative w-full">
                         <button
                           onClick={handleTypeDropdown}
-                          className="w-full sm:w-40 px-4 py-1 border border-gray-300 rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full sm:w-40 px-4 py-1 border border-[#888888] rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <div className="flex justify-between items-center">
                             {selected1.length > 0
@@ -1055,7 +1068,7 @@ const handleSaleChannel=(e)=>{
                           </div>
                         </button>
                         {isOpen1 && (
-                          <div className="absolute z-50 mt-1 w-full sm:w-40 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto type-dropdown">
+                          <div className="absolute z-50 mt-1 w-full sm:w-40 bg-white border border-[#888888] rounded-md shadow-lg max-h-60 overflow-y-auto type-dropdown">
                             {options1.map((option) => (
                               <label
                                 key={option}
@@ -1082,7 +1095,7 @@ const handleSaleChannel=(e)=>{
                       <div className="relative w-full">
                         <button
                           onClick={handlePaymentDropdown}
-                          className="w-full sm:w-40 px-4 py-1 border border-gray-300 rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full sm:w-40 px-4 py-1 border border-[#888888] rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <div className="flex justify-between items-center">
                             {selected2.length > 0
@@ -1092,7 +1105,7 @@ const handleSaleChannel=(e)=>{
                           </div>
                         </button>
                         {isOpen2 && (
-                          <div className="absolute z-50 mt-1 w-full sm:w-40 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto payment-dropdown">
+                          <div className="absolute z-50 mt-1 w-full sm:w-40 bg-white border border-[#888888] rounded-md shadow-lg max-h-60 overflow-y-auto payment-dropdown">
                             {options2.map((option) => (
                               <label
                                 key={option}
@@ -1119,8 +1132,8 @@ const handleSaleChannel=(e)=>{
 
           {/* {showButtons && ( */}
           {selectedRows.length > 0 && (
-          <div ref={buttonsRef} className="flex gap-4 mb-2 px-4">
-            <div className="flex gap-4">
+          <div ref={buttonsRef} className="flex gap-4 mb-2 px-4 border-b border-[#888888]">
+            <div className="flex gap-4 m-[1px] ">
               
               <div className="border  p-1 px-4 rounded-md gap-2 flex items-center">
                
@@ -1136,7 +1149,7 @@ const handleSaleChannel=(e)=>{
 
                 <button className="ml-2 text-sm">{selectedRows.length} Selected</button>
               </div>
-              <button className="border p-1 px-4 rounded-md">
+              <button className="border border-[#888888] p-1 px-4 rounded-md">
                 <select className="text-sm" disabled={selectedRows.length === 0}>
                   <option value="">Action</option>
                   <option value="Unarchived">Unarchived</option>
@@ -1290,14 +1303,14 @@ const handleSaleChannel=(e)=>{
               <div className="hidden sm:block overflow-x-hidden">
                 <table className="w-full border-collapse text-sm">
                   <thead>
-                    <tr className="text-xs border-b-[0.5px]">
+                    <tr className="text-xs border-b border-[#888888]">
                       <th className="p-2 w-12 text-center">
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center ">
                           <input
                             type="checkbox"
                             checked={paginatedData.length > 0 && paginatedData.every(row => selectedRows.includes(row._id))}
                             onChange={toggleSelectAll}
-                            className="cursor-pointer"
+                            className="cursor-pointer border border-[#888888]"
                             title="Select all items on this page"
                           />
                         </div>
@@ -1317,7 +1330,7 @@ const handleSaleChannel=(e)=>{
                         key={row._id}
                         className="hover:bg-gray-50 cursor-pointer"
                       >
-                        <td className="p-2 border-b-[0.5px] text-center w-12" onClick={(e) => e.stopPropagation()}>
+                        <td className="p-2 border-b border-[#888888] text-center w-12" onClick={(e) => e.stopPropagation()}>
                           <input
                             type="checkbox"
                             checked={selectedRows.includes(row._id)}
@@ -1326,17 +1339,17 @@ const handleSaleChannel=(e)=>{
               e.stopPropagation();
               toggleRow(row._id);
             }}
-                            className="cursor-pointer"
+                            className="cursor-pointer " 
                           />
                         </td>
-                        <td className="p-2 border-b-[0.5px] text-center">{row.salesChannelName}</td>
-                        <td className="p-2 border-b-[0.5px] text-center">{row.salesChannelType}</td>
-                        <td className="p-2 border-b-[0.5px] text-center">{row.payementterm}</td>
-                        <td className="p-2 border-b-[0.5px] text-center">{row.suburbState}</td>
-                        <td className="p-2 border-b-[0.5px] text-center">
+                        <td className="p-2 border-b border-[#888888] text-center">{row.salesChannelName}</td>
+                        <td className="p-2 border-b border-[#888888] text-center">{row.salesChannelType}</td>
+                        <td className="p-2 border-b border-[#888888] text-center">{row.payementterm}</td>
+                        <td className="p-2 border-b border-[#888888] text-center">{row.suburbState}</td>
+                        <td className="p-2 border-b border-[#888888] text-center">
                           {new Date(row.createdAt).toLocaleDateString()}
                         </td>
-                        <td className="p-2 border-b-[0.5px] text-center">
+                        <td className="p-2 border-b border-[#888888] text-center">
                           <span
                             className={`py-1 px-4 rounded-md text-xs ${row.emailPlatforminvoice
                                 ? "bg-green-200 text-green-700"
@@ -1437,7 +1450,7 @@ const handleSaleChannel=(e)=>{
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`border border-gray-400 px-2 rounded-md text-sm ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                className={`border border-gray-400 px-2 rounded-md text-sm ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : "text-blue-500"
                   }`}
               >
                 {"<"}
@@ -1461,7 +1474,7 @@ const handleSaleChannel=(e)=>{
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className={`border border-gray-400 px-2 text-blue-500 rounded-md text-sm ${currentPage === totalPages
-                  ? "opacity-50 cursor-not-allowed"
+                  ? "opacity-50 cursor-not-allowed text-gray-500"
                   : ""
                   }`}
               >

@@ -793,8 +793,8 @@ const TableWithCheckboxes = () => {
           </div>
         </div>
       </div>
-      <p className="mt-4 text-gray-600 text-sm font-medium">Loading Inventory...</p>
-      <p className="text-gray-400 text-xs mt-2">Please wait while we fetch the data</p>
+      <p className="mt-4 text-black text-sm font-medium">Loading Inventory...</p>
+      <p className="text-black text-xs mt-2">Please wait while we fetch the data</p>
     </div>
   );
 
@@ -866,6 +866,12 @@ const handleApply = () => {
         pauseOnHover
         theme="light"
       />
+       <div
+
+      // className=" mt-10 w-full max-w-screen-xl mx-auto grid grid-cols-1 gap-4 md:grid-cols-12"
+      className={`pr-4 sm:pt-4 mx-auto  w-full    min-w-[640px] md:min-w-[800px] lg:min-w-[1000px] xl:min-w-[1000px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  table-auto justify-center items-center  `}
+
+    >
       <div className={`p-2 sm:p-4 w-full  min-w-[640px] md:min-w-[800px] lg:min-w-[800px] xl:min-w-[100px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  ${dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
         }`}>
         <div className="flex flex-col sm:flex-row justify-between gap-3">
@@ -913,19 +919,19 @@ const handleApply = () => {
         </div>
       </div>
 
-      <div className="rounded-xl border w-[300px] lg:w-full md:w-full bg-white border-gray-300 shadow-lg overflow-x-hidden">
+      <div className=" rounded-xl border border-[#888888] w-[300px] lg:w-full md:w-full bg-white  shadow-lg overflow-x-hidden">
         {isLoading ? (
           <Loader />
         ) : (
           <>
-            <div className="flex flex-wrap gap-2 p-2 border-b border-gray-200">
+            <div className="flex flex-wrap gap-2 p-2 border-b border-[#888888]">
               {["All", "In Stock", "Out of Stock", "Product Listed", "Archived", "Pending Approval", "Recent Updated", "New Products"].map(
                 (region) => (
                   <button
                     key={region}
                     className={`py-1.5 px-3 cursor-pointer rounded-md text-sm transition ${filters.region === region
                         ? "underline decoration-[#449ae6] decoration-2 underline-offset-4  "
-                        : "text-gray-700 cursor-pointer"
+                        : "text-black cursor-pointer"
                       }`}
                     onClick={() => handleRegionFilter(region)}
                   >
@@ -935,8 +941,8 @@ const handleApply = () => {
               )}
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center border-b border-gray-200">
-              <div className="relative w-full sm:w-80">
+            <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center border-b border-[#888888]">
+              <div className="relative w-full sm:w-80 ">
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                 <input
                   ref={searchInputRef}
@@ -947,20 +953,20 @@ const handleApply = () => {
                     setSearchQuery(e.target.value || "");
                     setCurrentPage(1);
                   }}
-                  className="pl-10 pr-3 py-1 w-full md:w-[780px] lg:[780px] border border-gray-300 rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
+                  className="pl-10 pr-3 py-1 w-full md:w-[780px] lg:[780px] border border-[#888888] rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
                 />
               </div>
               <div className="flex gap-2 relative w-full sm:w-auto justify-center sm:justify-end">
                 <button
                   ref={filterButtonRef}
-                  className="border border-gray-300 py-1 px-4 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
+                  className="border border-[#888888] py-1 px-4 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
                   onClick={() => toggleDropdown("filterPanel")}
                 >
                   Filter
                 </button>
                 <button
                   ref={sortButtonRef}
-                  className="border py-1 px-4 border-gray-300 rounded-md text-sm hover:bg-gray-100 transition max-w-full"
+                  className="border py-1 px-4 border-[#888888] rounded-md text-sm hover:bg-gray-100 transition max-w-full"
                   onClick={() => toggleDropdown("sortTooltip")}
                 >
                   Sort
@@ -968,7 +974,7 @@ const handleApply = () => {
                 {dropdown.sortTooltip && (
                   <div
                     ref={sortTooltipRef}
-                    className="md:w-[170px] lg:w-[170px] w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm absolute z-30 top-full right-0 mt-2"
+                    className="md:w-[170px] lg:w-[170px] w-full max-w-md p-4 bg-white border border-[#888888] rounded-lg shadow-sm absolute z-30 top-full right-0 mt-2"
                   >
                     <form className="space-y-1">
                       <label className="flex items-center space-x-3">
@@ -980,9 +986,9 @@ const handleApply = () => {
                           onChange={() => handleSortChange("name")}
                           className="text-blue-600 focus:ring-blue-500 focus:ring-2"
                         />
-                        <span className="text-gray-700 text-sm font-semibold">Name</span>
+                        <span className="text-black text-sm font-semibold">Name</span>
                       </label>
-                      <label className="flex items-center space-x-2 whitespace-nowrap">
+                      <label className="flex items-center space-x-3 whitespace-nowrap">
                         <input
                           type="radio"
                           name="sort"
@@ -991,7 +997,7 @@ const handleApply = () => {
                           onChange={() => handleSortChange("dateCreated")}
                           className="text-blue-600 focus:ring-blue-500 focus:ring-2"
                         />
-                        <span className="text-gray-700 text-sm font-semibold">Date Created</span>
+                        <span className="text-black text-sm font-semibold">Date Created</span>
                       </label>
                       <label className="flex items-center space-x-3">
                         <input
@@ -1002,9 +1008,9 @@ const handleApply = () => {
                           onChange={() => handleSortChange("dateModified")}
                           className="text-blue-600 focus:ring-blue-500 focus:ring-2"
                         />
-                        <span className="text-gray-700 text-sm font-semibold">Date Modified</span>
+                        <span className="text-black text-sm font-semibold">Date Modified</span>
                       </label>
-                      <div className="border-t border-gray-200 mt-2 pt-2">
+                      <div className="border-t border-[#888888] mt-2 pt-2">
                         <label className="flex items-center space-x-3 cursor-pointer">
                           <input
                             type="radio"
@@ -1015,7 +1021,7 @@ const handleApply = () => {
                           />
                           <div className="flex items-center space-x-2">
                             <MdArrowUpward />
-                            <span className="text-gray-700 text-sm font-semibold">Ascending</span>
+                            <span className="text-black text-sm font-semibold">Ascending</span>
                           </div>
                         </label>
                         <label className="flex items-center space-x-3 mt-1 cursor-pointer">
@@ -1028,7 +1034,7 @@ const handleApply = () => {
                           />
                           <div className="flex items-center space-x-2">
                             <MdArrowDownward />
-                            <span className="text-gray-700 text-sm font-semibold">Descending</span>
+                            <span className="text-black text-sm font-semibold">Descending</span>
                           </div>
                         </label>
                       </div>
@@ -1038,7 +1044,7 @@ const handleApply = () => {
                 {dropdown.filterPanel && (
                   <div
                     ref={filterPanelRef}
-                    className="md:w-[250px] lg:w-[250px] w-full space-y-3 max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm absolute z-30 top-full right-0 mt-2"
+                    className="md:w-[250px] lg:w-[250px] w-full space-y-3 max-w-md p-4 bg-white border border-[#888888] rounded-lg shadow-sm absolute z-30 top-full right-0 mt-2"
                   >
                     <form className="space-y-3">
                       {["Can be Sold", "Can be Purchased", "Bundle", "Kitting", "Spare Parts", "Assembly Required"].map((type) => (
@@ -1051,7 +1057,7 @@ const handleApply = () => {
                             onChange={() => setFilterType(type)}
                             className="text-blue-600 focus:ring-blue-500 focus:ring-2"
                           />
-                          <span className="text-gray-700 text-sm font-semibold">{type}</span>
+                          <span className="text-black text-sm font-semibold">{type}</span>
                         </label>
                       ))}
                       {/* <label className="flex items-center space-x-3">
@@ -1063,11 +1069,11 @@ const handleApply = () => {
                       onChange={() => setFilterType("none")}
                       className="text-blue-600 focus:ring-blue-500 focus:ring-2"
                     />
-                    <span className="text-gray-700 text-sm font-semibold">Status</span>
+                    <span className="text-black text-sm font-semibold">Status</span>
                   </label> */}Status
 
                       <select
-                        className="text-sm border w-full p-1 rounded-md"
+                        className="text-sm border border-[#888888] w-full p-1 rounded-md"
                         value={selectedStatus}
                         onChange={(e) => setSelectedStatus(e.target.value)}
                       >
@@ -1085,11 +1091,11 @@ const handleApply = () => {
                           onChange={() => setFilterType1("none")}
                           className="text-blue-600 focus:ring-blue-500 focus:ring-2"
                         />
-                        <span className="text-gray-700 text-sm font-semibold">Brand</span>
+                        <span className="text-black text-sm font-semibold">Brand</span>
                       </label>
 
                       <select
-                        className="text-sm border w-full p-1 rounded-md"
+                        className="text-sm border border-[#888888] w-full p-1 rounded-md"
                         value={selectedBrand}
                         onChange={(e) => setSelectedBrand(e.target.value)}
                       >
@@ -1107,7 +1113,7 @@ const handleApply = () => {
                           setSelectedStatus("");
                           setSelectedBrand("");
                         }}
-                        className="w-full mt-2 bg-gray-100 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-200 text-sm"
+                        className="w-full mt-2 bg-gray-100 text-black py-1 px-3  border border-[#888888] rounded-md hover:bg-gray-200 text-sm"
                       >
                         Clear Filters
                       </button>
@@ -1117,15 +1123,15 @@ const handleApply = () => {
               </div>
             </div>
 
-            <div ref={buttonsRef} className="flex gap-4 mb-2 px-4">
-              <div className="flex gap-1">
-                <div className="border border-gray-300 p-1 px-4 rounded-md gap-2 flex items-center">
-                  <div className="flex flex-col items-center">
+            <div ref={buttonsRef} className="flex gap-4 mb-2 px-4 ">
+              <div className="flex gap-1 mt-1">
+                <div className="border border-[#888888] p-1 px-4 rounded-md gap-2 flex items-center">
+                  <div className="flex flex-col items-center ">
                     {selectedRows.length}
                   </div>
                 </div>
                 <div className="inline-block flex gap-2">
-                  <button className="border border-gray-300 p-1 rounded-md">
+                  <button className="border border-[#888888] p-1 rounded-md">
                     <select className="text-sm border-none outline-none px-2" disabled={selectedRows.length === 0}>
                       <option value="">More Actions</option>
                       <option value="BulkEdit">Bulk Edit</option>
@@ -1139,7 +1145,7 @@ const handleApply = () => {
                   </button>
                 </div>
                 <div className="inline-block flex gap-2">
-                  <button className="border border-gray-300 p-1 rounded-md">
+                  <button className="border border-[#888888] p-1 rounded-md">
                      <select
             className="text-sm border-none outline-none px-2"
             value={selectedChannel}
@@ -1155,7 +1161,7 @@ const handleApply = () => {
                   </button>
                 </div>
 <div className="inline-block flex gap-2">
-                  <button className="border border-gray-300 p-1 rounded-md"
+                  <button className="border border-[#888888] p-1 rounded-md"
                          onClick={handleApply}>
                     Apply
                   </button>
@@ -1224,7 +1230,7 @@ const handleApply = () => {
         ? "bg-yellow-100 text-yellow-700"
         : row.status === "Pending Approval"
         ? "bg-blue-100 text-blue-700"
-        : "bg-gray-100 text-gray-700"
+        : "bg-gray-100 text-black"
     }`}
   >
     {row.status || "N/A"}
@@ -1236,11 +1242,11 @@ const handleApply = () => {
               ))}
             </tbody>
           </table> */}
-              <table className="w-full border-collapse text-sm ml-4">
+              <table className="w-full border-collapse text-sm ">
                 <thead>
-                  <tr className="text-xs bg-[#f7f7f7]">
-                    <th className="p-2 border-b-[0.5px] w-12 text-center">
-                      <div className="flex flex-col items-center">
+                  {/* <tr className="text-xs border-b border-[#888888] ">
+                    <th className="p-2  w-12 text-center">
+                      <div className="flex flex-col items-center ">
                         <input
                           type="checkbox"
                           checked={filteredData.length > 0 && selectedRows.length === filteredData.length}
@@ -1248,14 +1254,52 @@ const handleApply = () => {
                           title="Select all inventory items"
                         />
                       </div>
-                    </th>
-                    <th className="p-2 border-b-[0.5px] text-center cursor-pointer hover:bg-gray-100">Name</th>
-                    <th className="p-2 border-b-[0.5px] text-center">SKU</th>
-                    <th className="p-2 border-b-[0.5px] text-center">RRP</th>
-                    <th className="p-2 border-b-[0.5px] text-center">Selling Price</th>
-                    <th className="p-2 border-b-[0.5px] text-center">Stock Level</th>
-                    <th className="p-2 border-b-[0.5px] text-center">Status</th>
-                  </tr>
+                    </th>                    
+                    <th className="p-2 border-b border-[#888888] text-center cursor-pointer hover:bg-gray-100">Name</th>
+
+                    <th className="p-2  text-center">SKU</th>
+                    <th className="p-2  text-center">RRP</th>
+                    <th className="p-2  text-center">Selling Price</th>
+                    <th className="p-2  text-center">Stock Level</th>
+                    <th className="p-2  text-center">Status</th>
+                  </tr> */}
+                  <tr className="text-xs border-b border-[#888888]">
+  <th className="p-2 w-12 text-center border-t border-[#888888]">
+    <div className="flex flex-col items-center">
+      <input
+        type="checkbox"
+        checked={filteredData.length > 0 && selectedRows.length === filteredData.length}
+        onChange={toggleSelectAll}
+        title="Select all inventory items"
+      />
+    </div>
+  </th>
+
+  <th className="p-2 border-t border-[#888888] text-center cursor-pointer hover:bg-gray-100">
+    Name
+  </th>
+
+  <th className="p-2 border-t border-[#888888] text-center">
+    SKU
+  </th>
+
+  <th className="p-2 border-t border-[#888888] text-center">
+    RRP
+  </th>
+
+  <th className="p-2 border-t border-[#888888] text-center">
+    Selling Price
+  </th>
+
+  <th className="p-2 border-t border-[#888888] text-center">
+    Stock Level
+  </th>
+
+  <th className="p-2 border-t border-[#888888] text-center">
+    Status
+  </th>
+</tr>
+
                 </thead>
                 <tbody>
                   {paginatedData.map((row) => (
@@ -1265,7 +1309,7 @@ const handleApply = () => {
                         }`}
                       onClick={() => handleRowClick(row)}
                     >
-                      <td className="p-2 border-b-[0.5px] text-center w-12" onClick={(e) => e.stopPropagation()}>
+                      <td className="p-2 border-b border-[#888888] text-center w-12" onClick={(e) => e.stopPropagation()}>
                         <input
                           type="checkbox"
                           checked={selectedRows.includes(row._id)}
@@ -1275,12 +1319,12 @@ const handleApply = () => {
                           }}
                         />
                       </td>
-                      <td className="p-2 border-b-[0.5px] text-center">{row.productTitle}</td>
-                      <td className="p-2 border-b-[0.5px] text-center">{row.sku}</td>
-                      <td className="p-2 border-b-[0.5px] text-center">${row.rrp}</td>
-                      <td className="p-2 border-b-[0.5px] text-center"> ${row.adjustedSellingPrice || row.sellingPrice}</td>
-                      <td className="p-2 border-b-[0.5px] text-center">{row.stockLevel?.stocklevel}</td>
-                      <td className="p-2 border-b-[0.5px] text-center">
+                      <td className="p-2 border-b border-[#888888] text-center">{row.productTitle}</td>
+                      <td className="p-2 border-b border-[#888888] text-center">{row.sku}</td>
+                      <td className="p-2 border-b border-[#888888] text-center">${row.rrp}</td>
+                      <td className="p-2 border-b border-[#888888] text-center"> ${row.adjustedSellingPrice || row.sellingPrice}</td>
+                      <td className="p-2 border-b border-[#888888] text-center">{row.stockLevel?.stocklevel}</td>
+                      <td className="p-2 border-b border-[#888888] text-center">
                         <span
                           className={`py-1 px-4 rounded-md text-xs inline-block min-w-[120px] text-center ${row.status === "InStock"
                               ? "bg-green-100 text-green-700"
@@ -1290,7 +1334,7 @@ const handleApply = () => {
                                   ? "bg-yellow-100 text-yellow-700"
                                   : row.status === "Pending Approval"
                                     ? "bg-blue-100 text-blue-700"
-                                    : "bg-gray-100 text-gray-700"
+                                    : "bg-gray-100 text-black"
                             }`}
                         >
                           {row.status || "N/A"}
@@ -1339,7 +1383,7 @@ const handleApply = () => {
                                 ? "bg-green-100 text-green-700"
                                 : row.status === "Inactive"
                                   ? "bg-red-100 text-red-700"
-                                  : "bg-gray-100 text-gray-700"
+                                  : "bg-gray-100 text-black"
                               }`}
                           >
                             {row.status || "N/A"}
@@ -1363,7 +1407,7 @@ const handleApply = () => {
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className={`border border-gray-400 px-2 rounded-md text-sm ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                  className={`border border-[#888888] px-2 rounded-md text-sm ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : "text-blue-500"
                     }`}
                 >
                   {"<"}
@@ -1371,7 +1415,7 @@ const handleApply = () => {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className={`border border-gray-400 px-2 rounded-md text-sm ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
+                  className={`border border-[#888888] px-2 text-blue-500 rounded-md text-sm ${currentPage === totalPages ? "opacity-50 cursor-not-allowed text-gray-500" : ""
                     }`}
                 >
                   {">"}
@@ -1392,6 +1436,7 @@ const handleApply = () => {
             </div>
           </>
         )}
+      </div>
       </div>
     </>
   );
