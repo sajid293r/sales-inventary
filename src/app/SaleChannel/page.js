@@ -1133,7 +1133,7 @@ const handleSaleChannel=(e)=>{
           {/* {showButtons && ( */}
           {selectedRows.length > 0 && (
           <div ref={buttonsRef} className="flex gap-4 mb-2 px-4 border-b border-[#888888]">
-            <div className="flex gap-4 m-[1px] ">
+            <div className="flex gap-4 m-1px ">
               
               <div className="border  p-1 px-4 rounded-md gap-2 flex items-center">
                
@@ -1156,6 +1156,8 @@ const handleSaleChannel=(e)=>{
                   <option value="Remove">Remove</option>
                 </select>
               </button>
+             <h1 className="text-sm  ml-10 mt-2">ALL {selectedRows.length} Entries on this page are selected</h1>
+             <h1 className="text-[#3163FF] mt-2 text-sm"> Select all {totalItems} entries on {filters.region} </h1>
             </div>
           </div>
           )}

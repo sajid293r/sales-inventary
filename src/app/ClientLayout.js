@@ -85,7 +85,7 @@ export default function ClientLayout({ children }) {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 ml-16 md:ml-20 lg:ml-24 xl:ml-28 ">
+        <main className="flex-1 ml-16 md:ml-20 lg:ml-24 xl:ml-28 pr-4">
           <div className="max-w-screen-3xl mx-auto">
             {children}
           </div>

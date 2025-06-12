@@ -941,7 +941,7 @@ const handleApply = () => {
               )}
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center border-b border-[#888888]">
+            <div className="flex flex-col sm:flex-row justify-between py-1 px-4 gap-4 items-center ">
               <div className="relative w-full sm:w-80 ">
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                 <input
@@ -1122,9 +1122,10 @@ const handleApply = () => {
                 )}
               </div>
             </div>
-
+{/* {selectedRows.length > 0 &&  */}
+ {selectedRows.length > 0 && (
             <div ref={buttonsRef} className="flex gap-4 mb-2 px-4 ">
-              <div className="flex gap-1 mt-1">
+              <div className="flex gap-1 mt-1 ">
                 <div className="border border-[#888888] p-1 px-4 rounded-md gap-2 flex items-center">
                   <div className="flex flex-col items-center ">
                     {selectedRows.length}
@@ -1168,7 +1169,7 @@ const handleApply = () => {
                 </div>
               </div>
             </div>
-
+)}
             <div className="hidden sm:block overflow-x-hidden">
               {/* <table className="w-full border-collapse text-sm ml-4">
             <thead>
