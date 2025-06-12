@@ -1156,8 +1156,8 @@ const handleSaleChannel=(e)=>{
                   <option value="Remove">Remove</option>
                 </select>
               </button>
-             <h1 className="text-sm  ml-10 mt-2">ALL {selectedRows.length} Entries on this page are selected</h1>
-             <h1 className="text-[#3163FF] mt-2 text-sm"> Select all {totalItems} entries on {filters.region} </h1>
+             {/* <h1 className="text-sm  ml-10 mt-2">ALL {selectedRows.length} Entries on this page are selected</h1>
+             <h1 className="text-[#3163FF] mt-2 text-sm"> Select all {totalItems} entries on {filters.region} </h1> */}
             </div>
           </div>
           )}
