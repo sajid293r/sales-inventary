@@ -219,7 +219,7 @@ const labelMap = {
           <div><Link href="/Inventory_list/Inventorylist">Sales Order</Link></div>
 
           <div><Link href="/Inventory_list/Bundlingkit">Invoic List</Link></div>
-          <div><Link href="#">Sales Import</Link></div>
+          <div><Link href="#">Sales Reports</Link></div>
         </div>
       ),
     },
@@ -239,11 +239,11 @@ const labelMap = {
       icon: gpt,
       tooltip: (
         <div className="flex flex-col gap-1">
-          <div><Link href="/SaleChannel">Inventory Import Config</Link></div>
+          <div><Link href="/SaleChannel">Inventory Import Configuration</Link></div>
 
-          <div><Link href="/SaleChannel">Inventory Export Config</Link></div>
-          <div><Link href="/SaleChannel">Sales Import Config</Link></div>
-          <div><Link href="/SaleChannel">Sales Export Config</Link></div>
+          <div><Link href="/SaleChannel">Inventory Export Configuration</Link></div>
+          <div><Link href="/SaleChannel">Sales Import Configuration</Link></div>
+          <div><Link href="/SaleChannel">Sales Export Configuration</Link></div>
 
         </div>),
     },
