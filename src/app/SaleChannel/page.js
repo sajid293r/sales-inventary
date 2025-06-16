@@ -11,6 +11,9 @@ import SaleChannelPopup from "../Popup/page";
 import HeaderAddSale from '../AddSaleChannel/HeaderAddSale/page'
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import arrowup from '../image/Icons/arrowup.png'
+import arrowdown from '../image/Icons/arrowdown.png'
 
 import { bulkSaveSalesChannels } from '@/actions/bulkSaveSalesChannels';
 const TableWithCheckboxes = () => {
@@ -33,10 +36,11 @@ const TableWithCheckboxes = () => {
     filterPanel: false,
     sortTooltip: false,
   });
-  const [sortOptions, setSortOptions] = useState({
-    salesChannel: false,
-    country: false,
-  });
+  // const [sortOptions, setSortOptions] = useState({
+  //   salesChannel: false,
+  //   country: false,
+  // });
+const [sortOption, setSortOption] = useState(null); // 'asc' | 'desc' | null
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -160,6 +164,8 @@ const TableWithCheckboxes = () => {
   //     fetchData();
   //   }
   // }, [isEditPopupOpen]);
+  const masterCheckboxRef = useRef(null);
+
   useEffect(() => {
     const editPopupState = Boolean(isEditPopupOpen);
     const openPopState = Boolean(isOpenpop);
@@ -269,26 +275,35 @@ const handleFilterChange = (field, value) => {
           item.payementterm?.toLowerCase().includes(searchQuery.toLowerCase()))
         : true
     );
+const sortedData = [...filteredData].sort((a, b) => {
+  if (!sortOption) return 0;
 
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (sortOptions.salesChannel) {
-      const nameA = a.salesChannelName || "";
-      const nameB = b.salesChannelName || "";
-      return sortOptions.salesChannel
-        ? nameA.localeCompare(nameB)
-        : nameB.localeCompare(nameA);
-    }
+  const aVal = (a.salesChannelName || '').toLowerCase();
+  const bVal = (b.salesChannelName || '').toLowerCase();
 
-    if (sortOptions.country) {
-      const stateA = a.suburbState || "";
-      const stateB = b.suburbState || "";
-      return sortOptions.country
-        ? stateA.localeCompare(stateB)
-        : stateB.localeCompare(stateA);
-    }
+  return sortOption === 'asc'
+    ? aVal.localeCompare(bVal)
+    : bVal.localeCompare(aVal);
+});
+  // const sortedData = [...filteredData].sort((a, b) => {
+  //   if (sortOptions.salesChannel) {
+  //     const nameA = a.salesChannelName || "";
+  //     const nameB = b.salesChannelName || "";
+  //     return sortOptions.salesChannel
+  //       ? nameA.localeCompare(nameB)
+  //       : nameB.localeCompare(nameA);
+  //   }
 
-    return 0;
-  });
+  //   // if (sortOptions.country) {
+  //   //   const stateA = a.suburbState || "";
+  //   //   const stateB = b.suburbState || "";
+  //   //   return sortOptions.country
+  //   //     ? stateA.localeCompare(stateB)
+  //   //     : stateB.localeCompare(stateA);
+  //   // }
+
+  //   return 0;
+  // });
   const totalItems = filteredData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -321,6 +336,19 @@ const toggleRow = (id) => {
     }
   });
 };
+const handleSortChange = (direction) => {
+  setSortOption((prev) => (prev === direction ? null : direction));
+};
+
+
+useEffect(() => {
+  if (!masterCheckboxRef.current) return;
+
+  const total = filteredData.length;
+  const selected = filteredData.filter((row) => selectedRows.includes(row._id)).length;
+
+  masterCheckboxRef.current.indeterminate = selected > 0 && selected < total;
+}, [filteredData, selectedRows]);
 
   // const toggleRow = (id) => {
   //   setSelectedRows(prev => {
@@ -388,12 +416,12 @@ const toggleRow = (id) => {
     setCurrentPage(1);
   };
 
-  const handleSortChange = (option) => {
-    setSortOptions((prev) => ({
-      ...prev,
-      [option]: !prev[option],
-    }));
-  };
+  // const handleSortChange = (option) => {
+  //   setSortOptions((prev) => ({
+  //     ...prev,
+  //     [option]: !prev[option],
+  //   }));
+  // };
   const handleRowClick = (row, id) => {
     setSelectedRowData({ ...row, displayId: id }); // ✅ Add `displayId` to the row object
     setIsRowPopupOpen(true);
@@ -885,7 +913,7 @@ const handleSaleChannel=(e)=>{
           {message && <p className="mt-4 text-green-600 font-semibold">{message}</p>}
         </div>
 
-        <div className="rounded-xl border w-[300px] lg:w-full md:w-full bg-white border-[#888888] shadow-lg overflow-x-hidden">
+        <div className="rounded-xl border w-[300px] lg:w-full md:w-full bg-white border-[#888888] shadow-lg overflow-x-hidden min-h-[500px]">
           <div className="flex flex-wrap gap-2 p-2 border-b border-[#888888]  ">
             {[
               "Asia",
@@ -939,7 +967,7 @@ const handleSaleChannel=(e)=>{
               >
                 Sort
               </button>
-              {dropdown.sortTooltip && (
+              {/* {dropdown.sortTooltip && (
                 <div
                   ref={sortTooltipRef}
                   className="absolute z-20 bg-white border border-[#888888] p-4 rounded-md shadow-lg top-full right-0 sm:right-16 mt-2 w-64 text-sm"
@@ -959,30 +987,26 @@ const handleSaleChannel=(e)=>{
       <span>Sales Channel</span>
     </div>
     <span className="absolute right-0">
-      {sortOptions.salesChannel ? (
-        <MdArrowDownward />
-      ) : (
-        <MdArrowUpward />
-      )}
+     
+      <Image src={arrowup} alt="Arrow Up" width={16} height={16} />
+
     </span>
   </label>
 
   <label className="flex items-center w-full relative">
     <input
       type="checkbox"
-      checked={sortOptions.country}
-      onChange={() => handleSortChange("country")}
+      checked={sortOptions.salesChannel}
+      onChange={() => handleSortChange("salesChannel")}
       className="mr-2"
     />
     <div className="flex items-center w-full pr-6">
-      <span>Country</span>
+      <span>Sales Channel</span>
     </div>
     <span className="absolute right-0">
-      {sortOptions.country ? (
-        <MdArrowUpward />
-      ) : (
-        <MdArrowDownward />
-      )}
+     
+            <Image src={arrowdown} alt="Arrow Up" width={16} height={16} />
+
     </span>
   </label>
 </div>
@@ -990,7 +1014,51 @@ const handleSaleChannel=(e)=>{
                   </label>
                 </div>
                 
-              )}
+              )} */}
+              {dropdown.sortTooltip && (
+  <div
+    ref={sortTooltipRef}
+    className="absolute z-20 bg-white border border-[#888888] p-4 rounded-md shadow-lg top-full right-0 sm:right-16 mt-2 w-64 text-sm"
+  >
+    <h3 className="font-semibold mb-2">Sort Options</h3>
+    <div className="flex flex-col gap-2 w-full">
+
+      {/* Ascending */}
+      <label className="flex items-center w-full relative cursor-pointer">
+        <input
+          type="checkbox"
+          checked={sortOption === 'asc'}
+          onChange={() => handleSortChange('asc')}
+          className="mr-2"
+        />
+        <div className="flex items-center w-full pr-6">
+          <span>Sales Channel</span>
+        </div>
+        <span className="absolute right-0">
+          <Image src={arrowup} alt="Arrow Up" width={16} height={16} />
+        </span>
+      </label>
+
+      {/* Descending */}
+      <label className="flex items-center w-full relative cursor-pointer">
+        <input
+          type="checkbox"
+          checked={sortOption === 'desc'}
+          onChange={() => handleSortChange('desc')}
+          className="mr-2"
+        />
+        <div className="flex items-center w-full pr-6">
+          <span>Sales Channel </span>
+        </div>
+        <span className="absolute right-0">
+          <Image src={arrowdown} alt="Arrow Down" width={16} height={16} />
+        </span>
+      </label>
+
+    </div>
+  </div>
+)}
+
               {dropdown.filterPanel && (
                 <div
                   ref={filterPanelRef}
@@ -1133,17 +1201,24 @@ const handleSaleChannel=(e)=>{
           {/* {showButtons && ( */}
           {selectedRows.length > 0 && (
           <div ref={buttonsRef} className="flex gap-4 mb-2 px-4 border-b border-[#888888]">
-            <div className="flex gap-4 m-1px ">
+            <div className="flex gap-4  " style={{ margin: '1px' }}>
               
               <div className="border  p-1 px-4 rounded-md gap-2 flex items-center">
                
-  <input
+  {/* <input
   type="checkbox"
   checked={
     filteredData.length > 0 &&
     filteredData.every((row) => selectedRows.includes(row._id))
   }
   onChange={toggleSelectAll}
+/> */}
+<input
+  type="checkbox"
+  ref={masterCheckboxRef}
+  checked={filteredData.length > 0 && filteredData.every(row => selectedRows.includes(row._id))}
+  onChange={toggleSelectAll}
+  className="cursor-pointer"
 />
 
 
@@ -1448,7 +1523,7 @@ const handleSaleChannel=(e)=>{
                 {totalItems} entries
               </h1>
             </div>
-            <div className="flex gap-2 flex-wrap justify-center">
+            <div className="flex gap-2 flex-wrap justify-center items-center ">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}

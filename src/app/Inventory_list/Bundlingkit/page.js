@@ -6,6 +6,8 @@ import { useSearchParams } from 'next/navigation';
 import { submitProductAction } from "@/actions/inventory";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import arrowleft from '../../image/Icons/arrowleft.png'
+import Image from 'next/image';
 
 const initialFormState = {
   canBeSold: false,
@@ -70,6 +72,14 @@ const initialFormState = {
     profitratio: "",
     returnratio: ""
   },
+    addSellingPrice: {
+    supplyprice: "",
+    sellinginfo: "",
+    costs: "",
+    warehouse: "",
+    buyinginfo: "",
+    wholesaleandnz: ""
+  },
   notes: "",
   organization: {
     categoryproduct: "",
@@ -77,6 +87,7 @@ const initialFormState = {
     collection: "",
     tags: ""
   },
+  
   fileUrl: ""
 };
 
@@ -114,6 +125,10 @@ const BundlingkitContent = () => {
             ...prev.purchase,
             ...(parsedData.purchase || {})
           },
+           addSellingPrice: {
+    ...prev.addSellingPrice,
+    ...(parsedData.addSellingPrice || {})
+  },
           organization: {
             ...prev.organization,
             ...(parsedData.organization || {})
@@ -138,6 +153,8 @@ const BundlingkitContent = () => {
   const stockRef = useRef(null);
   const purchaseRef = useRef(null);
   const noteRef = useRef(null);
+const addsaleRef = useRef(null);
+const [isAddSellingPrice, setIsAddSellingPrice] = useState(false);
 
   // Toggle General section
   const toggleText = () => {
@@ -199,6 +216,8 @@ const BundlingkitContent = () => {
     setIsStockOpen(false);
     setIsPurchaseOpen(false);
     setIsNotesOpen(false);
+        setIsAddSellingPrice(false)
+
   };
 
   const toggleStock = () => {
@@ -206,6 +225,8 @@ const BundlingkitContent = () => {
     setIsPackageOpen(false);
     setIsPurchaseOpen(false);
     setIsNotesOpen(false);
+        setIsAddSellingPrice(false)
+
   };
 
   const togglePurchase = () => {
@@ -213,6 +234,8 @@ const BundlingkitContent = () => {
     setIsPackageOpen(false);
     setIsStockOpen(false);
     setIsNotesOpen(false);
+        setIsAddSellingPrice(false)
+
   };
 
   const toggleNotes = () => {
@@ -220,7 +243,17 @@ const BundlingkitContent = () => {
     setIsPackageOpen(false);
     setIsStockOpen(false);
     setIsPurchaseOpen(false);
+    setIsAddSellingPrice(false)
   };
+
+const toggleAddSellingPrice = () => {
+  setIsAddSellingPrice(!isAddSellingPrice);
+  setIsGeneralOpen(false);
+  setIsPackageOpen(false);
+  setIsStockOpen(false);
+  setIsPurchaseOpen(false);
+  setIsNotesOpen(false);
+};
 
   // Close all sections if clicking outside
   const handleClickOutside = (event) => {
@@ -321,6 +354,7 @@ const BundlingkitContent = () => {
         ...formData,
         imageName: imageFileName
       };
+      
       // console.log('Data being submitted:', JSON.stringify(dataToSubmit, null, 2));
       console.log(dataToSubmit)
       const result = await submitProductAction(dataToSubmit);
@@ -366,7 +400,9 @@ const BundlingkitContent = () => {
           <div className="flex items-center gap-2">
             <div className="border border-[#888888]  rounded-md p-2">
               <Link href="/Inventory_list/Inventorylist">
-<FaArrowLeftLong size={20} className="text-sm" />
+{/* <FaArrowLeftLong size={20} className="text-sm" /> */}
+                      <Image src={arrowleft} alt="Arrow Up" width={16} height={16} />
+            
               </Link>
             </div>
             <h1 className="text-base sm:text-lg md:text-xl text-black font-semibold">
@@ -399,7 +435,7 @@ const BundlingkitContent = () => {
         {/* Main Content */}
         <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
           {/* Left Section */}
-          <div className="border border-[#888888]  rounded-md w-full lg:w-3/4 bg-white p-4 sm:p-6">
+          <div className="  rounded-md w-full lg:w-3/4 bg-white p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 mb-4">
               <label className="flex items-center gap-2">
                 <input
@@ -526,7 +562,7 @@ const BundlingkitContent = () => {
           {/* Right Section */}
           <div className="flex flex-col gap-4 w-full lg:w-1/4">
             {/* Status Section */}
-            <div className="border rounded-md bg-white p-4">
+            <div className=" rounded-md bg-white p-4">
               <label className="flex flex-col">
                 <span className="text-black text-sm font-semibold mb-2">
                   Status
@@ -544,7 +580,7 @@ const BundlingkitContent = () => {
             </div>
 
             {/* Pricing Section */}
-            <div className="border rounded-md bg-white p-4">
+            <div className=" rounded-md bg-white p-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <label className="flex flex-col">
                   <span className="mb-2 text-black text-sm sm:text-base">
@@ -612,7 +648,7 @@ const BundlingkitContent = () => {
           {/* Media and Toggle Sections */}
           <div className="flex flex-col w-full lg:w-3/4 gap-4">
             {/* Media Section */}
-            <div className="border border-[#888888]  rounded-md bg-white p-4">
+            <div className="  rounded-md bg-white p-4">
               <h1 className="text-sm sm:text-base font-semibold">Media</h1>
               <div className="flex flex-col gap-3 min-h-[100px] border-2 border-dashed border-gray-400 p-4">
                 <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
@@ -699,7 +735,7 @@ const BundlingkitContent = () => {
             </div>
 
             {/* Toggleable Sections */}
-            <div className="border border-[#888888]  rounded-md bg-white p-4">
+            <div className=" rounded-md bg-white p-4">
               {/* <div className="flex flex-wrap gap-4 sm:gap-6 mb-4">
                 <span
                   onClick={toggleText}
@@ -764,6 +800,14 @@ const BundlingkitContent = () => {
                 >
                   Notes
                 </span>
+          <span
+  onClick={toggleAddSellingPrice}
+  className={`cursor-pointer text-sm sm:text-base border-b-4 ${isAddSellingPrice ? 'border-blue-500 ' : 'border-transparent hover:text-gray-700'}`}
+>
+  Add Selling Price
+</span>
+
+
               </div>
 
 
@@ -1228,11 +1272,40 @@ const BundlingkitContent = () => {
                   </div>
                 )}
               </div>
+              <div ref={addsaleRef}>
+  {isAddSellingPrice && (
+    <div className="space-y-4 mt-4">
+      {[
+        ["Supply Price", "supplyprice"],
+        ["Selling Info", "sellinginfo"],
+        ["Costs", "costs"],
+        ["Warehouse", "warehouse"],
+        ["Buying Info", "buyinginfo"],
+        ["Wholesale and NZ (Needed for pricing rule)", "wholesaleandnz"]
+      ].map(([label, fieldName]) => (
+        <div
+          key={label}
+          className="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start sm:items-center"
+        >
+          <label className="text-sm text-black w-full sm:w-32">{label}</label>
+          <input
+            type="number"
+            className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-32"
+            name={`addSellingPrice.${fieldName}`}
+            value={formData.addSellingPrice[fieldName] || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
             </div>
           </div>
 
           {/* Product Organization Section */}
-          <div className="border rounded-md bg-white p-4 w-full lg:w-1/4 lg:h-96 md:h-96">
+          <div className=" rounded-md bg-white p-4 w-full lg:w-1/4 lg:h-96 md:h-96">
             <h1 className="text-sm sm:text-base font-semibold">
               Product Organization
             </h1>

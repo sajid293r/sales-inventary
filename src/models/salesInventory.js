@@ -78,6 +78,14 @@ const productInventorySchema = new mongoose.Schema({
     profitratio: String,
     returnratio: String,
   },
+   addSellingPrice: {
+    supplyprice: { type: String, default: "" },
+    sellinginfo: { type: String, default: "" },
+    costs: { type: String, default: "" },
+    warehouse: { type: String, default: "" },
+    buyinginfo: { type: String, default: "" },
+    wholesaleandnz: { type: String, default: "" }
+  },
 
   notes: String,
 

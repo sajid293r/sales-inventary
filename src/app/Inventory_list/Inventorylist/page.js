@@ -875,7 +875,7 @@ const handleApply = () => {
       <div className={`p-2 sm:p-4 w-full  min-w-[640px] md:min-w-[800px] lg:min-w-[800px] xl:min-w-[100px] 2xl:min-w-[1300px] 3xl:min-w-[1400px] 4xl:min-w-[1600px]  ${dropdown.filterPanel ? "overflow-visible" : "overflow-x-hidden"
         }`}>
         <div className="flex flex-col sm:flex-row justify-between gap-3">
-          <h1 className="text-base sm:text-lg text-black font-semibold">
+          <h1 className="text-base sm:text-lg mt-1 text-black font-semibold">
             Inventory List
           </h1>
           <div className="flex gap-4 justify-end items-center">
@@ -900,14 +900,20 @@ const handleApply = () => {
             >
               Export
             </button> */}
-            <button
+             <h1
               className="text-md hover:bg-gray-100 transition"
-              disabled={isLoading}
+              // disabled={isLoading}
+            >
+             Add import 
+            </h1>
+            <h1
+              className="text-md hover:bg-gray-100 transition"
+              // disabled={isLoading}
             >
               Bundling/Kitting
-            </button>
+            </h1>
             <button
-              className="bg-[#52ce66] text-white py-2 px-4 rounded-md text-sm hover:bg-[#48b55a] transition cursor-pointer"
+              className="bg-[#52ce66] text-white py-1 px-4 mb-1 rounded-md text-sm hover:bg-[#48b55a] transition cursor-pointer"
               // onClick={() => setIsOpenpop(true)}
               onClick={(e) => handleInventory(e)}
               disabled={isLoading}
@@ -919,7 +925,7 @@ const handleApply = () => {
         </div>
       </div>
 
-      <div className=" rounded-xl border border-[#888888] w-[300px] lg:w-full md:w-full bg-white  shadow-lg overflow-x-hidden">
+      <div className=" rounded-xl border border-[#888888] w-[300px] lg:w-full md:w-full bg-white  shadow-lg overflow-x-hidden min-h-[500px]">
         {isLoading ? (
           <Loader />
         ) : (
@@ -1060,17 +1066,8 @@ const handleApply = () => {
                           <span className="text-black text-sm font-semibold">{type}</span>
                         </label>
                       ))}
-                      {/* <label className="flex items-center space-x-3">
-                    <input
-                      type="radio"
-                      name="filterType"
-                      value="none"
-                      checked={filterType === "none"}
-                      onChange={() => setFilterType("none")}
-                      className="text-blue-600 focus:ring-blue-500 focus:ring-2"
-                    />
-                    <span className="text-black text-sm font-semibold">Status</span>
-                  </label> */}Status
+                    
+                  Status
 
                       <select
                         className="text-sm border border-[#888888] w-full p-1 rounded-md"
@@ -1404,11 +1401,11 @@ const handleApply = () => {
                   {totalItems} entries
                 </h1>
               </div>
-              <div className="flex gap-2 flex-wrap justify-center">
+              <div className="flex gap-2 flex-wrap justify-center items-center">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className={`border border-[#888888] px-2 rounded-md text-sm ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : "text-blue-500"
+                  className={`border border-[#888888] px-2 justify-center items-center rounded-md text-sm ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : "text-blue-500"
                     }`}
                 >
                   {"<"}
@@ -1416,7 +1413,7 @@ const handleApply = () => {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className={`border border-[#888888] px-2 text-blue-500 rounded-md text-sm ${currentPage === totalPages ? "opacity-50 cursor-not-allowed text-gray-500" : ""
+                  className={`border border-[#888888] px-2 justify-center items-center text-blue-500 rounded-md text-sm ${currentPage === totalPages ? "opacity-50 cursor-not-allowed text-gray-500" : ""
                     }`}
                 >
                   {">"}
