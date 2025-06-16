@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAllSalesChannels } from "@/actions/getAllSalesChannels";
-
+// import  FaChevronDown  from "react-icons/fa";
 const TableWithCheckboxes = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [filters, setFilters] = useState({
@@ -61,6 +61,13 @@ const TableWithCheckboxes = () => {
   const fileInputRef = useRef(null);
 
   const router = useRouter();
+  const [channelDropdownOpen, setChannelDropdownOpen] = useState(false);
+const [channelSearch, setChannelSearch] = useState("");
+
+// Filtered sales channels
+const visibleChannels = salesChannels.filter((channel) =>
+  channel.salesChannelName.toLowerCase().includes(channelSearch.toLowerCase())
+);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -1142,7 +1149,7 @@ const handleApply = () => {
                     </select>
                   </button>
                 </div>
-                <div className="inline-block flex gap-2">
+                {/* <div className="inline-block flex gap-2">
                   <button className="border border-[#888888] p-1 rounded-md">
                      <select
             className="text-sm border-none outline-none px-2"
@@ -1157,7 +1164,52 @@ const handleApply = () => {
             ))}
           </select>
                   </button>
-                </div>
+                </div> */}
+                <div className="relative inline-block">
+  <button
+    onClick={() => setChannelDropdownOpen(!channelDropdownOpen)}
+    className="border border-[#888888] p-1 rounded-md flex items-center gap-2 w-[200px] justify-between"
+  >
+    <span className="text-sm">
+      {selectedChannel || "Select Sales Channel"}
+    </span>
+    <FaChevronDown className="text-xs" />
+  </button>
+
+  {channelDropdownOpen && (
+    <div className="absolute z-10 mt-1 w-[250px] bg-white border border-gray-300 rounded shadow-lg">
+      <div className="p-2">
+        <input
+          type="text"
+          placeholder="Search Channel"
+          value={channelSearch}
+          onChange={(e) => setChannelSearch(e.target.value)}
+          className="w-full px-2 py-1 text-sm border border-[#888888] rounded-lg focus:border-blue-500 bg-transparent focus:outline-none text-sm"
+        />
+      </div>
+      <ul className="max-h-48 overflow-y-auto text-sm">
+        {visibleChannels.length > 0 ? (
+          visibleChannels.map((channel) => (
+            <li
+              key={channel._id}
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() => {
+                setSelectedChannel(channel.salesChannelName);
+                setChannelDropdownOpen(false);
+                setChannelSearch("");
+              }}
+            >
+              {channel.salesChannelName}
+            </li>
+          ))
+        ) : (
+          <li className="px-4 py-2 text-gray-500">No match found</li>
+        )}
+      </ul>
+    </div>
+  )}
+</div>
+
 <div className="inline-block flex gap-2">
                   <button className="border border-[#888888] p-1 rounded-md"
                          onClick={handleApply}>
