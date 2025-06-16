@@ -159,6 +159,8 @@ const [isAddSellingPrice, setIsAddSellingPrice] = useState(false);
   // Toggle General section
   const toggleText = () => {
     setIsGeneralOpen(!isGeneralOpen);
+        setIsAddSellingPrice(false)
+
   };
   const fileInputRef = useRef(null);
   const [fileName, setFileName] = useState("Choose a file");
