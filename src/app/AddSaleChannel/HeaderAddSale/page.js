@@ -1,11 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { submitAction } from '@/actions/salesChannel';
 import { toast } from 'react-hot-toast';
 import { X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const HeaderAddSale = ({ onClose }) => {
+const HeaderAddSaleContent = ({ onClose }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [billingInfo, setBillingInfo] = useState({
@@ -1433,7 +1433,14 @@ const HeaderAddSale = ({ onClose }) => {
   );
 };
 
-export default HeaderAddSale;
+const HeaderAddSale = ({ onClose }) => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HeaderAddSaleContent onClose={onClose} />
+    </Suspense>
+  );
+};
 
+export default HeaderAddSale;
 
 

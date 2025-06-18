@@ -182,7 +182,7 @@ const [sortOption, setSortOption] = useState(null); // 'asc' | 'desc' | null
 
       fetchData();
     }
-  }, [Boolean(isEditPopupOpen), Boolean(isOpenpop)]);
+  }, [isEditPopupOpen, isOpenpop]);
 
   useEffect(() => {
     const adjustDropdownPosition = (dropdownClass, isOpen) => {
