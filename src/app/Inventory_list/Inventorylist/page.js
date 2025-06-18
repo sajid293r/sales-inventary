@@ -262,7 +262,7 @@ const visibleChannels = salesChannels.filter((channel) =>
         (filterType === "Can be Purchased" && item.canBePurchased) ||
         (filterType === "Bundle" && item.isBundle) ||
         (filterType === "Kitting" && item.isKitting) ||
-        (filterType === "Spare Parts" && item.isSparePart) ||
+        (filterType === "Spare Parts" && item.spareParts) ||
         (filterType === "Assembly Required" && item.assemblyRequired);
 
       const matchStatus = !selectedStatus || item.status === selectedStatus;
