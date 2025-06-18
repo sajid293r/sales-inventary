@@ -229,8 +229,8 @@ const visibleChannels = salesChannels.filter((channel) =>
     }));
   };
 
-  const handleEdit = (e, row) => {
-    e.preventDefault();
+  const handleEdit = (row) => {
+    // e.preventDefault();
     const query = encodeURIComponent(JSON.stringify(row));
     router.push(`/Inventory_list/Bundlingkit?action=update&data=${query}`);
   };
@@ -1348,6 +1348,8 @@ const handleApply = () => {
   <th className="p-2 border-t border-[#888888] text-center">
     Status
   </th>
+  <th className="p-2 border-t border-[#888888] text-center">
+Action  </th>
 </tr>
 
                 </thead>
@@ -1390,6 +1392,18 @@ const handleApply = () => {
                           {row.status || "N/A"}
                         </span>
                       </td>
+                      <td className="p-2  border-b border-[#888888] text-center">
+                                                <button
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleEdit(row);
+                                                  }}
+                                                  className="text-blue-500 hover:text-blue-700 mx-1 cursor-pointer"
+                                                  title="Edit"
+                                                >
+                                                  <FaEdit />
+                                                </button>
+                                                </td>
                     </tr>
                   ))}
                 </tbody>

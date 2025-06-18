@@ -1398,7 +1398,7 @@ const handleSaleChannel=(e)=>{
                       <th className="p-2 text-center">Location</th>
                       <th className="p-2 text-center">Created Date</th>
                       <th className="p-2 text-center">Status</th>
-                      {/* <th className="p-2 text-center">Action</th> */}
+                      <th className="p-2 text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1414,7 +1414,7 @@ const handleSaleChannel=(e)=>{
                             // onChange={() => toggleRow(row._id)}
                            onChange={(e) => {
               e.stopPropagation();
-              toggleRow(row._id);
+              // toggleRow(row._id);
             }}
                             className="cursor-pointer " 
                           />
@@ -1436,7 +1436,7 @@ const handleSaleChannel=(e)=>{
                             {row.emailPlatforminvoice ? "Active" : "Inactive"}
                           </span>
                         </td>
-                        {/* <td className="p-2 border-b-4 border-gray-300 text-center">
+                        <td className="p-2  border-b border-[#888888] text-center">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1447,7 +1447,7 @@ const handleSaleChannel=(e)=>{
                           >
                             <FaEdit />
                           </button>
-                          <button
+                          {/* <button
                             onClick={(e) => {
                               e.stopPropagation();
                               onDelete(row._id, row.salesChannelName);
@@ -1456,8 +1456,8 @@ const handleSaleChannel=(e)=>{
                             title="Delete"
                           >
                             <FaTrash />
-                          </button>
-                        </td> */}
+                          </button> */}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

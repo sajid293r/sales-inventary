@@ -296,27 +296,59 @@ const toggleAddSellingPrice = () => {
   }, [action]);
 
   // Handle input changes
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  // const handleInputChange = (e) => {
+  //   const { name, value, type, checked } = e.target;
 
-    if (name.includes('.')) {
-      // Handle nested objects (e.g., productDimensions.length)
-      const [parent, child] = name.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: type === 'checkbox' ? checked : value
-        }
-      }));
-    } else {
-      // Handle top-level fields
-      setFormData(prev => ({
-        ...prev,
-        [name]: type === 'checkbox' ? checked : value
-      }));
+  //   if (name.includes('.')) {
+  //     // Handle nested objects (e.g., productDimensions.length)
+  //     const [parent, child] = name.split('.');
+  //     setFormData(prev => ({
+  //       ...prev,
+  //       [parent]: {
+  //         ...prev[parent],
+  //         [child]: type === 'checkbox' ? checked : value
+  //       }
+  //     }));
+  //   } else {
+  //     // Handle top-level fields
+  //     setFormData(prev => ({
+  //       ...prev,
+  //       [name]: type === 'checkbox' ? checked : value
+  //     }));
+  //   }
+  // };
+const handleInputChange = (e) => {
+  const { name, value, type, checked } = e.target;
+
+  // Handle nested fields
+  if (name.includes('.')) {
+    const [parent, child] = name.split('.');
+
+    // Enforce number-only for specific fields
+    if (parent === 'addSellingPrice' && ['supplyprice', 'costs'].includes(child)) {
+      if (!/^\d*$/.test(value)) return; // allow only numbers
     }
-  };
+
+    // Enforce letters-only for other addSellingPrice fields
+    if (parent === 'addSellingPrice' && !['supplyprice', 'costs'].includes(child)) {
+      if (!/^[A-Za-z\s]*$/.test(value)) return; // allow only letters and spaces
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      [parent]: {
+        ...prev[parent],
+        [child]: type === 'checkbox' ? checked : value
+      }
+    }));
+  } else {
+    // Top-level fields
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  }
+};
 
   // Handle save
   const handleSave = async () => {
@@ -1275,7 +1307,7 @@ const toggleAddSellingPrice = () => {
                 )}
               </div>
               <div ref={addsaleRef}>
-  {isAddSellingPrice && (
+  {/* {isAddSellingPrice && (
     <div className="space-y-4 mt-4">
       {[
         ["Supply Price", "supplyprice"],
@@ -1300,7 +1332,40 @@ const toggleAddSellingPrice = () => {
         </div>
       ))}
     </div>
-  )}
+  )} */}
+  {isAddSellingPrice && (
+  <div className="space-y-4 mt-4">
+    {[
+      ["Supply Price", "supplyprice"],
+      ["Selling Info", "sellinginfo"],
+      ["Costs", "costs"],
+      ["Warehouse", "warehouse"],
+      ["Buying Info", "buyinginfo"],
+      ["Wholesale and NZ (Needed for pricing rule)", "wholesaleandnz"]
+    ].map(([label, fieldName]) => {
+      const isNumberField = ["supplyprice", "costs"].includes(fieldName);
+
+      return (
+        <div
+          key={label}
+          className="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start sm:items-center"
+        >
+          <label className="text-sm text-black w-full sm:w-32">{label}</label>
+          <input
+            type={isNumberField ? "number" : "text"}
+            inputMode={isNumberField ? "numeric" : "text"}
+            pattern={isNumberField ? "\\d*" : "[A-Za-z ]+"}
+            className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
+            name={`addSellingPrice.${fieldName}`}
+            value={formData.addSellingPrice[fieldName] || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+      );
+    })}
+  </div>
+)}
+
 </div>
 
             </div>
