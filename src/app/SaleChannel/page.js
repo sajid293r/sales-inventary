@@ -310,32 +310,24 @@ const sortedData = [...filteredData].sort((a, b) => {
   const endIndex = startIndex + itemsPerPage;
   const paginatedData = sortedData.slice(startIndex, endIndex);
 
-  // const toggleSelectAll = (e) => {
-  //   const currentPageData = paginatedData.map(row => row._id);
-  //   if (e.target.checked) {
-  //     setSelectedRows(currentPageData);
-  //   } else {
-  //     setSelectedRows([]);
-  //   }
-  // };
-const toggleSelectAll = (e) => {
-  const allFilteredIds = filteredData.map((row) => row._id); // not just paginatedData
-  if (e.target.checked) {
-    setSelectedRows(allFilteredIds);
-  } else {
-    setSelectedRows([]);
-  }
-};
-
-const toggleRow = (id) => {
-  setSelectedRows((prev) => {
-    if (prev.includes(id)) {
-      return prev.filter((rowId) => rowId !== id);
+  const toggleSelectAll = (e) => {
+    const currentPageIds = paginatedData.map((row) => row._id);
+    if (e.target.checked) {
+      setSelectedRows((prev) => [...new Set([...prev, ...currentPageIds])]);
     } else {
-      return [...prev, id];
+      setSelectedRows((prev) => prev.filter(id => !currentPageIds.includes(id)));
     }
-  });
-};
+  };
+
+  const toggleRow = (id) => {
+    setSelectedRows((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((rowId) => rowId !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  };
 const handleSortChange = (direction) => {
   setSortOption((prev) => (prev === direction ? null : direction));
 };
@@ -487,8 +479,17 @@ const handleSaleChannel=(e)=>{
     setSelectedRows([]);
   };
   const onEdit = (row) => {
-    setEditingRow(row);
-    setIsEditPopupOpen(true);
+    try {
+      // Send the complete row data
+      const query = encodeURIComponent(JSON.stringify(row));
+      console.log('Complete row data being sent:', row);
+      
+      // Navigate to edit page with complete data
+      router.push(`/AddSaleChannel/HeaderAddSale?action=update&data=${query}`);
+    } catch (error) {
+      console.error('Error in onEdit:', error);
+      toast.error('Error preparing data for edit');
+    }
   };
 
   const onDelete = async (id, name) => {
@@ -1411,12 +1412,11 @@ const handleSaleChannel=(e)=>{
                           <input
                             type="checkbox"
                             checked={selectedRows.includes(row._id)}
-                            // onChange={() => toggleRow(row._id)}
-                           onChange={(e) => {
-              e.stopPropagation();
-              // toggleRow(row._id);
-            }}
-                            className="cursor-pointer " 
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              toggleRow(row._id);
+                            }}
+                            className="cursor-pointer" 
                           />
                         </td>
                         <td className="p-2 border-b border-[#888888] text-center">{row.salesChannelName}</td>

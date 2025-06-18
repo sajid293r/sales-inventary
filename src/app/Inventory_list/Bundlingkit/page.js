@@ -317,38 +317,6 @@ const toggleAddSellingPrice = () => {
   //     }));
   //   }
   // };
-const handleInputChange = (e) => {
-  const { name, value, type, checked } = e.target;
-
-  // Handle nested fields
-  if (name.includes('.')) {
-    const [parent, child] = name.split('.');
-
-    // Enforce number-only for specific fields
-    if (parent === 'addSellingPrice' && ['supplyprice', 'costs'].includes(child)) {
-      if (!/^\d*$/.test(value)) return; // allow only numbers
-    }
-
-    // Enforce letters-only for other addSellingPrice fields
-    if (parent === 'addSellingPrice' && !['supplyprice', 'costs'].includes(child)) {
-      if (!/^[A-Za-z\s]*$/.test(value)) return; // allow only letters and spaces
-    }
-
-    setFormData(prev => ({
-      ...prev,
-      [parent]: {
-        ...prev[parent],
-        [child]: type === 'checkbox' ? checked : value
-      }
-    }));
-  } else {
-    // Top-level fields
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  }
-};
 
   // Handle save
   const handleSave = async () => {
