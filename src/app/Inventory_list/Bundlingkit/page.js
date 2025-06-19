@@ -1684,7 +1684,7 @@ const handleCopy = (id) => {
                       </div>
                     </div>
                     { 
-                        formData.package1.volume ?  <span className="flex items-center gap-2">
+                        formData.package2.volume ?  <span className="flex items-center gap-2">
   <h1>Package3</h1>
 <h1
   className="text-blue-500 underline cursor-pointer"
