@@ -147,6 +147,7 @@ const BundlingkitContent = () => {
   const [isPurchaseOpen, setIsPurchaseOpen] = useState(false);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(action === 'view');
+const [attachedImages, setAttachedImages] = useState([]); // Array of { file, previewUrl }
 
   const generalRef = useRef(null);
   const packageRef = useRef(null);
@@ -165,48 +166,79 @@ const [isAddSellingPrice, setIsAddSellingPrice] = useState(false);
   const fileInputRef = useRef(null);
   const [fileName, setFileName] = useState("Choose a file");
 
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
+  // const handleFileChange = async (event) => {
+  //   const file = event.target.files[0];
 
-    // Check if a file was selected
-    if (!file) {
-      toast.error('Please select a file');
-      return;
-    }
+  //   // Check if a file was selected
+  //   if (!file) {
+  //     toast.error('Please select a file');
+  //     return;
+  //   }
 
-    // List of allowed image MIME types
-    const allowedTypes = [
-      'image/jpeg',
-      'image/jpg',
-      'image/png',
-      'image/gif',
-      'image/webp'
-    ];
+  //   // List of allowed image MIME types
+  //   const allowedTypes = [
+  //     'image/jpeg',
+  //     'image/jpg',
+  //     'image/png',
+  //     'image/gif',
+  //     'image/webp'
+  //   ];
 
-    // Check if file is an image
+  //   // Check if file is an image
+  //   if (!allowedTypes.includes(file.type)) {
+  //     toast.error('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
+  //     event.target.value = ''; // Clear the input
+  //     setFileName("Choose a file");
+  //     setSelectedImage(null);
+  //     return;
+  //   }
+
+  //   // Check file size (max 5MB)
+  //   const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+  //   if (file.size > maxSize) {
+  //     toast.error('Image size should be less than 5MB');
+  //     event.target.value = ''; // Clear the input
+  //     setFileName("Choose a file");
+  //     setSelectedImage(null);
+  //     return;
+  //   }
+
+  //   // Store the file temporarily
+  //   setSelectedImage(file);
+  //   setFileName(file.name);
+  //   toast.success('Image selected successfully');
+  // };
+
+const handleFileChange = (event) => {
+  const files = Array.from(event.target.files);
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  const maxSize = 5 * 1024 * 1024;
+
+  const validFiles = files.filter(file => {
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
-      event.target.value = ''; // Clear the input
-      setFileName("Choose a file");
-      setSelectedImage(null);
-      return;
+      toast.error(`Invalid type: ${file.name}`);
+      return false;
     }
-
-    // Check file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
     if (file.size > maxSize) {
-      toast.error('Image size should be less than 5MB');
-      event.target.value = ''; // Clear the input
-      setFileName("Choose a file");
-      setSelectedImage(null);
-      return;
+      toast.error(`Too large: ${file.name}`);
+      return false;
     }
+    return true;
+  });
 
-    // Store the file temporarily
-    setSelectedImage(file);
-    setFileName(file.name);
-    toast.success('Image selected successfully');
-  };
+  const newImages = validFiles.map(file => ({
+    file,
+    previewUrl: URL.createObjectURL(file),
+    id: Date.now() + Math.random()
+  }));
+
+  setAttachedImages(prev => [...prev, ...newImages]);
+  toast.success(`${newImages.length} image(s) added`);
+};
+const handleRemoveImage = (id) => {
+  setAttachedImages(prev => prev.filter(img => img.id !== id));
+};
+
 
   const handleClick = () => {
     fileInputRef.current.click();
@@ -351,64 +383,398 @@ const handleInputChange = (e) => {
 };
 
   // Handle save
-  const handleSave = async () => {
-    setIsLoading(true);
-    // console.log('Initial Form Data:', JSON.stringify(formData, null, 2));
+  // const handleSave = async () => {
+  //   setIsLoading(true);
+  //   // console.log('Initial Form Data:', JSON.stringify(formData, null, 2));
 
-    try {
-      let imageFileName = formData.imageName;
-      // console.log('Selected Image:', selectedImage);
+  //   try {
+  //     let imageFileName = formData.imageName;
 
-      // Upload image if one is selected
-      if (selectedImage) {
-        const timestamp = new Date().getTime();
-        const uniqueFileName = `${timestamp}_${selectedImage.name}`;
-        // console.log('Generated filename:', uniqueFileName);
+  //      console.log('Selected Image:', attachedImages);
 
-        const imageFormData = new FormData();
-        imageFormData.append('file', selectedImage);
+  //     // Upload image if one is selected
+  //     if (selectedImage) {
+  //       const timestamp = new Date().getTime();
+  //       const uniqueFileName = `${timestamp}_${selectedImage.name}`;
+  //       // console.log('Generated filename:', uniqueFileName);
 
-        const uploadResponse = await fetch('/api/upload', {
-          method: 'POST',
-          body: imageFormData
-        });
+  //       const imageFormData = new FormData();
+  //       imageFormData.append('file', selectedImage);
 
-        if (!uploadResponse.ok) {
-          throw new Error('Failed to upload image');
-        }
+  //       const uploadResponse = await fetch('/api/upload', {
+  //         method: 'POST',
+  //         body: imageFormData
+  //       });
 
-        const uploadResult = await uploadResponse.json();
-        // console.log('Upload result:', uploadResult);
-        imageFileName = uploadResult.fileName;
-        // console.log('Image file name to be saved:', imageFileName);
-      }
+  //       if (!uploadResponse.ok) {
+  //         throw new Error('Failed to upload image');
+  //       }
 
-      // Submit the form data with image name
-      const dataToSubmit = {
-        ...formData,
-        imageName: imageFileName
-      };
+  //       const uploadResult = await uploadResponse.json();
+  //       // console.log('Upload result:', uploadResult);
+  //       imageFileName = uploadResult.fileName;
+  //       // console.log('Image file name to be saved:', imageFileName);
+  //     }
+
+  //     // Submit the form data with image name
+  //     const dataToSubmit = {
+  //       ...formData,
+  //       imageName: imageFileName
+  //     };
       
-      // console.log('Data being submitted:', JSON.stringify(dataToSubmit, null, 2));
-      console.log(dataToSubmit)
-      const result = await submitProductAction(dataToSubmit);
-      // console.log('Submit result:', result);
+  //     // console.log('Data being submitted:', JSON.stringify(dataToSubmit, null, 2));
+  //     console.log(dataToSubmit)
+  //     const result = await submitProductAction(dataToSubmit);
+  //     // console.log('Submit result:', result);
 
-      if (result.success) {
-        toast.success(action === 'update' ? 'Updated successfully!' : 'Saved successfully!');
-        setTimeout(() => {
-          window.location.href = '/Inventory_list/Inventorylist';
-        }, 1500);
-      } else {
-        toast.error(result.error || 'An error occurred');
+  //     if (result.success) {
+  //       toast.success(action === 'update' ? 'Updated successfully!' : 'Saved successfully!');
+  //       setTimeout(() => {
+  //         // window.location.href = '/Inventory_list/Inventorylist';
+  //       }, 1500);
+  //     } else {
+  //       toast.error(result.error || 'An error occurred');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error in handleSave:', error);
+  //     toast.error('An error occurred');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+// const handleSave = async () => {
+//   setIsLoading(true);
+
+//   try {
+//     let uploadedImageNames = [];
+
+//     // Upload each selected image
+//     for (const imgObj of attachedImages) {
+//       const timestamp = new Date().getTime();
+//       const uniqueFileName = `${timestamp}_${imgObj.file.name}`;
+
+//       const imageFormData = new FormData();
+//       imageFormData.append('file', imgObj.file);
+
+//       const uploadResponse = await fetch('/api/upload', {
+//         method: 'POST',
+//         body: imageFormData,
+//       });
+
+//       if (!uploadResponse.ok) {
+//         throw new Error('Failed to upload image');
+//       }
+
+//       const uploadResult = await uploadResponse.json();
+//       uploadedImageNames.push(uploadResult.fileName); // Save returned filename
+//     }
+
+//     // Add image names array to formData
+//     const dataToSubmit = {
+//       ...formData,
+//       imageName: uploadedImageNames, // Save as array
+//     };
+
+//     console.log('Data being submitted:', dataToSubmit);
+
+//     const result = await submitProductAction(dataToSubmit);
+
+//     if (result.success) {
+//       toast.success(action === 'update' ? 'Updated successfully!' : 'Saved successfully!');
+//       setTimeout(() => {
+//         window.location.href = '/Inventory_list/Inventorylist';
+//       }, 1500);
+//     } else {
+//       toast.error(result.error || 'An error occurred');
+//     }
+//   } catch (error) {
+//     console.error('Error in handleSave:', error);
+//     toast.error('An error occurred during save');
+//   } finally {
+//     setIsLoading(false);
+//   }
+// };
+const handleSave = async () => {
+  setIsLoading(true);
+
+  try {
+    let uploadedImageNames = [];
+
+    // 1. Upload images first
+    for (const imgObj of attachedImages) {
+      const timestamp = new Date().getTime();
+      const uniqueFileName = `${timestamp}_${imgObj.file.name}`;
+
+      const imageFormData = new FormData();
+      imageFormData.append('file', imgObj.file);
+
+      const uploadResponse = await fetch('/api/upload', {
+        method: 'POST',
+        body: imageFormData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error('Image upload failed');
       }
-    } catch (error) {
-      console.error('Error in handleSave:', error);
-      toast.error('An error occurred');
-    } finally {
-      setIsLoading(false);
+
+      const uploadResult = await uploadResponse.json();
+      uploadedImageNames.push(uploadResult.fileName);
     }
-  };
+
+    // 2. Prepare full form data with imageName array
+    const finalFormData = {
+      ...formData,
+      imageName: uploadedImageNames, // 👈 store array of filenames
+    };
+
+    // 3. Submit the full form with imageName
+    const result = await submitProductAction(finalFormData);
+
+    if (!result.success) {
+      toast.error(result.error || 'Form submission failed');
+      return;
+    }
+
+    toast.success(action === 'update' ? 'Updated successfully!' : 'Saved successfully!');
+
+    // 4. Reset form
+   
+    // 5. Redirect
+    setTimeout(() => {
+      window.location.href = '/Inventory_list/Inventorylist';
+    }, 1500);
+    //  setFormData({
+    //   canBeSold: false,
+    //   canBePurchased: false,
+    //   assemblyRequired: false,
+    //   spareParts: false,
+    //   saleExelude: false,
+    //   numberOfCartons: '',
+    //   productTitle: '',
+    //   sku: '',
+    //   gtin: '',
+    //   brand: '',
+    //   status: '',
+    //   rrp: '',
+    //   sellingPrice: '',
+    //   shipping: '',
+    //   shippingPrice: '',
+    //   imageName: '',
+    //   imageUrl: '',
+    //   upc: '',
+    //   upcAmazonCatch: '',
+    //   certificationNo: '',
+    //   previousSku: '',
+    //   productDimensions: {
+    //     length: '',
+    //     height: '',
+    //     width: '',
+    //     weight: '',
+    //     volume: ''
+    //   },
+    //   package1: {
+    //     length: '',
+    //     height: '',
+    //     width: '',
+    //     weight: '',
+    //     volume: ''
+    //   },
+    //   package2: {
+    //     length: '',
+    //     height: '',
+    //     width: '',
+    //     weight: '',
+    //     volume: ''
+    //   },
+    //   package3: {
+    //     length: '',
+    //     height: '',
+    //     width: '',
+    //     weight: '',
+    //     volume: ''
+    //   },
+    //   stockLevel: {
+    //     stocklevel: '',
+    //     sold: '',
+    //     factorysecond: '',
+    //     damaged: ''
+    //   },
+    //   purchase: {
+    //     purchaseprice: '',
+    //     costinaus: '',
+    //     profit: '',
+    //     profitratio: '',
+    //     returnratio: ''
+    //   },
+    //   addSellingPrice: {
+    //     supplyprice: '',
+    //     sellinginfo: '',
+    //     costs: '',
+    //     warehouse: '',
+    //     buyinginfo: '',
+    //     wholesaleandnz: ''
+    //   },
+    //   notes: '',
+    //   organization: {
+    //     categoryproduct: '',
+    //     producttype: '',
+    //     collection: '',
+    //     tags: ''
+    //   }
+    // });
+    // setAttachedImages([]);
+
+  } catch (error) {
+    console.error('Error in handleSave:', error);
+    toast.error('An error occurred during save');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+// const handleSave = async () => {
+//   setIsLoading(true);
+
+//   try {
+//     // First, submit form data (without imageName)
+//     const formWithoutImages = { ...formData };
+//     delete formWithoutImages.imageName; // Remove imageName before first submit
+// console.log(formWithoutImages)
+//     const result = await submitProductAction(formWithoutImages);
+
+//     if (!result.success) {
+//       toast.error(result.error || 'Form submission failed');
+//       return;
+//     }
+//         toast.success(action === 'update' ? 'Updated successfully!' : 'Saved successfully!');
+
+//     // toast.success(action === 'update' ? 'Form updated successfully!' : 'Form saved successfully!');
+
+//     // Now, if there are images, upload them
+//     let uploadedImageNames = [];
+
+//     for (const imgObj of attachedImages) {
+//       const timestamp = new Date().getTime();
+//       const uniqueFileName = `${timestamp}_${imgObj.file.name}`;
+
+//       const imageFormData = new FormData();
+//       imageFormData.append('file', imgObj.file);
+
+//       const uploadResponse = await fetch('/api/upload', {
+//         method: 'POST',
+//         body: imageFormData,
+//       });
+
+//       if (!uploadResponse.ok) {
+//         throw new Error('Image upload failed');
+//       }
+
+//       const uploadResult = await uploadResponse.json();
+//       uploadedImageNames.push(uploadResult.fileName);
+//     }
+
+//     // Optional: if needed, update the record with uploaded image filenames
+//     // Example: if `result.data._id` is returned from `submitProductAction`
+//     if (uploadedImageNames.length > 0 && result.data?._id) {
+//       await fetch(`/api/inventory/${result.data._id}/update-images`, {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ imageName: uploadedImageNames }),
+//       });
+//     }
+//     // ✅ Reset form data properly
+// setFormData({
+//   canBeSold: false,
+//   canBePurchased: false,
+//   assemblyRequired: false,
+//   spareParts: false,
+//   saleExelude: false,
+//   numberOfCartons: '',
+//   productTitle: '',
+//   sku: '',
+//   gtin: '',
+//   brand: '',
+//   status: '',
+//   rrp: '',
+//   sellingPrice: '',
+//   shipping: '',
+//   shippingPrice: '',
+//   imageName: '',
+//   imageUrl: '',
+//   upc: '',
+//   upcAmazonCatch: '',
+//   certificationNo: '',
+//   previousSku: '',
+//   productDimensions: {
+//     length: '',
+//     height: '',
+//     width: '',
+//     weight: '',
+//     volume: ''
+//   },
+//   package1: {
+//     length: '',
+//     height: '',
+//     width: '',
+//     weight: '',
+//     volume: ''
+//   },
+//   package2: {
+//     length: '',
+//     height: '',
+//     width: '',
+//     weight: '',
+//     volume: ''
+//   },
+//   package3: {
+//     length: '',
+//     height: '',
+//     width: '',
+//     weight: '',
+//     volume: ''
+//   },
+//   stockLevel: {
+//     stocklevel: '',
+//     sold: '',
+//     factorysecond: '',
+//     damaged: ''
+//   },
+//   purchase: {
+//     purchaseprice: '',
+//     costinaus: '',
+//     profit: '',
+//     profitratio: '',
+//     returnratio: ''
+//   },
+//   addSellingPrice: {
+//     supplyprice: '',
+//     sellinginfo: '',
+//     costs: '',
+//     warehouse: '',
+//     buyinginfo: '',
+//     wholesaleandnz: ''
+//   },
+//   notes: '',
+//   organization: {
+//     categoryproduct: '',
+//     producttype: '',
+//     collection: '',
+//     tags: ''
+//   }
+// });
+// setAttachedImages([]);
+
+//     // Redirect after all done
+//     setTimeout(() => {
+//       window.location.href = '/Inventory_list/Inventorylist';
+//     }, 1500);
+//   } catch (error) {
+//     console.error('Error in handleSave:', error);
+//     toast.error('An error occurred during save',error);
+//   } finally {
+//     setIsLoading(false);
+//   }
+// };
 
   // Handle URL input
   const handleUrlSubmit = () => {
@@ -423,6 +789,58 @@ const handleInputChange = (e) => {
       toast.error('Please enter a valid URL');
     }
   };
+   const cbm =formData.productDimensions.length/100 * formData.productDimensions.height/100 * formData.productDimensions.width/100 
+
+  formData.productDimensions.volume = cbm;
+   const cbm1 =formData.package1.length/100 * formData.package1.height/100 * formData.package1.width/100 
+ formData.package1.volume = cbm1;
+   const cbm2 =formData.package2.length/100 * formData.package2.height/100 * formData.package2.width/100 
+  formData.package2.volume = cbm2;
+   const cbm3 =formData.package3.length/100 * formData.package3.height/100 * formData.package3.width/100 
+ formData.package3.volume = cbm3;
+//  const handleCopy = (id) => {
+//   const source = formData["package" + id];
+//   const target = formData["package" + (id + 1)];
+
+//   if (source && target) {
+//     target.length = source.length;
+//     target.height = source.height;
+//     target.width = source.width;
+
+//     // Optional: Recalculate CBM
+//     const cbm = (source.length / 100) * (source.height / 100) * (source.width / 100);
+//     target.volume = cbm.toFixed(4);
+//   }
+// };
+const handleCopy = (id) => {
+  const sourceKey = `package${id}`;
+  const targetKey = `package${id + 1}`;
+
+  const source = formData[sourceKey];
+  const target = formData[targetKey];
+
+  if (source && target) {
+    const cbm = (
+      (parseFloat(source.length) || 0) *
+      (parseFloat(source.height) || 0) *
+      (parseFloat(source.width) || 0)
+    ) / 1000000;
+
+    const updatedFormData = {
+      ...formData,
+      [targetKey]: {
+        ...target,
+        length: source.length,
+        height: source.height,
+        width: source.width,
+        weight: source.weight,
+        volume: cbm.toFixed(4)
+      }
+    };
+
+    setFormData(updatedFormData);
+  }
+};
 
   return (
     <>
@@ -685,7 +1103,7 @@ const handleInputChange = (e) => {
             <div className="  rounded-md bg-white p-4">
               <h1 className="text-sm sm:text-base font-semibold">Media</h1>
               <div className="flex flex-col gap-3 min-h-[100px] border-2 border-dashed border-gray-400 p-4">
-                <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                {/* <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -705,7 +1123,98 @@ const handleInputChange = (e) => {
                   >
                     Add File URL
                   </span>
-                </div>
+                </div> */}
+{/* File Upload and Preview Section */}
+  <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+    <input
+      type="file"
+      ref={fileInputRef}
+      className="hidden"
+      onChange={handleFileChange}
+      accept="image/*"
+      multiple
+    />
+    <button
+      onClick={handleClick}
+      className="border w-full sm:w-auto border-gray-400 rounded px-3 py-1 bg-gray-100 hover:bg-gray-200"
+    >
+      Upload Images
+    </button>
+    <span
+      onClick={() => setShowUrlInput(true)}
+      className="text-blue-300 text-sm sm:text-base cursor-pointer hover:underline"
+    >
+      Add File URL
+    </span>
+  </div>
+
+  {/* Show Previews */}
+  <div className="flex flex-wrap gap-4 justify-center mt-4">
+    {/* {attachedImages.map((img) => (
+      <div key={img.id} className="relative group w-28 h-28">
+        <img
+          src={img.previewUrl}
+          alt="Preview"
+          className="w-full h-full object-cover border rounded"
+        />
+        <button
+          onClick={() => handleRemoveImage(img.id)}
+          className="absolute top-1 right-1 bg-red-500 text-white rounded-full text-xs px-2 py-0 hover:bg-red-600"
+        >
+          ✕
+        </button>
+      </div>
+    ))} */}
+    {attachedImages.map((img) => (
+  <div key={img.id} className="relative group w-28 h-28">
+    <Image
+      src={img.previewUrl}
+      alt="Preview"
+      fill
+      className="object-cover border rounded"
+      style={{ objectFit: 'cover' }}
+    />
+    <button
+      onClick={() => handleRemoveImage(img.id)}
+      className="absolute top-1 right-1 bg-red-500 text-white rounded-full text-xs px-2 py-0 hover:bg-red-600"
+    >
+      ✕
+    </button>
+  </div>
+))}
+
+  </div>
+
+  {/* File URL input */}
+  {/* {showUrlInput && (
+    <div className="flex flex-col sm:flex-row gap-2 mt-2 w-full">
+      <input
+        type="url"
+        value={fileUrl}
+        onChange={(e) => setFileUrl(e.target.value)}
+        placeholder="Enter file URL"
+        className="flex-1 border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <div className="flex gap-2">
+        <button
+          onClick={handleUrlSubmit}
+          className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+        >
+          Save
+        </button>
+        <button
+          onClick={() => {
+            setShowUrlInput(false);
+            setFileUrl("");
+          }}
+          className="bg-gray-300 text-black px-4 py-1 rounded hover:bg-gray-400"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  )} */}
+
 
                 {showUrlInput && (
                   <div className="flex flex-col sm:flex-row gap-2 mt-2 w-full">
@@ -999,7 +1508,7 @@ const handleInputChange = (e) => {
                       </div>
                       <div className="flex flex-col">
                         <span className="mb-1 text-black text-sm sm:text-base">
-                          CBM (cm²)
+                          CBM (m³)
                         </span>
                         <input
                           type="number"
@@ -1008,6 +1517,7 @@ const handleInputChange = (e) => {
                           name="productDimensions.volume"
                           value={formData.productDimensions.volume}
                           onChange={handleInputChange}
+                          disabled
                         />
                       </div>
                     </div>
@@ -1080,7 +1590,7 @@ const handleInputChange = (e) => {
                       </div>
                       <div className="flex flex-col">
                         <span className="mb-1 text-black text-sm sm:text-base">
-                          CBM (cm²)
+                          CBM (m³)
                         </span>
                         <input
                           type="number"
@@ -1089,10 +1599,22 @@ const handleInputChange = (e) => {
                           name="package1.volume"
                           value={formData.package1.volume}
                           onChange={handleInputChange}
+                          disabled
                         />
                       </div>
                     </div>
-                    <h1 className="mt-2">Package2</h1>
+                    { 
+                        formData.package1.volume ?  <span className="flex items-center gap-2">
+  <h1>Package2</h1>
+<h1
+  className="text-blue-500 underline cursor-pointer"
+  onClick={() => handleCopy(1)}
+>
+  Copy from above
+</h1></span>
+ : <h1 className="mt-2">Package2 </h1>
+                      }
+                    
                     <div className="flex gap-10 mt-4">
                       <div className="flex flex-col">
                         <span className="mb-1 text-black text-sm sm:text-base">
@@ -1148,7 +1670,7 @@ const handleInputChange = (e) => {
                       </div>
                       <div className="flex flex-col">
                         <span className="mb-1 text-black text-sm sm:text-base">
-                          CBM (cm²)
+                          CBM (m³)
                         </span>
                         <input
                           type="number"
@@ -1157,10 +1679,21 @@ const handleInputChange = (e) => {
                           name="package2.volume"
                           value={formData.package2.volume}
                           onChange={handleInputChange}
+                          disabled
                         />
                       </div>
                     </div>
-                    <h1 className="mt-2">Package3</h1>
+                    { 
+                        formData.package1.volume ?  <span className="flex items-center gap-2">
+  <h1>Package3</h1>
+<h1
+  className="text-blue-500 underline cursor-pointer"
+  onClick={() => handleCopy(2)}
+>
+  Copy from above
+</h1></span>
+ : <h1 className="mt-2">Package3 </h1>
+                      }
                     <div className="flex gap-10 mt-4">
                       <div className="flex flex-col">
                         <span className="mb-1 text-black text-sm sm:text-base">
@@ -1216,7 +1749,7 @@ const handleInputChange = (e) => {
                       </div>
                       <div className="flex flex-col">
                         <span className="mb-1 text-black text-sm sm:text-base">
-                          CBM (cm²)
+                          CBM (m³)
                         </span>
                         <input
                           type="number"
@@ -1225,6 +1758,7 @@ const handleInputChange = (e) => {
                           name="package3.volume"
                           value={formData.package3.volume}
                           onChange={handleInputChange}
+                          disabled
                         />
                       </div>
                     </div>

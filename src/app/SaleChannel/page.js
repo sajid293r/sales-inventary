@@ -961,61 +961,14 @@ const handleSaleChannel=(e)=>{
               >
                 Filter
               </button>
-              <button
+              {/* <button
                 ref={sortButtonRef}
                 className="border py-1 px-4 border border-[#888888] rounded-md text-sm hover:bg-gray-100 transition max-w-full"
                 onClick={() => toggleDropdown("sortTooltip")}
               >
                 Sort
-              </button>
-              {/* {dropdown.sortTooltip && (
-                <div
-                  ref={sortTooltipRef}
-                  className="absolute z-20 bg-white border border-[#888888] p-4 rounded-md shadow-lg top-full right-0 sm:right-16 mt-2 w-64 text-sm"
-                >
-                  <h3 className="font-semibold mb-2">Sort Options</h3>
-                  <label className="flex items-center mb-2">
-                    
-                   <div className="flex flex-col gap-2 w-full">
-  <label className="flex items-center w-full relative">
-    <input
-      type="checkbox"
-      checked={sortOptions.salesChannel}
-      onChange={() => handleSortChange("salesChannel")}
-      className="mr-2"
-    />
-    <div className="flex items-center w-full pr-6">
-      <span>Sales Channel</span>
-    </div>
-    <span className="absolute right-0">
-     
-      <Image src={arrowup} alt="Arrow Up" width={16} height={16} />
-
-    </span>
-  </label>
-
-  <label className="flex items-center w-full relative">
-    <input
-      type="checkbox"
-      checked={sortOptions.salesChannel}
-      onChange={() => handleSortChange("salesChannel")}
-      className="mr-2"
-    />
-    <div className="flex items-center w-full pr-6">
-      <span>Sales Channel</span>
-    </div>
-    <span className="absolute right-0">
-     
-            <Image src={arrowdown} alt="Arrow Up" width={16} height={16} />
-
-    </span>
-  </label>
-</div>
-
-                  </label>
-                </div>
-                
-              )} */}
+              </button> */}
+           
               {dropdown.sortTooltip && (
   <div
     ref={sortTooltipRef}
@@ -1393,13 +1346,26 @@ const handleSaleChannel=(e)=>{
                           />
                         </div>
                       </th>
-                      <th className="p-2 text-center">Sales Channel</th>
+                  <th
+  className="p-2 text-center relative cursor-pointer select-none"
+  onClick={() => handleSortChange(sortOption === 'desc' ? 'asc' : 'desc')}
+>
+  <div className="flex justify-center items-center gap-1">
+    <span>Sales Channel</span>
+    {sortOption === 'desc' ? (
+      <Image src={arrowdown} alt="Arrow Down" width={16} height={16} />
+    ) : (
+      <Image src={arrowup} alt="Arrow Up" width={16} height={16} />
+    )}
+  </div>
+</th>
+
                       <th className="p-2 text-center">Type</th>
                       <th className="p-2 text-center">Payment Term</th>
                       <th className="p-2 text-center">Location</th>
                       <th className="p-2 text-center">Created Date</th>
                       <th className="p-2 text-center">Status</th>
-                      <th className="p-2 text-center">Action</th>
+                      {/* <th className="p-2 text-center">Action</th> */}
                     </tr>
                   </thead>
                   <tbody>
@@ -1419,14 +1385,32 @@ const handleSaleChannel=(e)=>{
                             className="cursor-pointer" 
                           />
                         </td>
-                        <td className="p-2 border-b border-[#888888] text-center">{row.salesChannelName}</td>
-                        <td className="p-2 border-b border-[#888888] text-center">{row.salesChannelType}</td>
-                        <td className="p-2 border-b border-[#888888] text-center">{row.payementterm}</td>
-                        <td className="p-2 border-b border-[#888888] text-center">{row.suburbState}</td>
-                        <td className="p-2 border-b border-[#888888] text-center">
+                        <td className="p-2 border-b border-[#888888] text-center" onClick={(e) => {
+                              e.stopPropagation();
+                              onEdit(row);
+                            }}>{row.salesChannelName}</td>
+                        <td className="p-2 border-b border-[#888888] text-center" onClick={(e) => {
+                              e.stopPropagation();
+                              onEdit(row);
+                            }}>{row.salesChannelType}</td>
+                        <td className="p-2 border-b border-[#888888] text-center" onClick={(e) => {
+                              e.stopPropagation();
+                              onEdit(row);
+                            }}>{row.payementterm}</td>
+                        <td className="p-2 border-b border-[#888888] text-center"onClick={(e) => {
+                              e.stopPropagation();
+                              onEdit(row);
+                            }}>{row.suburbState}</td>
+                        <td className="p-2 border-b border-[#888888] text-center"onClick={(e) => {
+                              e.stopPropagation();
+                              onEdit(row);
+                            }}>
                           {new Date(row.createdAt).toLocaleDateString()}
                         </td>
-                        <td className="p-2 border-b border-[#888888] text-center">
+                        <td className="p-2 border-b border-[#888888] text-center" onClick={(e) => {
+                              e.stopPropagation();
+                              onEdit(row);
+                            }}>
                           <span
                             className={`py-1 px-4 rounded-md text-xs ${row.emailPlatforminvoice
                                 ? "bg-green-200 text-green-700"
@@ -1436,7 +1420,7 @@ const handleSaleChannel=(e)=>{
                             {row.emailPlatforminvoice ? "Active" : "Inactive"}
                           </span>
                         </td>
-                        <td className="p-2  border-b border-[#888888] text-center">
+                        {/* <td className="p-2  border-b border-[#888888] text-center">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1447,7 +1431,7 @@ const handleSaleChannel=(e)=>{
                           >
                             <FaEdit />
                           </button>
-                          {/* <button
+                         <button
                             onClick={(e) => {
                               e.stopPropagation();
                               onDelete(row._id, row.salesChannelName);
@@ -1456,8 +1440,8 @@ const handleSaleChannel=(e)=>{
                             title="Delete"
                           >
                             <FaTrash />
-                          </button> */}
-                        </td>
+                          </button> 
+                        </td> */}
                       </tr>
                     ))}
                   </tbody>

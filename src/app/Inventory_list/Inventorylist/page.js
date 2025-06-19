@@ -1325,7 +1325,7 @@ const handleApply = () => {
     </div>
   </th>
 
-  <th className="p-2 border-t border-[#888888] text-center cursor-pointer hover:bg-gray-100">
+  <th className="p-2 border-t border-[#888888] text-center ">
     Name
   </th>
 

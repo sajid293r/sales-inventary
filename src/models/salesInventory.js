@@ -22,9 +22,9 @@ const productInventorySchema = new mongoose.Schema({
   shippingPrice: String,
 
   imageName: {
-    type: String,
-    default: ""
-  },
+  type: [String],
+  default: []
+},
   imageUrl: String,
 
   upc: String,
