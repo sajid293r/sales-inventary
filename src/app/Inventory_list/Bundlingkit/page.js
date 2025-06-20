@@ -1037,7 +1037,7 @@ const handleCopy = (id) => {
                
                 <label className="flex flex-col">
                   <span className="mb-2 text-black text-sm sm:text-base">
-                    Selling Price
+                    Standard Price
                   </span>
                   <input
                     type="number"
