@@ -11,6 +11,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAllSalesChannels } from "@/actions/getAllSalesChannels";
 // import  FaChevronDown  from "react-icons/fa";
+import Image from 'next/image';
+import arrowup from '../../image/Icons/arrowup.png'
+import arrowdown from '../../image/Icons/arrowdown.png'
 const TableWithCheckboxes = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [filters, setFilters] = useState({
@@ -282,6 +285,35 @@ const visibleChannels = salesChannels.filter((channel) =>
         return sortOptions.direction === "asc"
           ? nameA.localeCompare(nameB)
           : nameB.localeCompare(nameA);
+
+      case "sku":
+        const skuA = (a.sku || "").toLowerCase();
+        const skuB = (b.sku || "").toLowerCase();
+        return sortOptions.direction === "asc"
+          ? skuA.localeCompare(skuB)
+          : skuB.localeCompare(skuA);
+
+      case "rrp":
+        const rrpA = Number(a.rrp) || 0;
+        const rrpB = Number(b.rrp) || 0;
+        return sortOptions.direction === "asc" ? rrpA - rrpB : rrpB - rrpA;
+
+      case "sellingPrice":
+        const spA = Number(a.sellingPrice) || 0;
+        const spB = Number(b.sellingPrice) || 0;
+        return sortOptions.direction === "asc" ? spA - spB : spB - spA;
+
+      case "stockLevel":
+        const stockA = Number(a.stockLevel?.stocklevel) || 0;
+        const stockB = Number(b.stockLevel?.stocklevel) || 0;
+        return sortOptions.direction === "asc" ? stockA - stockB : stockB - stockA;
+
+      case "status":
+        const statusA = (a.status || "").toLowerCase();
+        const statusB = (b.status || "").toLowerCase();
+        return sortOptions.direction === "asc"
+          ? statusA.localeCompare(statusB)
+          : statusB.localeCompare(statusA);
 
       case "dateCreated":
         const createdAtA = new Date(a.createdAt || 0).getTime();
@@ -1325,31 +1357,97 @@ const handleApply = () => {
     </div>
   </th>
 
-  <th className="p-2 border-t border-[#888888] text-center ">
-    Name
+  <th
+    className="p-2 border-t border-[#888888] text-center cursor-pointer select-none relative"
+    onClick={() => handleSortChange('name')}
+  >
+    <div className="flex justify-center items-center gap-1">
+      Name
+      {sortOptions.field === 'name'
+        ? (sortOptions.direction === 'desc'
+            ? <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+            : <Image src={arrowup} alt="Arrow Up" width={16} height={16} className="ml-1" />)
+        : <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+      }
+    </div>
   </th>
 
-  <th className="p-2 border-t border-[#888888] text-center">
-    SKU
+  <th
+    className="p-2 border-t border-[#888888] text-center cursor-pointer select-none relative"
+    onClick={() => handleSortChange('sku')}
+  >
+    <div className="flex justify-center items-center gap-1">
+      SKU
+      {sortOptions.field === 'sku'
+        ? (sortOptions.direction === 'desc'
+            ? <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+            : <Image src={arrowup} alt="Arrow Up" width={16} height={16} className="ml-1" />)
+        : <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+      }
+    </div>
   </th>
 
-  <th className="p-2 border-t border-[#888888] text-center">
-    RRP
+  <th
+    className="p-2 border-t border-[#888888] text-center cursor-pointer select-none relative"
+    onClick={() => handleSortChange('rrp')}
+  >
+    <div className="flex justify-center items-center gap-1">
+      RRP
+      {sortOptions.field === 'rrp'
+        ? (sortOptions.direction === 'desc'
+            ? <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+            : <Image src={arrowup} alt="Arrow Up" width={16} height={16} className="ml-1" />)
+        : <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+      }
+    </div>
   </th>
 
-  <th className="p-2 border-t border-[#888888] text-center">
-    Selling Price
+  <th
+    className="p-2 border-t border-[#888888] text-center cursor-pointer select-none relative"
+    onClick={() => handleSortChange('sellingPrice')}
+  >
+    <div className="flex justify-center items-center gap-1">
+      Selling Price
+      {sortOptions.field === 'sellingPrice'
+        ? (sortOptions.direction === 'desc'
+            ? <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+            : <Image src={arrowup} alt="Arrow Up" width={16} height={16} className="ml-1" />)
+        : <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+      }
+    </div>
   </th>
 
-  <th className="p-2 border-t border-[#888888] text-center">
-    Stock Level
+  <th
+    className="p-2 border-t border-[#888888] text-center cursor-pointer select-none relative"
+    onClick={() => handleSortChange('stockLevel')}
+  >
+    <div className="flex justify-center items-center gap-1">
+      Stock Level
+      {sortOptions.field === 'stockLevel'
+        ? (sortOptions.direction === 'desc'
+            ? <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+            : <Image src={arrowup} alt="Arrow Up" width={16} height={16} className="ml-1" />)
+        : <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+      }
+    </div>
   </th>
 
-  <th className="p-2 border-t border-[#888888] text-center">
-    Status
+  <th
+    className="p-2 border-t border-[#888888] text-center cursor-pointer select-none relative"
+    onClick={() => handleSortChange('status')}
+  >
+    <div className="flex justify-center items-center gap-1">
+      Status
+      {sortOptions.field === 'status'
+        ? (sortOptions.direction === 'desc'
+            ? <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+            : <Image src={arrowup} alt="Arrow Up" width={16} height={16} className="ml-1" />)
+        : <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+      }
+    </div>
   </th>
-  <th className="p-2 border-t border-[#888888] text-center">
-Action  </th>
+  {/* <th className="p-2 border-t border-[#888888] text-center">
+Action  </th> */}
 </tr>
 
                 </thead>
@@ -1359,7 +1457,11 @@ Action  </th>
                       key={row._id}
                       className={`hover:bg-gray-50 cursor-pointer ${selectedRows.includes(row._id) ? 'bg-blue-50' : ''
                         }`}
-                      onClick={() => handleRowClick(row)}
+                      // onClick={() => handleRowClick(row)}
+                       onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleEdit(row);
+                                                  }}
                     >
                       <td className="p-2 border-b border-[#888888] text-center w-12" onClick={(e) => e.stopPropagation()}>
                         <input
@@ -1392,7 +1494,7 @@ Action  </th>
                           {row.status || "N/A"}
                         </span>
                       </td>
-                      <td className="p-2  border-b border-[#888888] text-center">
+                      {/* <td className="p-2  border-b border-[#888888] text-center">
                                                 <button
                                                   onClick={(e) => {
                                                     e.stopPropagation();
@@ -1403,7 +1505,7 @@ Action  </th>
                                                 >
                                                   <FaEdit />
                                                 </button>
-                                                </td>
+                                                </td> */}
                     </tr>
                   ))}
                 </tbody>

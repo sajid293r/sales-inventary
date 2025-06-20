@@ -1034,12 +1034,27 @@ const handleCopy = (id) => {
             {/* Pricing Section */}
             <div className=" rounded-md bg-white p-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+               
                 <label className="flex flex-col">
+                  <span className="mb-2 text-black text-sm sm:text-base">
+                    Selling Price
+                  </span>
+                  <input
+                    type="number"
+                    className="border border-[#888888]  bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                    placeholder="$ 0.00"
+                    name="sellingPrice"
+                    value={formData.sellingPrice}
+                    onChange={handleInputChange}
+                    readOnly={isReadOnly}
+                  />
+                </label>
+                 <label className="flex flex-col">
                   <span className="mb-2 text-black text-sm sm:text-base">
                     RRP (AUD)
                   </span>
                   <input
-                    type="text"
+                    type="number"
                     className="border border-[#888888]  bg-green-500  rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder="$ 0.00"
                     name="rrp"
@@ -1050,24 +1065,10 @@ const handleCopy = (id) => {
                 </label>
                 <label className="flex flex-col">
                   <span className="mb-2 text-black text-sm sm:text-base">
-                    Selling Price
-                  </span>
-                  <input
-                    type="text"
-                    className="border border-[#888888]  bg-green-500 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-                    placeholder="$ 0.00"
-                    name="sellingPrice"
-                    value={formData.sellingPrice}
-                    onChange={handleInputChange}
-                    readOnly={isReadOnly}
-                  />
-                </label>
-                <label className="flex flex-col">
-                  <span className="mb-2 text-black text-sm sm:text-base">
                     Shipping
                   </span>
                   <input
-                    type="text"
+                    type="number"
                     className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder="$ 0.00"
                     name="shipping"
@@ -1081,7 +1082,7 @@ const handleCopy = (id) => {
                     ShippingPrice
                   </span>
                   <input
-                    type="text"
+                    type="number"
                     className="border border-[#888888] rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     placeholder="$ 0.00"
                     name="shippingPrice"

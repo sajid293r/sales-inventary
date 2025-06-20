@@ -40,7 +40,7 @@ const TableWithCheckboxes = () => {
   //   salesChannel: false,
   //   country: false,
   // });
-const [sortOption, setSortOption] = useState(null); // 'asc' | 'desc' | null
+const [sortState, setSortState] = useState({ column: 'salesChannelName', direction: 'asc' });
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -276,12 +276,27 @@ const handleFilterChange = (field, value) => {
         : true
     );
 const sortedData = [...filteredData].sort((a, b) => {
-  if (!sortOption) return 0;
+  if (!sortState.column) return 0;
+  let aVal = a[sortState.column];
+  let bVal = b[sortState.column];
 
-  const aVal = (a.salesChannelName || '').toLowerCase();
-  const bVal = (b.salesChannelName || '').toLowerCase();
+  // Special handling for createdAt (date)
+  if (sortState.column === 'createdAt') {
+    aVal = new Date(aVal);
+    bVal = new Date(bVal);
+    return sortState.direction === 'asc' ? aVal - bVal : bVal - aVal;
+  }
 
-  return sortOption === 'asc'
+  // Special handling for status (Active/Inactive)
+  if (sortState.column === 'status') {
+    aVal = a.emailPlatforminvoice ? 'Active' : 'Inactive';
+    bVal = b.emailPlatforminvoice ? 'Active' : 'Inactive';
+  }
+
+  // Default string comparison
+  aVal = (aVal || '').toString().toLowerCase();
+  bVal = (bVal || '').toString().toLowerCase();
+  return sortState.direction === 'asc'
     ? aVal.localeCompare(bVal)
     : bVal.localeCompare(aVal);
 });
@@ -329,7 +344,10 @@ const sortedData = [...filteredData].sort((a, b) => {
     });
   };
 const handleSortChange = (direction) => {
-  setSortOption((prev) => (prev === direction ? null : direction));
+  setSortState((prev) => ({
+    ...prev,
+    direction: prev.direction === direction ? null : direction,
+  }));
 };
 
 
@@ -981,7 +999,7 @@ const handleSaleChannel=(e)=>{
       <label className="flex items-center w-full relative cursor-pointer">
         <input
           type="checkbox"
-          checked={sortOption === 'asc'}
+          checked={sortState.direction === 'asc'}
           onChange={() => handleSortChange('asc')}
           className="mr-2"
         />
@@ -997,7 +1015,7 @@ const handleSaleChannel=(e)=>{
       <label className="flex items-center w-full relative cursor-pointer">
         <input
           type="checkbox"
-          checked={sortOption === 'desc'}
+          checked={sortState.direction === 'desc'}
           onChange={() => handleSortChange('desc')}
           className="mr-2"
         />
@@ -1348,23 +1366,107 @@ const handleSaleChannel=(e)=>{
                       </th>
                   <th
   className="p-2 text-center relative cursor-pointer select-none"
-  onClick={() => handleSortChange(sortOption === 'desc' ? 'asc' : 'desc')}
+  onClick={() => setSortState(prev => ({
+    column: 'salesChannelName',
+    direction: prev.column === 'salesChannelName' && prev.direction === 'asc' ? 'desc' : 'asc'
+  }))}
 >
   <div className="flex justify-center items-center gap-1">
-    <span>Sales Channel</span>
-    {sortOption === 'desc' ? (
-      <Image src={arrowdown} alt="Arrow Down" width={16} height={16} />
-    ) : (
-      <Image src={arrowup} alt="Arrow Up" width={16} height={16} />
-    )}
+    Sales Channel
+    {sortState.column === 'salesChannelName'
+      ? (sortState.direction === 'desc'
+          ? <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+          : <Image src={arrowup} alt="Arrow Up" width={16} height={16} className="ml-1" />)
+      : <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+    }
   </div>
 </th>
 
-                      <th className="p-2 text-center">Type</th>
-                      <th className="p-2 text-center">Payment Term</th>
-                      <th className="p-2 text-center">Location</th>
-                      <th className="p-2 text-center">Created Date</th>
-                      <th className="p-2 text-center">Status</th>
+                      <th
+                        className="p-2 text-center relative cursor-pointer select-none"
+                        onClick={() => setSortState(prev => ({
+                          column: 'salesChannelType',
+                          direction: prev.column === 'salesChannelType' && prev.direction === 'asc' ? 'desc' : 'asc'
+                        }))}
+                      >
+                        <div className="flex justify-center items-center gap-1">
+                          <span>Type</span>
+                          {sortState.column === 'salesChannelType'
+                            ? (sortState.direction === 'desc'
+                                ? <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+                                : <Image src={arrowup} alt="Arrow Up" width={16} height={16} className="ml-1" />)
+                            : <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+                          }
+                        </div>
+                      </th>
+                      <th
+                        className="p-2 text-center relative cursor-pointer select-none"
+                        onClick={() => setSortState(prev => ({
+                          column: 'payementterm',
+                          direction: prev.column === 'payementterm' && prev.direction === 'asc' ? 'desc' : 'asc'
+                        }))}
+                      >
+                        <div className="flex justify-center items-center gap-1">
+                          <span>Payment Term</span>
+                          {sortState.column === 'payementterm'
+                            ? (sortState.direction === 'desc'
+                                ? <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+                                : <Image src={arrowup} alt="Arrow Up" width={16} height={16} className="ml-1" />)
+                            : <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+                          }
+                        </div>
+                      </th>
+                      <th
+                        className="p-2 text-center relative cursor-pointer select-none"
+                        onClick={() => setSortState(prev => ({
+                          column: 'suburbState',
+                          direction: prev.column === 'suburbState' && prev.direction === 'asc' ? 'desc' : 'asc'
+                        }))}
+                      >
+                        <div className="flex justify-center items-center gap-1">
+                          <span>Location</span>
+                          {sortState.column === 'suburbState'
+                            ? (sortState.direction === 'desc'
+                                ? <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+                                : <Image src={arrowup} alt="Arrow Up" width={16} height={16} className="ml-1" />)
+                            : <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+                          }
+                        </div>
+                      </th>
+                      <th
+                        className="p-2 text-center relative cursor-pointer select-none"
+                        onClick={() => setSortState(prev => ({
+                          column: 'createdAt',
+                          direction: prev.column === 'createdAt' && prev.direction === 'asc' ? 'desc' : 'asc'
+                        }))}
+                      >
+                        <div className="flex justify-center items-center gap-1">
+                          <span>Created Date</span>
+                          {sortState.column === 'createdAt'
+                            ? (sortState.direction === 'desc'
+                                ? <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+                                : <Image src={arrowup} alt="Arrow Up" width={16} height={16} className="ml-1" />)
+                            : <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+                          }
+                        </div>
+                      </th>
+                      <th
+                        className="p-2 text-center relative cursor-pointer select-none"
+                        onClick={() => setSortState(prev => ({
+                          column: 'status',
+                          direction: prev.column === 'status' && prev.direction === 'asc' ? 'desc' : 'asc'
+                        }))}
+                      >
+                        <div className="flex justify-center items-center gap-1">
+                          <span>Status</span>
+                          {sortState.column === 'status'
+                            ? (sortState.direction === 'desc'
+                                ? <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+                                : <Image src={arrowup} alt="Arrow Up" width={16} height={16} className="ml-1" />)
+                            : <Image src={arrowdown} alt="Arrow Down" width={16} height={16} className="ml-1" />
+                          }
+                        </div>
+                      </th>
                       {/* <th className="p-2 text-center">Action</th> */}
                     </tr>
                   </thead>
